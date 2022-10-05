@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\utils;
+namespace App\Http\Controllers\Utils;
 
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class DropdownController extends Controller
 {
@@ -49,10 +50,10 @@ class DropdownController extends Controller
 
     public function province(Request $request)
     {
-        $uri = 'https://semyluase.github.io/api-indonesia/static/api/provinces.json';
+        $uri = 'https://wilayah-indonesia.maisys.site/static/api/provinces.json';
 
         if ($request->province_id) {
-            $uri = "https://semyluase.github.io/api-indonesia/static/api/province/$request->province_id.json";
+            $uri = "https://wilayah-indonesia.maisys.site/static/api/province/$request->province_id.json";
         }
 
         $dataProvince = getAPI($uri);
@@ -60,7 +61,7 @@ class DropdownController extends Controller
         $results = array();
 
         if ($dataProvince) {
-            if (collect($dataProvince)->count() > 1) {
+            if (collect($dataProvince)->count() == 1) {
                 return response()->json($dataProvince);
             } else {
                 foreach ($dataProvince as $key => $value) {
@@ -77,10 +78,10 @@ class DropdownController extends Controller
 
     public function regency(Request $request)
     {
-        $uri = "https://semyluase.github.io/api-indonesia/static/api/regencies/$request->province_id.json";
+        $uri = "https://wilayah-indonesia.maisys.site/static/api/regencies/$request->province_id.json";
 
         if ($request->regency_id) {
-            $uri = "https://semyluase.github.io/api-indonesia/static/api/regency/$request->regency_id.json";
+            $uri = "https://wilayah-indonesia.maisys.site/static/api/regency/$request->regency_id.json";
         }
 
         $dataRegency = getAPI($uri);
@@ -88,7 +89,7 @@ class DropdownController extends Controller
         $results = array();
 
         if ($dataRegency) {
-            if (collect($dataRegency)->count() > 1) {
+            if (collect($dataRegency)->count() == 1) {
                 return response()->json($dataRegency);
             } else {
                 foreach ($dataRegency as $key => $value) {
@@ -105,10 +106,10 @@ class DropdownController extends Controller
 
     public function district(Request $request)
     {
-        $uri = "https://semyluase.github.io/api-indonesia/static/api/districts/$request->regency_id.json";
+        $uri = "https://wilayah-indonesia.maisys.site/static/api/districts/$request->regency_id.json";
 
         if ($request->district_id) {
-            $uri = "https://semyluase.github.io/api-indonesia/static/api/district/$request->district_id.json";
+            $uri = "https://wilayah-indonesia.maisys.site/static/api/district/$request->district_id.json";
         }
 
         $dataDistrict = getAPI($uri);
@@ -116,7 +117,7 @@ class DropdownController extends Controller
         $results = array();
 
         if ($dataDistrict) {
-            if (collect($dataDistrict)->count() > 0) {
+            if (collect($dataDistrict)->count() == 0) {
                 return response()->json($dataDistrict);
             } else {
                 foreach ($dataDistrict as $key => $value) {
@@ -133,10 +134,10 @@ class DropdownController extends Controller
 
     public function village(Request $request)
     {
-        $uri = "https://semyluase.github.io/api-indonesia/static/api/villages/$request->district_id.json";
+        $uri = "https://wilayah-indonesia.maisys.site/static/api/villages/$request->district_id.json";
 
         if ($request->village_id) {
-            $uri = "https://semyluase.github.io/api-indonesia/static/api/village/$request->village_id.json";
+            $uri = "https://wilayah-indonesia.maisys.site/static/api/village/$request->village_id.json";
         }
 
         $dataVillage = getAPI($uri);
@@ -144,7 +145,7 @@ class DropdownController extends Controller
         $results = array();
 
         if ($dataVillage) {
-            if (collect($dataVillage)->count() > 1) {
+            if (collect($dataVillage)->count() == 1) {
                 return response()->json($dataVillage);
             } else {
                 foreach ($dataVillage as $key => $value) {
@@ -153,6 +154,44 @@ class DropdownController extends Controller
                         'value' =>  $value->id
                     ];
                 }
+            }
+        }
+
+        return response()->json($results);
+    }
+
+    public function month()
+    {
+        $dataMonth = collect(Carbon::now()->startOfYear()->subMonth(12)->monthsUntil(Carbon::now()->startOfYear()))
+            ->mapWithKeys(fn ($month) => [$month->month => $month->monthName]);
+
+        $results = array();
+
+        if ($dataMonth) {
+            foreach ($dataMonth as $row => $value) {
+                $results[] = [
+                    'label' =>  $value,
+                    'value' =>  $value
+                ];
+            }
+        }
+
+        return response()->json($results);
+    }
+
+    public function year()
+    {
+        $dataYear = collect(Carbon::now()->startOfQuarter()->subYears(30)->yearsUntil(Carbon::now()))
+            ->mapWithKeys(fn ($year) => [$year->year => $year->year]);
+
+        $results = array();
+
+        if ($dataYear) {
+            foreach ($dataYear as $row => $value) {
+                $results[] = [
+                    'label' =>  $value,
+                    'value' =>  $row
+                ];
             }
         }
 

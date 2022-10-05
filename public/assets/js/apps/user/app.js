@@ -9,7 +9,6 @@ const roleUserInput = document.querySelector("#roleUser");
 const countryUserInput = document.querySelector("#countryUser");
 const passwordUserInput = document.querySelector("#passwordUser");
 const passwordUserFeedback = document.querySelector("#passwordUserFeedback");
-const templateUserCheck = document.querySelectorAll("input[type=checkbox]");
 const btnAdd = document.querySelector("#btn-add");
 const btnSubmit = document.querySelector("#btn-submit");
 
@@ -166,27 +165,15 @@ const user = {
                     `${baseUrl}/dropdown/get-role`,
                     roleUserChoices,
                     "Select a role",
-                    response.role_id
+                    parseInt(response.role_id)
                 );
 
                 await user.createDropdown(
                     `${baseUrl}/dropdown/get-country`,
                     countryUserChoices,
                     "Select a country",
-                    response.country_id
+                    parseInt(response.country_id)
                 );
-
-                templateUserCheck.forEach((item) => {
-                    response.template.forEach((t) => {
-                        if (item.value == t.template) {
-                            item.checked = true;
-                        }
-                    });
-                });
-
-                templateUser = Array.from(templateUserCheck)
-                    .filter((i) => i.checked)
-                    .map((i) => i.value);
 
                 btnSubmit.setAttribute("data-type", "edit-data");
             });
@@ -246,14 +233,6 @@ btnAdd.addEventListener("click", async() => {
     await user.addNew();
 });
 
-templateUserCheck.forEach((template) => {
-    template.addEventListener("change", () => {
-        templateUser = Array.from(templateUserCheck)
-            .filter((i) => i.checked)
-            .map((i) => i.value);
-    });
-});
-
 btnSubmit.addEventListener("click", async() => {
     let type = btnSubmit.dataset.type;
     let csrf = btnSubmit.dataset.csrf;
@@ -265,7 +244,6 @@ btnSubmit.addEventListener("click", async() => {
             email: emailUserInput.value,
             role: roleUserChoices.getValue(true),
             country: countryUserChoices.getValue(true),
-            template: templateUser,
             password: passwordUserInput.value,
             _token: csrf,
         });
@@ -359,7 +337,6 @@ btnSubmit.addEventListener("click", async() => {
             email: emailUserInput.value,
             role: roleUserChoices.getValue(true),
             country: countryUserChoices.getValue(true),
-            template: templateUser,
             password: passwordUserInput.value,
             _token: csrf,
         });

@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="{{ asset('assets/mazer/dist/assets/vendors/bootstrap-icons/bootstrap-icons.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/fontawesome/css/all.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/freezeUI/freeze-ui.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/icheck/icheck-bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/mazer/dist/assets/vendors/rater-js/style.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/mazer/dist/assets/vendors/sweetalert2/sweetalert2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/mazer/dist/assets/vendors/toastify/toastify.css') }}">
     <link rel="stylesheet"
@@ -58,6 +60,7 @@
     <script src="{{ asset('assets/vendor/freezeUI/freeze-ui.es5.min.js') }}"></script>
     <script src="{{ asset('assets/mazer/dist/assets/vendors/sweetalert2/sweetalert2.min.js') }}"></script>
     <script src="{{ asset('assets/mazer/dist/assets/vendors/toastify/toastify.js') }}"></script>
+    <script src="{{ asset('assets/mazer/dist/assets/vendors/rater-js/rater-js.js') }}"></script>
     <script src="{{ asset('assets/mazer/dist/assets/vendors/jquery-datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/momentjs/min/moment-with-locales.min.js') }}"></script>
     <script src="{{ asset('assets/mazer/dist/assets/vendors/ckeditor/ckeditor.js') }}"></script>

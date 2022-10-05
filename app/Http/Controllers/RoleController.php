@@ -231,8 +231,8 @@ class RoleController extends Controller
         if ($dataRole) {
             foreach ($dataRole as $row => $valRole) {
                 $button = '<div class="d-flex hstack gap-2">' .
-                    '<a href="javascript:;" class="btn btn-outline-info" onclick="role.editData(\'' . $valRole->slug . '\')"><i class="fas fa-edit"></i></a>' .
-                    '<a href="javascript:;" class="btn btn-outline-danger" onclick="role.deleteData(\'' . $valRole->slug . '\',\'' . csrf_token() . '\')"><i class="fas fa-times"></i></a>' .
+                    '<a href="javascript:;" class="btn btn-outline-info" onclick="fnRole.editData(\'' . $valRole->slug . '\')"><i class="fas fa-edit"></i></a>' .
+                    '<a href="javascript:;" class="btn btn-outline-danger" onclick="fnRole.deleteData(\'' . $valRole->slug . '\',\'' . csrf_token() . '\')"><i class="fas fa-times"></i></a>' .
                     '</div>';
 
                 $userCreated = '';

@@ -83,22 +83,6 @@ class UserController extends Controller
 
             $user = User::create($data);
             if ($user) {
-                // $template = explode(',', );
-
-                $arrData = array();
-
-                foreach ($request->template as $key) {
-                    $arrData[] = [
-                        'user_id'   =>  $user->id,
-                        'template'  =>  $key,
-                        'created_at'    =>  now('Asia/Jakarta')
-                    ];
-                }
-
-                if (!empty($arrData)) {
-                    TemplateUser::insert($arrData);
-                }
-
                 return response()->json([
                     'data'  =>  [
                         'status'    =>  true,
@@ -169,28 +153,6 @@ class UserController extends Controller
         }
 
         if (User::find($user->id)->update($data)) {
-            $arrData = array();
-
-            foreach ($request->template as $key) {
-                $arrData[] = [
-                    'user_id'   =>  $user->id,
-                    'template'  =>  $key,
-                    'created_at'    =>  now('Asia/Jakarta')
-                ];
-            }
-
-            if (!empty($arrData)) {
-                $templateData = TemplateUser::where('user_id', $user->id)
-                    ->get();
-
-                if ($templateData) {
-                    TemplateUser::where('user_id', $user->id)
-                        ->delete();
-                }
-
-                TemplateUser::insert($arrData);
-            }
-
             return response()->json([
                 'data'  =>  [
                     'status'    =>  true,

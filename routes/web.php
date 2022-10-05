@@ -1,16 +1,16 @@
 <?php
 
 use App\Http\Controllers\AnnouncementController;
-use App\Http\Controllers\auth\AuthController;
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnumerationController;
-use App\Http\Controllers\MaidController;
+use App\Http\Controllers\Master\Maid\MaidController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserMenuController;
-use App\Http\Controllers\utils\DropdownController;
+use App\Http\Controllers\Utils\DropdownController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -40,6 +40,18 @@ Route::middleware('auth')->group(function () {
     Route::resource('/master/countries', CountryController::class);
 
     Route::get('/master/maids/get-all-data', [MaidController::class, 'getAllData']);
+    Route::get('/master/maids/get-data-maid/{maid}', [MaidController::class, 'getDataMaid']);
+    Route::get('/master/maids/register-maid', [MaidController::class, 'create']);
+    Route::get('/master/maids/generate-counter', [MaidController::class, 'generateCounter']);
+    Route::get('/master/maids/get-work-experience', [MaidController::class, 'getWorkExperience']);
+    Route::get('/master/maids/get-work-experience/{id}/edit', [MaidController::class, 'editWorkExperience']);
+    Route::get('/master/maids/get-work-feedback', [MaidController::class, 'getWorkFeedback']);
+    Route::get('/master/maids/get-maid-skill', [MaidController::class, 'getEmployeeSkill']);
+    Route::get('/master/maids/get-country', [MaidController::class, 'getCountry']);
+    Route::get('/master/maids/download-data', [MaidController::class, 'downloadData']);
+    Route::post('/master/maids/add-work-experience', [MaidController::class, 'storeWorkExperience']);
+    Route::put('/master/maids/add-work-experience/{id}', [MaidController::class, 'updateWorkExperience']);
+    Route::delete('/master/maids/get-work-experience/{id}', [MaidController::class, 'destroyWorkExperience']);
     Route::resource('/master/maids', MaidController::class);
 
     Route::get('/master/announcements/get-all-data', [AnnouncementController::class, 'getAllData']);
@@ -67,6 +79,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/dropdown/get-regency', 'regency');
         Route::get('/dropdown/get-district', 'district');
         Route::get('/dropdown/get-village', 'village');
+        Route::get('/dropdown/get-month', 'month');
+        Route::get('/dropdown/get-year', 'year');
     });
 
     // logout

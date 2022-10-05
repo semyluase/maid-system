@@ -86,34 +86,6 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col">
-                            <div class="row">
-                                <div class="col">
-                                    <label for="" class="form-label">Document Template</label>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" name="userTemplate"
-                                            id="userTemplate1" value="template-1">
-                                        <label class="form-check-label" for="userTemplate1">Template 1</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" name="userTemplate"
-                                            id="userTemplate2" value="template-2">
-                                        <label class="form-check-label" for="userTemplate2">Template 2</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="checkbox" name="userTemplate"
-                                            id="userTemplate3" value="template-3">
-                                        <label class="form-check-label" for="userTemplate3">Template 3</label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col">
                             <label for="passwordUser" class="form-label">Password</label>
                             <input type="password" name="passwordUser" id="passwordUser" class="form-control">
                             <div class="invalid-feedback" id="passwordUserFeedback"></div>

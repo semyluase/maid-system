@@ -25,6 +25,8 @@ class User extends Authenticatable
 
     protected $guarded = ['id'];
 
+    // protected $with = ['role',''];
+
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -51,9 +53,9 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class, 'role_id', 'id');
     }
 
-    public function template()
+    public function country()
     {
-        return $this->hasMany(TemplateUser::class, 'user_id', 'id');
+        return $this->belongsTo(Country::class, 'country_id', 'id');
     }
 
     public function getRouteKeyName()

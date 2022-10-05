@@ -12,7 +12,7 @@ const btnSubmit = document.querySelector("#btn-submit");
 
 let url, data;
 
-const role = {
+const fnRole = {
     onLoad: async() => {
         blockUI();
         const results = await fetch(`${baseUrl}/master/roles/get-all-data`)
@@ -32,7 +32,7 @@ const role = {
 
                 return response.json();
             })
-            .then((response) => role.setTable(response));
+            .then((response) => fnRole.setTable(response));
 
         unBlockUI();
     },
@@ -46,7 +46,7 @@ const role = {
     },
 
     onInit: () => {
-        role.onLoad();
+        fnRole.onLoad();
     },
 
     addNew: () => {
@@ -110,7 +110,6 @@ const role = {
                 nameRoleInput.classList.remove("is-invalid");
                 descriptionRoleInput.classList.remove("is-invalid");
                 idRoleInput.value = response.id;
-                slugRoleInput.value = response.slug;
                 oldSlugRoleInput.value = response.slug;
                 nameRoleInput.value = response.name;
                 descriptionRoleInput.value = response.description;
@@ -139,7 +138,7 @@ const role = {
                     _token: csrf,
                 });
 
-                const results = await role.postData(url, data, "delete");
+                const results = await fnRole.postData(url, data, "delete");
 
                 unBlockUI();
 
@@ -153,7 +152,7 @@ const role = {
                         backgroundColor: "#198754",
                     }).showToast();
 
-                    role.onInit();
+                    fnRole.onInit();
                 } else {
                     Toastify({
                         text: results.data.message,
@@ -169,10 +168,10 @@ const role = {
     },
 };
 
-role.onInit();
+fnRole.onInit();
 
 btnAdd.addEventListener("click", () => {
-    role.addNew();
+    fnRole.addNew();
 });
 
 btnSubmit.addEventListener("click", async() => {
@@ -190,7 +189,7 @@ btnSubmit.addEventListener("click", async() => {
 
         blockModal();
 
-        const results = await role.postData(url, data, "post");
+        const results = await fnRole.postData(url, data, "post");
 
         unBlockModal();
 
@@ -205,7 +204,7 @@ btnSubmit.addEventListener("click", async() => {
             }).showToast();
 
             modalRole.hide();
-            role.onInit();
+            fnRole.onInit();
         } else {
             if (results.data.message.name || results.data.message.slug) {
                 nameRoleInput.classList.add("is-invalid");
@@ -248,7 +247,7 @@ btnSubmit.addEventListener("click", async() => {
 
         blockModal();
 
-        const results = await role.postData(url, data, "put");
+        const results = await fnRole.postData(url, data, "put");
 
         unBlockModal();
 
@@ -263,7 +262,7 @@ btnSubmit.addEventListener("click", async() => {
             }).showToast();
 
             modalRole.hide();
-            role.onInit();
+            fnRole.onInit();
         } else {
             if (results.data.message.name || results.data.message.slug) {
                 nameRoleInput.classList.add("is-invalid");
