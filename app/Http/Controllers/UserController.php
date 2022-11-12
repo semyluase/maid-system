@@ -78,7 +78,8 @@ class UserController extends Controller
                 'email' =>  $request->email,
                 'role_id'   =>  $request->role,
                 'country_id'   =>  $request->country,
-                'password'  =>  bcrypt($request->password)
+                'password'  =>  bcrypt($request->password),
+                'is_formal'  =>  $request->formal ? $request->formal : false,
             ];
 
             $user = User::create($data);
@@ -119,7 +120,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return response()->json($user->load(['role', 'template']));
+        return response()->json($user->load(['role']));
     }
 
     /**
@@ -140,7 +141,8 @@ class UserController extends Controller
                 'email' =>  $request->email,
                 'role_id'   =>  $request->role,
                 'country_id'   =>  $request->country,
-                'password'  =>  bcrypt($request->password)
+                'password'  =>  bcrypt($request->password),
+                'is_formal'  =>  $request->formal ? $request->formal : false,
             ];
         } else {
             $data = [
@@ -149,6 +151,7 @@ class UserController extends Controller
                 'email' =>  $request->email,
                 'role_id'   =>  $request->role,
                 'country_id'   =>  $request->country,
+                'is_formal'  =>  $request->formal ? $request->formal : false,
             ];
         }
 

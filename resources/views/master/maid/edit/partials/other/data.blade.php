@@ -44,7 +44,7 @@ $codeMaid = $maid ? $maid->code_maid : '';
                 <div class="input-group">
                     <input type="text" name="dateTrainingMaid" id="dateTrainingMaid" class="form-control"
                         aria-describedby="btn-calendar-training"
-                        value="{{ Carbon::parse($maid->date_training)->isoFormat('DD-MM-YYYY') }}">
+                        value="{{ Carbon::parse($maid->start_training)->isoFormat('DD-MM-YYYY') }}">
                     <button class="btn btn-outline-primary" type="button" id="btn-calendar-training"><i
                             class="fa-solid fa-calendar-alt"></i></button>
                 </div>

@@ -9,14 +9,24 @@
             </div>
         </div>
         <section class="section">
-            <div class="card">
-                <div class="card-header">
-                    <h4 class="card-title">Example Content</h4>
+            <div class="row">
+                @include('dashboard.admin.maidTransaction')
+            </div>
+            <div class="row">
+                <div class="col-12 col-lg-8">
+                    <div class="row">
+                        <div class="col">
+                            @include('dashboard.admin.cardMaid')
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            @include('dashboard.admin.announcement')
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur quas omnis laudantium tempore
-                    exercitationem, expedita aspernatur sed officia asperiores unde tempora maxime odio reprehenderit
-                    distinctio incidunt! Vel aspernatur dicta consequatur!
+                <div class="col-12 col-lg-4">
+                    @include('dashboard.admin.user')
                 </div>
             </div>
         </section>

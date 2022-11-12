@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Master\Maid;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\User\MaidResource;
 use App\Models\Country;
 use App\Models\Master\Maid\Interview;
 use App\Models\Master\Maid\Language;
@@ -27,16 +28,16 @@ class MaidController extends Controller
      */
     public function index()
     {
-        $dataMaid = Maid::with(['userCreated', 'userUpdated'])
+        $dataMaid = new MaidResource(Maid::with(['userCreated', 'userUpdated', 'historyAction', 'workExperience'])
             ->where('is_active', true)
             ->where('is_trash', false)
             ->where('is_blacklist', false)
             ->where('is_delete', false)
-            ->country(auth()->user()->country->code)
+            ->where('is_taken', false)
             ->latest()
             ->filter(['search' => request('search')])
             ->country(request('country'))
-            ->paginate(10);
+            ->paginate(20));
 
         return view('master.maid.index', [
             'title' =>  'Maid Data',
@@ -638,11 +639,31 @@ class MaidController extends Controller
             ]);
         }
 
+        $dataMaid = Maid::where('code_maid', $request->maid)
+            ->country($request->country)
+            ->first();
+
+        if (collect($dataMaid)->count() == 0) {
+            if ($request->country === 'HK') $country = 'is_hongkong';
+            if ($request->country === 'SG') $country = 'is_singapore';
+            if ($request->country === 'TW') $country = 'is_taiwan';
+            if ($request->country === 'MY') $country = 'is_malaysia';
+            if ($request->country === 'BR') $country = 'is_brunei';
+            if ($request->country === 'ALL') $country = 'is_all_format';
+
+            $dataMaid = Maid::create([
+                'code_maid' =>  Str::upper($request->maid),
+                $country =>  true,
+                'is_active' => true,
+                'user_created'  =>  auth()->user()->id,
+            ]);
+        }
+
         $data = [];
 
         if ($request->country == 'SG') {
             $data = [
-                'maid_id'   =>  Maid::where('code_maid', $request->maid)->country($request->country)->first('id')->id,
+                'maid_id'   =>  $dataMaid->id,
                 'year_start'    =>  $request->start,
                 'year_end'    =>  $request->end,
                 'country'   =>  Str::upper($request->location),
@@ -655,7 +676,7 @@ class MaidController extends Controller
             ];
         } else {
             $data = [
-                'maid_id'   =>  Maid::where('code_maid', $request->maid)->country($request->country)->first('id')->id,
+                'maid_id'   =>  $dataMaid->id,
                 'year_start'    =>  $request->start,
                 'year_end'    =>  $request->end,
                 'country'   =>  Str::upper($request->location),
@@ -1184,6 +1205,7 @@ class MaidController extends Controller
         if ($request->country === 'SG') $country = 'is_singapore';
         if ($request->country === 'TW') $country = 'is_taiwan';
         if ($request->country === 'MY') $country = 'is_malaysia';
+        if ($request->country === 'BR') $country = 'is_brunei';
         if ($request->country === 'ALL') $country = 'is_all_format';
 
         if ($dataCounter) {
@@ -1429,9 +1451,19 @@ class MaidController extends Controller
         $baseLogo = 'data:image/' . $type . ';base64,' . base64_encode($dataLogo);
 
         $view = 'master.maid.pdf.other';
+
         if ($request->country == 'SG') {
             $baseLogo = '';
             $view = 'master.maid.pdf.singapore';
+        }
+
+        if ($request->country == 'ALL') {
+            $baseLogo = '';
+            if ($request->format == 'formatA') {
+                $view = 'master.maid.pdf.allFormatA';
+            } else {
+                $view = 'master.maid.pdf.allFormatB';
+            }
         }
 
         $photoPath = $_SERVER['DOCUMENT_ROOT'] . '/assets/image/maids/photos/' . $dataMaid->picture_name;
@@ -1462,6 +1494,7 @@ class MaidController extends Controller
         ]);
 
         PDF::createPDF($html, $dataMaid->code_maid . '.pdf', true);
+        exit;
     }
 
     public function getTrashedData(Request $request)

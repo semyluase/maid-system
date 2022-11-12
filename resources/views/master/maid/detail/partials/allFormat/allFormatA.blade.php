@@ -6,8 +6,8 @@ use Illuminate\Support\Str;
 $marital = [
     1 => 'Single',
     2 => 'Married',
-    3 => 'Divorced',
-    4 => 'Widowed',
+    3 => 'Widowed',
+    4 => 'Divorced',
 ];
 
 $education = [

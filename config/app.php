@@ -16,6 +16,7 @@ return [
     */
 
     'name' => env('APP_NAME', 'Laravel'),
+    'name_user' => env('APP_NAME_USER', 'Laravel'),
 
     /*
     |--------------------------------------------------------------------------

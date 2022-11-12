@@ -31,7 +31,7 @@ use Illuminate\Support\Carbon;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Poppins', sans-serif;
-            font-size: 12px;
+            font-size: 9px;
             max-width: 100%;
         }
 
@@ -187,7 +187,7 @@ use Illuminate\Support\Carbon;
                     <td>{{ $maid->father_name }}</td>
                 </tr>
                 <tr>
-                    <td><span class="text-mandarin">丈夫年齡</span> / Age</td>
+                    <td><span class="text-mandarin">父親年齡</span> / Age</td>
                     <td>:</td>
                     <td>{{ $maid->father_passed_away == 1 ? 'Passed Away' : $maid->father_age }} <span
                             class="text-mandarin">年</span> / Years</td>
@@ -198,15 +198,16 @@ use Illuminate\Support\Carbon;
                     <td>{{ $maid->mother_name }}</td>
                 </tr>
                 <tr>
-                    <td><span class="text-mandarin">丈夫年齡</span> / Age</td>
+                    <td><span class="text-mandarin">母親年齡</span> / Age</td>
                     <td>:</td>
                     <td>{{ $maid->mother_passed_away == 1 ? 'Passed Away' : $maid->mother_age }} <span
                             class="text-mandarin">年</span> / Years</td>
                 </tr>
                 <tr>
-                    <td colspan="3" style="padding-top: 1rem; margin-left:2rem !important;">
+                    <td colspan="3"
+                        style="padding-top: 1rem; margin-left:2rem !important; text-align: center !important;">
                         <img src="{{ $photo }}" alt="Photo from {{ $maid->code_maid }}"
-                            style="width: 250px; height: 350px;">
+                            style="width: 350px; height: 450px; text-align: center !important;">
                     </td>
                 </tr>
             </table>

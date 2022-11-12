@@ -2,13 +2,16 @@
 
 namespace App\Models\Master\Maid;
 
-use App\Models\master\maid\Language;
-use App\Models\master\maid\Other;
-use App\Models\master\maid\Skill;
-use App\Models\master\maid\WorkExperience;
+use App\Models\Master\Maid\Language;
+use App\Models\Master\Maid\Other;
+use App\Models\Master\Maid\Skill;
+use App\Models\Master\Maid\WorkExperience;
 use App\Models\User;
+use App\Models\User\Document;
+use App\Models\User\HistoryTakenMaid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class Maid extends Model
 {
@@ -31,9 +34,34 @@ class Maid extends Model
         return $this->belongsTo(User::class, 'user_updated', 'id');
     }
 
+    public function userTrashed()
+    {
+        return $this->belongsTo(User::class, 'user_trashed', 'id');
+    }
+
+    public function userBookmark()
+    {
+        return $this->belongsTo(User::class, 'user_bookmark', 'id');
+    }
+
+    public function userUploaded()
+    {
+        return $this->belongsTo(User::class, 'user_uploaded', 'id');
+    }
+
+    public function historyAction()
+    {
+        return $this->hasMany(HistoryTakenMaid::class, 'maid_id', 'id');
+    }
+
+    public function documentMaid()
+    {
+        return $this->hasMany(Document::class, 'maid_id', 'id');
+    }
+
     public function scopeFilter($query, array $filter)
     {
-        return $query->when($filter['search'] ?? false, fn ($query, $search) => ($query->where('full_name', 'like', "%$search%")->whereOr('code_maid', 'like', "%$search%")));
+        return $query->when($filter['search'] ?? false, fn ($query, $search) => ($query->where('full_name', 'like', "%$search%")->orWhere('code_maid', 'like', "%$search%")->orWhere('date_of_birth', 'like', "%" . Carbon::now()->subYears($search)->isoFormat('YYYY') . "%")));
     }
 
     public function scopeCountry($query, $country)

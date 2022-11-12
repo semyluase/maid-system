@@ -253,13 +253,13 @@ class CountryController extends Controller
                                 </button>
                                 <ul class="dropdown-menu" aria-labeledby="dropdown-action">
                                     <li>
-                                        <a href="#" class="dropdown-item" onclick="country.onEdit(\'' . $value->slug . '\')">
+                                        <a href="#" class="dropdown-item" onclick="fnCountry.onEdit(\'' . $value->slug . '\')">
                                             <i class="fa-solid fa-edit me-2"></i>
                                             <span>Edit Data</span>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#" class="dropdown-item" onclick="country.onDelete(\'' . $value->slug . '\',\'' . csrf_token() . '\')">
+                                        <a href="#" class="dropdown-item" onclick="fnCountry.onDelete(\'' . $value->slug . '\',\'' . csrf_token() . '\')">
                                             <i class="fa-solid fa-trash me-2"></i>
                                             <span>Delete Data</span>
                                         </a>
@@ -269,7 +269,7 @@ class CountryController extends Controller
 
                 $results[]  = [
                     $no,
-                    $value->code,
+                    '<a href="javascript:;" onclick="fnCountry.onShow(\'' . $value->code . '\')">' . $value->code . '</a>',
                     $value->name,
                     $value->userCreated ? $value->userCreated->name : '-',
                     $value->userUpdated ? $value->userUpdated->name : '-',

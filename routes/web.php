@@ -2,12 +2,19 @@
 
 use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnumerationController;
+use App\Http\Controllers\History\MaidController as HistoryMaidController;
 use App\Http\Controllers\Master\Maid\MaidController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TakenController;
+use App\Http\Controllers\TimelineController;
+use App\Http\Controllers\Transaction\Maid\MaidController as TransactionMaidController;
+use App\Http\Controllers\User\MaidController as UserMaidController;
+use App\Http\Controllers\User\WorkerController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserMenuController;
 use App\Http\Controllers\Utils\DropdownController;
@@ -57,6 +64,30 @@ Route::middleware('auth')->group(function () {
     Route::get('/master/announcements/get-all-data', [AnnouncementController::class, 'getAllData']);
     Route::resource('/master/announcements', AnnouncementController::class);
 
+    // history
+    Route::get('/history/maids/get-all-data', [HistoryMaidController::class, 'getAllData']);
+    Route::resource('/history/maids', HistoryMaidController::class);
+
+    Route::resource('/taken/maids', TakenController::class);
+
+    // User
+    Route::get('/workers/bookmark', [UserMaidController::class, 'create']);
+    Route::resource('/workers', UserMaidController::class);
+
+    // User - My Worker
+    Route::get('/my-workers/upload', [WorkerController::class, 'create']);
+    Route::resource('/my-workers', WorkerController::class);
+
+    // transaction
+    Route::get('/transaction/maids/documents/{document}', [TransactionMaidController::class, 'document']);
+    Route::resource('/transaction/maids', TransactionMaidController::class);
+
+    // booking
+    Route::resource('/booked/maids', BookingController::class);
+
+    // timeline
+    Route::resource('/timelines/maids', TimelineController::class);
+
     Route::controller(MenuController::class)->group(function () {
         Route::get('/master/menus/get-menu-tree', 'getMenuTree');
     });
@@ -81,6 +112,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/dropdown/get-village', 'village');
         Route::get('/dropdown/get-month', 'month');
         Route::get('/dropdown/get-year', 'year');
+        Route::get('/dropdown/get-agency', 'agency');
+        Route::get('/dropdown/get-maids', 'maids');
     });
 
     // logout

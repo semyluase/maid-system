@@ -16,7 +16,7 @@ class UserMenu extends Model
 
     public function menu()
     {
-        return $this->belongsTo(Menu::class,'menu_id','id');
+        return $this->belongsTo(Menu::class, 'menu_id', 'id');
     }
 
     public static function data_menu()
@@ -42,15 +42,44 @@ class UserMenu extends Model
             foreach ($dataMenu as $row) {
                 $active = Request::is($row->active_value) ? 'active' : '';
 
-                $url = $row->url === 'javascript:;' ? $row->url : url('').$row->url;
+                $url = $row->url === 'javascript:;' ? $row->url : url('') . $row->url;
 
-                $logout = $row->label === 'Logout' ? 'onclick="loggedOut(\''.csrf_token().'\')"' : '';
+                $logout = $row->label === 'Logout' ? 'onclick="loggedOut(\'' . csrf_token() . '\')"' : '';
 
                 $item = '
-                <li class="sidebar-item '.$active.'">
-                    <a href="'.$url.'" class="sidebar-link" '.$logout.'>
-                        <i class="'.$row->icon.'"></i>
-                        <span>'.$row->label.'</span>
+                <li class="sidebar-item ' . $active . '">
+                    <a href="' . $url . '" class="sidebar-link" ' . $logout . '>
+                        <i class="' . $row->icon . '"></i>
+                        <span>' . $row->label . '</span>
+                    </a>
+                </li>
+                ';
+
+                $menu .= $item;
+            }
+        }
+
+        return $menu;
+    }
+
+    public static function createUserMenu()
+    {
+        $menu = '';
+        $active = '';
+        $dataMenu = static::data_menu();
+
+        if ($dataMenu) {
+            foreach ($dataMenu as $row) {
+                $active = Request::is($row->active_value) ? 'active' : '';
+
+                $url = $row->url === 'javascript:;' ? $row->url : url('') . $row->url;
+
+                $logout = $row->label === 'Logout' ? 'onclick="loggedOut(\'' . csrf_token() . '\')"' : '';
+
+                $item = '
+                <li class="menu-item ' . $active . '">
+                    <a href="' . $url . '" class="menu-link" ' . $logout . '>
+                        <span><i class="' . $row->icon . '"></i> ' . $row->label . '</span>
                     </a>
                 </li>
                 ';

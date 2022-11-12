@@ -309,62 +309,62 @@ function convertCountry($country)
             return 'is_all_format';
             break;
     }
+}
 
-    function convertEducationLevel($education)
-    {
-        $educationLevel = "N/A";
+function convertEducationLevel($education)
+{
+    $educationLevel = "N/A";
 
-        switch ($education) {
-            case 'Kindergarten':
-                $educationLevel = "Kindergarten";
-                break;
+    switch ($education) {
+        case 'Kindergarten':
+            $educationLevel = "Kindergarten";
+            break;
 
-            case 2:
-                $educationLevel = "Primary School";
-                break;
+        case 2:
+            $educationLevel = "Primary School";
+            break;
 
-            case 3:
-                $educationLevel = "Junior High School";
-                break;
+        case 3:
+            $educationLevel = "Junior High School";
+            break;
 
-            case 4:
-                $educationLevel = "Senior High School";
-                break;
+        case 4:
+            $educationLevel = "Senior High School";
+            break;
 
-            case 5:
-                $educationLevel = "Bachelor";
-                break;
+        case 5:
+            $educationLevel = "Bachelor";
+            break;
 
-            case 6:
-                $educationLevel = "Master";
-                break;
+        case 6:
+            $educationLevel = "Master";
+            break;
 
-            case 7:
-                $educationLevel = "Doctor";
-                break;
-        }
-
-        return $educationLevel;
+        case 7:
+            $educationLevel = "Doctor";
+            break;
     }
 
-    function generatePDF($html, $filename = '', $download = true, $paper = 'A4', $orientation = 'portrait')
-    {
-        $option = new Options();
-        $option->setIsRemoteEnabled(true);
-        $option->setIsPhpEnabled(true);
-        $option->setIsHtml5ParserEnabled(true);
-        $dompdf = new Dompdf($option);
-        $dompdf->loadHtml($html);
-        $dompdf->setPaper($paper, $orientation);
-        $dompdf->render();
-        if ($download) {
-            $dompdf->stream($filename, array('Attachment' => 1));
-        } else {
-            $dompdf->stream($filename, array('Attachment' => 0));
-            // $output = $dompdf->output();
-            // file_put_contents('pdf_handtag/' . $filename, $output);
-            // $path = $filename;
-            // return $path;
-        }
+    return $educationLevel;
+}
+
+function generatePDF($html, $filename = '', $download = true, $paper = 'A4', $orientation = 'portrait')
+{
+    $option = new Options();
+    $option->setIsRemoteEnabled(true);
+    $option->setIsPhpEnabled(true);
+    $option->setIsHtml5ParserEnabled(true);
+    $dompdf = new Dompdf($option);
+    $dompdf->loadHtml($html);
+    $dompdf->setPaper($paper, $orientation);
+    $dompdf->render();
+    if ($download) {
+        $dompdf->stream($filename, array('Attachment' => 1));
+    } else {
+        $dompdf->stream($filename, array('Attachment' => 0));
+        // $output = $dompdf->output();
+        // file_put_contents('pdf_handtag/' . $filename, $output);
+        // $path = $filename;
+        // return $path;
     }
 }

@@ -86,6 +86,29 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col">
+                            <div class="row">
+                                <div class="col">
+                                    <label for="formal" class="form-label">Format</label>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="formal" id="formalTrue"
+                                            value="true">
+                                        <label class="form-check-label" for="formalTrue">Formal</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="formal" id="formalFalse"
+                                            value="false">
+                                        <label class="form-check-label" for="formalFalse">Informal</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
                             <label for="passwordUser" class="form-label">Password</label>
                             <input type="password" name="passwordUser" id="passwordUser" class="form-control">
                             <div class="invalid-feedback" id="passwordUserFeedback"></div>

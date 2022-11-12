@@ -18,13 +18,16 @@
     <link rel="stylesheet" href="{{ asset('assets/mazer/dist/assets/vendors/rater-js/style.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/mazer/dist/assets/vendors/sweetalert2/sweetalert2.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/mazer/dist/assets/vendors/toastify/toastify.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/mazer/dist/assets/vendors/iconly/bold.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/flagIcons/css/flag-icons.css') }}" />
     <link rel="stylesheet"
         href="{{ asset('assets/mazer/dist/assets/vendors/jquery-datatables/jquery.dataTables.bootstrap5.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/datepicker/css/datepicker-bs5.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/mazer/dist/assets/vendors/choices.js/choices.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/jstree/themes/default/style.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/mazer/dist/assets/css/app.css') }}">
-    <link rel="shortcut icon" href="{{ asset('assets/mazer/dist/assets/images/favicon.svg') }}" type="image/x-icon">
+    {{-- <link rel="shortcut icon" href="{{ asset('assets/mazer/dist/assets/images/favicon.svg') }}" type="image/x-icon"> --}}
+    <link rel="shortcut icon" href="{{ asset('assets/image/header/logo.ico') }}" type="image/x-icon">
 
     <script>
         const baseUrl = '{{ url('') }}'

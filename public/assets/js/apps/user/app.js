@@ -7,6 +7,8 @@ const emailUserInput = document.querySelector("#emailUser");
 const emailUserFeedback = document.querySelector("#emailUserFeedback");
 const roleUserInput = document.querySelector("#roleUser");
 const countryUserInput = document.querySelector("#countryUser");
+const formalTrue = document.querySelector("#formalTrue");
+const formalFalse = document.querySelector("#formalFalse");
 const passwordUserInput = document.querySelector("#passwordUser");
 const passwordUserFeedback = document.querySelector("#passwordUserFeedback");
 const btnAdd = document.querySelector("#btn-add");
@@ -160,6 +162,11 @@ const user = {
                 emailUserInput.value = response.email;
                 nameUserInput.value = response.name;
                 passwordUserInput.value = "";
+                if (response.is_formal) {
+                    formalTrue.checked = true;
+                } else {
+                    formalFalse.checked = true;
+                }
 
                 await user.createDropdown(
                     `${baseUrl}/dropdown/get-role`,
@@ -245,6 +252,7 @@ btnSubmit.addEventListener("click", async() => {
             role: roleUserChoices.getValue(true),
             country: countryUserChoices.getValue(true),
             password: passwordUserInput.value,
+            formal: formalTrue.checked == true ? true : false,
             _token: csrf,
         });
 
@@ -338,6 +346,7 @@ btnSubmit.addEventListener("click", async() => {
             role: roleUserChoices.getValue(true),
             country: countryUserChoices.getValue(true),
             password: passwordUserInput.value,
+            formal: formalTrue.checked == true ? true : false,
             _token: csrf,
         });
 

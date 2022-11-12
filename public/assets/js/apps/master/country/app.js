@@ -13,7 +13,7 @@ const btnSubmit = document.querySelector("#btn-submit");
 
 let url, data, method, tbCountry;
 
-const country = {
+const fnCountry = {
     onInit: () => {
         blockUI();
         tbCountry = $("#tb-country").DataTable({
@@ -129,7 +129,7 @@ const country = {
                         _token: csrf,
                     });
 
-                    const results = await country.onSave(
+                    const results = await fnCountry.onSave(
                         `${baseUrl}/master/countries/${slug}`,
                         data,
                         "delete"
@@ -147,7 +147,7 @@ const country = {
                             backgroundColor: "#198754",
                         }).showToast();
 
-                        country.onLoad();
+                        fnCountry.onLoad();
                     } else {
                         Toastify({
                             text: results.data.message,
@@ -161,14 +161,18 @@ const country = {
                 }
             });
     },
+
+    onShow: (code) => {
+        window.open(`${baseUrl}/master/maids?country=${code}`);
+    },
 };
 
-country.onInit();
+fnCountry.onInit();
 
 btnAdd.addEventListener("click", () => {
     blockUI();
 
-    country.onAdd();
+    fnCountry.onAdd();
 
     unBlockUI();
 });
@@ -202,7 +206,7 @@ btnSubmit.addEventListener("click", async() => {
 
     blockModal();
 
-    const results = await country.onSave(url, data, method);
+    const results = await fnCountry.onSave(url, data, method);
 
     unBlockModal();
 
@@ -217,7 +221,7 @@ btnSubmit.addEventListener("click", async() => {
         }).showToast();
 
         modalCountry.hide();
-        country.onLoad();
+        fnCountry.onLoad();
     } else {
         if (results.data.message.name || results.data.message.slug) {
             nameCountryInput.classList.add("is-invalid");

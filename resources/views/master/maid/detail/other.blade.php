@@ -132,7 +132,7 @@ use Illuminate\Support\Str;
                                     <td>{{ $maid->father_name }}</td>
                                 </tr>
                                 <tr class="font-semibold">
-                                    <td>丈夫年齡 / Age</td>
+                                    <td>父親年齡 / Age</td>
                                     <td>:</td>
                                     <td>{{ $maid->father_passed_away == 1 ? 'Passed Away' : $maid->father_age . ' 年 / Years' }}
                                     </td>
@@ -140,10 +140,10 @@ use Illuminate\Support\Str;
                                 <tr class="font-semibold">
                                     <td>母親姓名 / Mother Name</td>
                                     <td>:</td>
-                                    <td>{{ $maid->father_name }}</td>
+                                    <td>{{ $maid->mother_name }}</td>
                                 </tr>
                                 <tr class="font-semibold">
-                                    <td>丈夫年齡 / Age</td>
+                                    <td>母親年齡 / Age</td>
                                     <td>:</td>
                                     <td>{{ $maid->mother_passed_away == 1 ? 'Passed Away' : $maid->mother_age . ' 年 / Years' }}
                                     </td>
@@ -151,8 +151,8 @@ use Illuminate\Support\Str;
                                 <tr class="font-semibold">
                                     <td colspan="3" class="text-center">
                                         <img src="{{ asset($maid->picture_location . $maid->picture_name) }}"
-                                            alt="{{ 'Photo of ' . $maid->code_maid }}" class="img-thumbnail" width="50%"
-                                            height="70%">
+                                            alt="{{ 'Photo of ' . $maid->code_maid }}" class="img-thumbnail" width="70%"
+                                            height="90%">
                                     </td>
                                 </tr>
                             </table>

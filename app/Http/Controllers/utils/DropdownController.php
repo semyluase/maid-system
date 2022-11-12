@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Utils;
 
 use App\Http\Controllers\Controller;
 use App\Models\Country;
+use App\Models\Master\Maid\Maid;
 use App\Models\Role;
+use App\Models\User;
+use App\Models\User\Maid as UserMaid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 
@@ -192,6 +195,54 @@ class DropdownController extends Controller
                     'label' =>  $value,
                     'value' =>  $row
                 ];
+            }
+        }
+
+        return response()->json($results);
+    }
+
+    public function agency()
+    {
+        $dataAgency = User::where('role_id', 2)
+            ->get();
+
+        $results = array();
+
+        if ($dataAgency) {
+            foreach ($dataAgency as $key => $value) {
+                $results[]  =  [
+                    'label' =>  $value->name . ' - ' . $value->country->name,
+                    'value' =>  $value->id,
+                ];
+            }
+        }
+
+        return response()->json($results);
+    }
+
+    public function maids(Request $request)
+    {
+        $dataAgency = User::where('id', $request->agency)
+            ->first();
+
+        $results = array();
+
+        if ($dataAgency) {
+            $dataMaids = UserMaid::where('is_bookmark', false)
+                ->where('is_uploaded', false)
+                ->where('is_delete', false)
+                ->where('is_taken', false)
+                ->where('is_active', true)
+                ->countryUser($dataAgency->country->code, $dataAgency->is_formal)
+                ->get();
+
+            if ($dataMaids) {
+                foreach ($dataMaids as $key => $value) {
+                    $results[]  =  [
+                        'label' =>  $value->code_maid . ' - ' . $value->full_name,
+                        'value' =>  $value->id,
+                    ];
+                }
             }
         }
 
