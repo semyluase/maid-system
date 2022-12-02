@@ -114,7 +114,7 @@
         const loggedOut = async (csrf) => {
             await swalWithBootstrapButtons.fire({
                 title: 'Log Out',
-                text: "Apakah yakin akan logout?",
+                text: "Are you sure to logged out?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',

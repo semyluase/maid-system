@@ -15,7 +15,7 @@
 <body>
     <div id="auth">
         <div class="row h-100">
-            <div class="col-lg-5 col-12">
+            <div class="col-lg-4 col-12">
                 <div id="auth-left">
                     <div class="auth-logo h1">
                         <a href="{{ url('') }}">{{ env('APP_NAME', 'Template') }}</a>
@@ -23,9 +23,7 @@
                     <h1 class="auth-title">Log in.</h1>
                     <p class="auth-subtitle mb-3">
                         @if (session()->has('alert'))
-                            <div class="alert alert-danger alert-dismissible">
-                                <button type="button" class="close" data-dismiss="alert"
-                                    aria-hidden="true">&times;</button>
+                            <div class="alert alert-danger">
                                 {{ session('alert') }}
                             </div>
                         @endif
@@ -56,7 +54,7 @@
                     </form>
                 </div>
             </div>
-            <div class="col-lg-7 d-none d-lg-block">
+            <div class="col-lg-8 d-none d-lg-block">
                 <div id="auth-right"></div>
             </div>
         </div>

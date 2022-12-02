@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 
 ?>
 <!DOCTYPE html>
@@ -63,6 +64,11 @@ use Illuminate\Support\Carbon;
             padding: 2px;
             margin: 2px;
         }
+
+        table tr td {
+            padding: 0;
+            margin: 1rem;
+        }
     </style>
 </head>
 
@@ -77,137 +83,143 @@ use Illuminate\Support\Carbon;
             </div>
             <table class="border-0" style="width: 100%;">
                 <tr>
-                    <td><span class="text-mandarin">編號</span> / Code</td>
-                    <td>:</td>
-                    <td>{{ $maid->code_maid }}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">姓名</span> / Name</td>
-                    <td>:</td>
-                    <td>{{ $maid->full_name }}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">國家</span> / Country</td>
-                    <td>:</td>
-                    <td>{{ $maid->country }}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">始訓日期</span> / Start Training</td>
-                    <td>:</td>
-                    <td>{{ Carbon::parse($maid->date_training)->isoFormat('DD MMMM YYYY') }}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">年齡</span> / Age</td>
-                    <td>:</td>
-                    <td>{{ Carbon::parse($maid->date_of_birth)->age }} <span class="text-mandarin">年</span>/Years</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">出生地點</span>/ Place of Birth</td>
-                    <td>:</td>
-                    <td>{{ $maid->place_of_birth }}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">出生日期</span> / Date of Birth</td>
-                    <td>:</td>
-                    <td>{{ Carbon::parse($maid->date_of_birth)->isoFormat('DD MMMM YYYY') }}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">身高</span> / Height</td>
-                    <td>:</td>
-                    <td>{{ $maid->height }} cm</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">體重</span> / Weight</td>
-                    <td>:</td>
-                    <td>{{ $maid->weight }} kg</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">學歷</span> / Education Background</td>
-                    <td>:</td>
-                    <td>{{ convertEducation($maid->education) }}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">宗教</span> / Religion</td>
-                    <td>:</td>
-                    <td>{{ convertReligion($maid->religion) }}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">婚姻</span> / Marital Status</td>
-                    <td>:</td>
-                    <td>{{ convertMaritalStatus($maid->marital) }}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">家中排行</span> / Position In Family</td>
-                    <td>:</td>
-                    <td>{{ $maid->number_in_family }}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">姐妹</span> / Sister</td>
-                    <td>:</td>
-                    <td>{{ $maid->sister }}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">兄弟</span> / Brother</td>
-                    <td>:</td>
-                    <td>{{ $maid->brother }}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">家庭背景</span> / Family Background</td>
-                    <td>:</td>
-                    <td>{{ $maid->family_background }}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">兒女數目</span> / Number of Children</td>
-                    <td>:</td>
-                    <td>{{ $maid->number_of_children }}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">兒女年齡</span> / Age</td>
-                    <td>:</td>
-                    <td>{{ $maid->children_ages }} <span class="text-mandarin">年</span> / Years</td>
-                </tr>
-                <tr>
-                    <td><span
-                            class="text-mandarin">{{ $maid->sex == 1 ? '妻子的名字' : ($maid->sex == 2 ? '丈夫姓名' : '配偶的姓名') }}</span>
-                        /
-                        {{ $maid->sex == 1 ? 'Wife Name' : ($maid->sex == 2 ? 'Husband Name' : 'Spouse Name') }}
+                    <td colspan="3">
+                        <table class="border-0" style="width: 65%;">
+                            <tr>
+                                <td><span class="text-mandarin">編號</span> / Code</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ $maid->code_maid }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">姓名</span> / Name</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ Str::upper($maid->full_name) }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">國家</span> / Country</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ Str::upper($maid->country) }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">始訓日期</span> / Start Training</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ Carbon::parse($maid->date_training)->isoFormat('DD MMMM YYYY') }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">年齡</span> / Age</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ Carbon::parse($maid->date_of_birth)->age }} <span
+                                        class="text-mandarin">年</span>/Years</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">出生地點</span>/ Place of Birth</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ $maid->place_of_birth }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">出生日期</span> / Date of Birth</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ Carbon::parse($maid->date_of_birth)->isoFormat('DD MMMM YYYY') }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">身高</span> / Height</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ $maid->height }} cm</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">體重</span> / Weight</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ $maid->weight }} kg</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">學歷</span> / Education Background</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ convertEducation($maid->education) }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">宗教</span> / Religion</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ convertReligion($maid->religion) }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">婚姻</span> / Marital Status</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ convertMaritalStatus($maid->marital) }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">家中排行</span> / Position In Family</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ $maid->number_in_family }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">姐妹</span> / Sister</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ $maid->sister }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">兄弟</span> / Brother</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ $maid->brother }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">家庭背景</span> / Family Background</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ $maid->family_background }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">兒女數目</span> / Number of Children</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ $maid->number_of_children }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">兒女年齡</span> / Age</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ $maid->children_ages }} <span class="text-mandarin">年</span> / Years</td>
+                            </tr>
+                            <tr>
+                                <td><span
+                                        class="text-mandarin">{{ $maid->sex == 1 ? '妻子的名字' : ($maid->sex == 2 ? '丈夫姓名' : '配偶的姓名') }}</span>
+                                    /
+                                    {{ $maid->sex == 1 ? 'Wife Name' : ($maid->sex == 2 ? 'Husband Name' : 'Spouse Name') }}
+                                </td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ $maid->spouse_name }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">丈夫年齡</span> / Age</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ $maid->spouse_passed_away == 1 ? 'Passed Away' : $maid->spouse_age }} <span
+                                        class="text-mandarin">年</span> / Years</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">父親姓名</span> / Father Name</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ $maid->father_name }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">父親年齡</span> / Age</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ $maid->father_passed_away == 1 ? 'Passed Away' : $maid->father_age }} <span
+                                        class="text-mandarin">年</span> / Years</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">母親姓名</span> / Mother Name</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ $maid->mother_name }}</td>
+                            </tr>
+                            <tr>
+                                <td><span class="text-mandarin">母親年齡</span> / Age</td>
+                                <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
+                                <td>{{ $maid->mother_passed_away == 1 ? 'Passed Away' : $maid->mother_age }} <span
+                                        class="text-mandarin">年</span> / Years</td>
+                            </tr>
+                        </table>
                     </td>
-                    <td>:</td>
-                    <td>{{ $maid->spouse_name }}</td>
                 </tr>
                 <tr>
-                    <td><span class="text-mandarin">丈夫年齡</span> / Age</td>
-                    <td>:</td>
-                    <td>{{ $maid->spouse_passed_away == 1 ? 'Passed Away' : $maid->spouse_age }} <span
-                            class="text-mandarin">年</span> / Years</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">父親姓名</span> / Father Name</td>
-                    <td>:</td>
-                    <td>{{ $maid->father_name }}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">父親年齡</span> / Age</td>
-                    <td>:</td>
-                    <td>{{ $maid->father_passed_away == 1 ? 'Passed Away' : $maid->father_age }} <span
-                            class="text-mandarin">年</span> / Years</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">母親姓名</span> / Mother Name</td>
-                    <td>:</td>
-                    <td>{{ $maid->mother_name }}</td>
-                </tr>
-                <tr>
-                    <td><span class="text-mandarin">母親年齡</span> / Age</td>
-                    <td>:</td>
-                    <td>{{ $maid->mother_passed_away == 1 ? 'Passed Away' : $maid->mother_age }} <span
-                            class="text-mandarin">年</span> / Years</td>
-                </tr>
-                <tr>
-                    <td colspan="3"
-                        style="padding-top: 1rem; margin-left:2rem !important; text-align: center !important;">
+                    <td colspan="3" style="padding-top: 1rem; text-align: center !important;">
                         <img src="{{ $photo }}" alt="Photo from {{ $maid->code_maid }}"
-                            style="width: 350px; height: 450px; text-align: center !important;">
+                            style="width: 100%; min-height:45%; max-height:48%; text-align: center !important;">
                     </td>
                 </tr>
             </table>
@@ -310,9 +322,13 @@ use Illuminate\Support\Carbon;
                             </td>
                             <td>:</td>
                             <td><span class="text-mandarin">是</span>/Yes
-                                {!! $willingness->answer == 1 ? '<span style="margin-left:5px !important;">V</span>' : '' !!}</td>
+                                {!! $willingness->answer == 1
+                                    ? '<span style="margin-left:5px !important;">V</span>'
+                                    : '<span style="margin-left:5px !important; color:#ffffff;">V</span>' !!}</td>
                             <td><span class="text-mandarin">不</span>/No
-                                {!! $willingness->answer == 0 ? '<span style="margin-left:5px !important;">V</span>' : '' !!}</td>
+                                {!! $willingness->answer == 0
+                                    ? '<span style="margin-left:5px !important;">V</span>'
+                                    : '<span style="margin-left:5px !important; color:#ffffff;">V</span>' !!}</td>
                         @elseif ($willingness->is_input)
                             <td>{{ $willingness->note }}</td>
                             <td>:</td>
@@ -334,9 +350,13 @@ use Illuminate\Support\Carbon;
                             </td>
                             <td>:</td>
                             <td><span class="text-mandarin">是</span>/Yes
-                                {!! $speciality->answer == 1 ? '<span style="margin-left:5px !important;">V</span>' : '' !!}</td>
+                                {!! $speciality->answer == 1
+                                    ? '<span style="margin-left:5px !important; padding-right:13px !important;">V</span>'
+                                    : '<span style="margin-left:5px !important; padding-right:13px !important; color:#ffffff;">V</span>' !!}</td>
                             <td><span class="text-mandarin">不</span>/No
-                                {!! $speciality->answer == 0 ? '<span style="margin-left:5px !important;">V</span>' : '' !!}</td>
+                                {!! $speciality->answer == 0
+                                    ? '<span style="margin-left:5px !important; padding-right:13px !important;">V</span>'
+                                    : '<span style="margin-left:5px !important; padding-right:13px !important; color:#ffffff;">V</span>' !!}</td>
                         @elseif ($speciality->is_input)
                             <td>{{ $speciality->note }}</td>
                             <td>:</td>
@@ -358,9 +378,13 @@ use Illuminate\Support\Carbon;
                             </td>
                             <td>:</td>
                             <td><span class="text-mandarin">是</span>/Yes
-                                {!! $other->answer == 1 ? '<span style="margin-left: 5px !important;">V</span>' : '' !!}</td>
+                                {!! $other->answer == 1
+                                    ? '<span style="margin-left: 5px !important;">V</span>'
+                                    : '<span style="margin-left:5px !important; color:#ffffff;">V</span>' !!}</td>
                             <td><span class="text-mandarin">不</span>/No
-                                {!! $other->answer == 0 ? '<span style="margin-left: 5px !important;">V</span>' : '' !!}</td>
+                                {!! $other->answer == 0
+                                    ? '<span style="margin-left: 5px !important;">V</span>'
+                                    : '<span style="margin-left:5px !important; color:#ffffff;">V</span>' !!}</td>
                         @elseif ($other->is_input)
                             <td>{{ $other->note }}</td>
                             <td>:</td>
@@ -371,12 +395,15 @@ use Illuminate\Support\Carbon;
             </table>
             <div class="text-center border border-1 border-dark" style="border: 1px solid #1b1b1b;"><span
                     class="text-mandarin">其他</span> / Remarks</div>
-            <div style="margin-top: 5px!important; border: 1px solid #1b1b1b;">
+            <div style="min-height: 48px; margin-top: 5px!important; border: 1px solid #1b1b1b;">
                 @if ($maid->address != null)
                     <p style="margin: 2px important;">Address : {{ $maid->address }}</p>
                 @endif
                 @if ($maid->contact != null)
                     <p style="margin: 2px important;">Contact : {{ $maid->contact }}</p>
+                @endif
+                @if ($maid->note != null)
+                    <p style="margin: 2px important;">Note : {{ $maid->note }}</p>
                 @endif
             </div>
         </div>

@@ -24,7 +24,7 @@
                             </li>
                         </ul>
                     </li> --}}
-                    @include('partials.notification')
+                    {{-- @include('partials.notification') --}}
                 </ul>
                 <div class="dropdown">
                     <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
@@ -47,7 +47,7 @@
                         </li>
                         <li>
                             <a class="dropdown-item" href="javascript:;" onclick="myProfile()"><i
-                                    class="fa-solid fa-user me-2"></i> MyProfile</a>
+                                    class="fa-solid fa-user me-2"></i> My Profile</a>
                         </li>
                         {{-- <li>
                             <a class="dropdown-item" href="#"><i class="icon-mid bi bi-gear me-2"></i>Settings</a>

@@ -15,10 +15,20 @@ class BookingController extends Controller
         $dataMaid = new MaidResource(Maid::where('is_bookmark', true)
             ->where('is_taken', false)
             ->where('is_active', true)
+            ->where('code_maid', '<>', '')
             ->latest()
             ->country($request->country)
-            ->filter(['search' => $request->search])
-            ->paginate(9));
+            ->country($request->countries)
+            ->filter([
+                'search' => request('search'),
+                'code'  =>  request('code'),
+                'name'  =>  request('name'),
+                'start_age'  =>  request('start_age'),
+                'end_age'  =>  request('end_age'),
+                'education'  =>  request('education'),
+                'marital'  =>  request('marital'),
+            ])
+            ->paginate(50));
 
         return view('booking.index', [
             'title' =>  'Booking Worker',

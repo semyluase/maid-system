@@ -24,6 +24,9 @@ let url,
         ajax: `${baseUrl}/users/get-all-data`,
         processing: true,
         serverSide: true,
+        search: {
+            return: true,
+        },
     }),
     templateUser;
 
@@ -115,7 +118,7 @@ const user = {
                 if (!response.ok) {
                     throw new Error(
                         Toastify({
-                            text: "Terjadi kesalahan saat mengambil data",
+                            text: "Something wrong while get data",
                             duration: 3000,
                             close: true,
                             gravity: "top",
@@ -138,7 +141,7 @@ const user = {
                 if (!response.ok) {
                     throw new Error(
                         Toastify({
-                            text: "Terjadi kesalahan saat mengambil data",
+                            text: "Something wrong while get data",
                             duration: 3000,
                             close: true,
                             gravity: "top",

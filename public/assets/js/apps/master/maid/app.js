@@ -79,4 +79,11 @@ const fnMaid = {
             }
         });
     },
+    onDownload: async(codeMaid, country) => {
+        window.open(
+            `${baseUrl}/master/maids/download-data?maid=${codeMaid}&country=${country}`
+        );
+
+        document.querySelector("#sidebar").classList.remove("active");
+    },
 };

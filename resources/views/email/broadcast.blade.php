@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="{{ asset('assets/mazer/dist/assets/css/bootstrap.css') }}">
+    <title>{{ config('app.name') }}</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h4 class="text-center">{{ $mailData['title'] }}</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <p class="text-center">{{ $mailData['maid'] }} Is Available to you,</p>
+                <p class="text-center">If you want to check the detail data,</p>
+                <p class="text-center">check the attachment</p>
+
+                {{-- <a href="{{ url('') }}/workers" class="btn btn-primary">Worker
+                    Master</a> --}}
+            </div>
+        </div>
+        <div class="row my-5 py-5">
+            <div class="col">
+                {{ config('app.name') }}
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

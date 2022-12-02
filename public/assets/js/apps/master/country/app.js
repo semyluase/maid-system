@@ -25,6 +25,9 @@ const fnCountry = {
                 [10, 25, 50, "All"],
             ],
             processing: true,
+            search: {
+                return: true,
+            },
         });
 
         unBlockUI();
@@ -103,6 +106,7 @@ const fnCountry = {
                 oldSlugCountryInput.value = response.slug;
                 codeCountryInput.value = response.code;
                 nameCountryInput.value = response.name;
+                codeCountryInput.setAttribute("readonly", true);
 
                 btnSubmit.setAttribute("data-type", "edit-data");
                 unBlockUI();

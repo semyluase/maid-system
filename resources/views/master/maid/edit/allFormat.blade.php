@@ -49,6 +49,9 @@
                                 </div>
                                 @include('master.maid.edit.partials.allFormat.interview')
                                 <div class="divider-left divider">
+                                    <div class="divider-text">
+                                        @include('master.maid.edit.partials.allFormat.remarks')
+                                    </div>
                                 </div>
                                 <div class="card-footer">
                                     <div class="d-flex gap-3 justify-content-end">

@@ -30,6 +30,6 @@ class UploadedMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Uploaded Worker')->view('email.upload');
+        return $this->subject('JO Worker Uploaded')->view('email.upload')->attach(public_path($this->mailData['files']));
     }
 }

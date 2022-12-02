@@ -23,14 +23,16 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
+        $credentials['is_locked'] = false;
+
         if (Auth::attempt($credentials, $request->rememberMe)) {
             $request->session()->regenerate();
 
             return redirect()->intended('/');
         }
 
-        return back()->withErrors([
-            'alert' => 'Username/Password salah.',
+        return back()->with([
+            'alert' => 'Username/Password is wrong. Please contact Administrator from GMBalindo',
         ]);
     }
 

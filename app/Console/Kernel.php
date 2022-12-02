@@ -2,6 +2,9 @@
 
 namespace App\Console;
 
+use App\Console\Commands\AutosendingMail;
+use App\Console\Commands\CommandResetBookmark;
+use App\Console\Commands\GenerateDocument;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -25,7 +28,11 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
+
+        CommandResetBookmark::class;
+        GenerateDocument::class;
+        AutosendingMail::class;
 
         require base_path('routes/console.php');
     }

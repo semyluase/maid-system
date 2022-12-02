@@ -113,7 +113,7 @@ class MaidController extends Controller
             'deleted_at'    =>  Carbon::now('Asia/Jakarta'),
         ];
 
-        if (Maid::find($maid->id)->update($data)) {
+        if (Maid::destroy($maid->id)) {
             return response()->json([
                 'data'  =>  [
                     'status'    =>  true,
@@ -138,13 +138,29 @@ class MaidController extends Controller
 
         $filteredData = collect(Maid::where('is_active', true)
             ->where('is_trash', true)
-            ->filter(['search' => $request->search['value']])
+            ->filter([
+                'search' => $request->search['value'],
+                'code'  =>  $request->code,
+                'name'  =>  $request->name,
+                'start_age'  =>  $request->start_age,
+                'end_age'  =>  $request->end_age,
+                'education'  =>  $request->education,
+                'marital'  =>  $request->marital,
+            ])
             ->get())->count();
 
         $maidData = Maid::with(['userTrashed'])
             ->where('is_active', true)
             ->where('is_trash', true)
-            ->filter(['search' => $request->search['value']])
+            ->filter([
+                'search' => $request->search['value'],
+                'code'  =>  $request->code,
+                'name'  =>  $request->name,
+                'start_age'  =>  $request->start_age,
+                'end_age'  =>  $request->end_age,
+                'education'  =>  $request->education,
+                'marital'  =>  $request->marital,
+            ])
             ->skip($request->start)
             ->limit($request->length)
             ->get();

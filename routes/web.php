@@ -7,6 +7,7 @@ use App\Http\Controllers\CountryController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnumerationController;
 use App\Http\Controllers\History\MaidController as HistoryMaidController;
+use App\Http\Controllers\MailController;
 use App\Http\Controllers\Master\Maid\MaidController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\RoleController;
@@ -34,6 +35,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth')->group(function () {
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/', 'index');
+        Route::get('/announcements', 'announcement');
     });
 
     // master
@@ -56,6 +58,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/master/maids/get-maid-skill', [MaidController::class, 'getEmployeeSkill']);
     Route::get('/master/maids/get-country', [MaidController::class, 'getCountry']);
     Route::get('/master/maids/download-data', [MaidController::class, 'downloadData']);
+    Route::get('/master/maids/send-batch-mail', [MaidController::class, 'sendMail']);
+    Route::post('/master/maids/send-batch-mail/sending', [MaidController::class, 'sendingMail']);
     Route::post('/master/maids/add-work-experience', [MaidController::class, 'storeWorkExperience']);
     Route::put('/master/maids/add-work-experience/{id}', [MaidController::class, 'updateWorkExperience']);
     Route::delete('/master/maids/get-work-experience/{id}', [MaidController::class, 'destroyWorkExperience']);
@@ -70,8 +74,12 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('/taken/maids', TakenController::class);
 
+    // broadcast
+    Route::resource('/mail/broadcasting', MailController::class);
+
     // User
-    Route::get('/workers/bookmark', [UserMaidController::class, 'create']);
+    Route::get('/workers/upload', [UserMaidController::class, 'create']);
+    Route::post('/workers/send-batch-email/sending', [UserMaidController::class, 'sendingMail']);
     Route::resource('/workers', UserMaidController::class);
 
     // User - My Worker
@@ -88,6 +96,9 @@ Route::middleware('auth')->group(function () {
     // timeline
     Route::resource('/timelines/maids', TimelineController::class);
 
+    // taken
+    Route::resource('/taken/maids', TakenController::class);
+
     Route::controller(MenuController::class)->group(function () {
         Route::get('/master/menus/get-menu-tree', 'getMenuTree');
     });
@@ -99,8 +110,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('/manage/menus', UserMenuController::class);
 
     Route::get('/manage/profile', [UserController::class, 'myProfile']);
+    Route::get('/manage/profile-get-profile/{user}', [UserController::class, 'getProfile']);
     Route::put('/manage/profile/change-password/{user}', [UserController::class, 'changePassword']);
-    Route::put('/manage/profile/change-profile/{user}', [UserController::class, 'updateProfile']);
+    Route::post('/manage/profile/change-profile', [UserController::class, 'updateProfile']);
 
     // utils
     Route::controller(DropdownController::class)->group(function () {
@@ -113,7 +125,11 @@ Route::middleware('auth')->group(function () {
         Route::get('/dropdown/get-month', 'month');
         Route::get('/dropdown/get-year', 'year');
         Route::get('/dropdown/get-agency', 'agency');
+        Route::get('/dropdown/get-agency-mail', 'agencyMail');
         Route::get('/dropdown/get-maids', 'maids');
+        Route::get('/dropdown/get-maid-mails', 'maidsMail');
+        Route::get('/dropdown/get-maid-user-mails', 'maidsUserMail');
+        Route::get('/dropdown/get-country-mail', 'countryMail');
     });
 
     // logout

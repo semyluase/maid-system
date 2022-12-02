@@ -53,7 +53,7 @@ $education = [
         }
 
         body {
-            margin: 50px 64px;
+            margin: 0 64px 0 64px;
         }
 
         .text-mandarin {
@@ -75,7 +75,9 @@ $education = [
 </head>
 
 <body>
-    <div style="color: #0a0a0a; font-size:16px; text-align: center; font-weight: 700">PT. GRAHA MITRA BALINDO</div>
+    <header>
+        <img src="{{ $header }}" alt="Header PDF" class="bg-white" style="width: 100%;">
+    </header>
     <div style="border:solid 2px #0a0a0a;">
         <div
             style="font-size:14px; text-align: center; font-weight: 400; padding-top: 2px; padding-bottom: 2px; border-bottom: 2px #0a0a0a solid;">
@@ -89,24 +91,21 @@ $education = [
                                 <table style="width: 100%;">
                                     <tbody>
                                         <tr>
-                                            <td style="width: 25%;">Nama</td>
+                                            <td style="width: 25%;">Name</td>
                                             <td>:</td>
-                                            <td
-                                                style="width: 75%; border-bottom: #0a0a0a solid 1px; text-align: center;">
+                                            <td style="width: 75%; border-bottom: #0a0a0a solid 1px;">
                                                 {{ $maid->full_name }}</td>
                                         </tr>
                                         <tr>
-                                            <td style="width: 25%;">Alamat</td>
+                                            <td style="width: 25%;">Address</td>
                                             <td>:</td>
-                                            <td
-                                                style="width: 75%; border-bottom: #0a0a0a solid 1px; text-align: center;">
+                                            <td style="width: 75%; border-bottom: #0a0a0a solid 1px;">
                                                 {{ $maid->address }}</td>
                                         </tr>
                                         <tr>
-                                            <td style="width: 25%;">No. Telp</td>
+                                            <td style="width: 25%;">Contact</td>
                                             <td>:</td>
-                                            <td
-                                                style="width: 75%; border-bottom: #0a0a0a solid 1px; text-align: center;">
+                                            <td style="width: 75%; border-bottom: #0a0a0a solid 1px;">
                                                 {{ $maid->contact }}</td>
                                         </tr>
                                     </tbody>
@@ -116,7 +115,7 @@ $education = [
                                 <table style="width: 100%; border-collapse: collapse;">
                                     <tbody>
                                         <tr>
-                                            <td style="border: #0a0a0a solid 1px; text-align: center;">Kode</td>
+                                            <td style="border: #0a0a0a solid 1px; text-align: center;">Code</td>
                                         </tr>
                                         <tr style="padding: 2px 3px;">
                                             <td style="border: #0a0a0a solid 1px; text-align: center;">
@@ -132,9 +131,9 @@ $education = [
             <div>
                 <table style="width: 100%; border-collapse: collapse; text-align: center">
                     <tr style="border-bottom: #aaaaaa solid 1px;">
-                        <td style="width: 33.3%; border-right: #0a0a0a 3px solid;">Tempat Lahir</td>
-                        <td style="width: 33.3%; border-right: #0a0a0a 3px solid;">Tanggal Lahir</td>
-                        <td style="width: 33.3%; ">Umur</td>
+                        <td style="width: 33.3%; border-right: #0a0a0a 3px solid;">Place Of Birth</td>
+                        <td style="width: 33.3%; border-right: #0a0a0a 3px solid;">Date Of Birth</td>
+                        <td style="width: 33.3%; ">Age</td>
                     </tr>
                     <tr style="border-bottom: #0a0a0a solid 3px;">
                         <td style="width: 33.3%; border-right: #0a0a0a 3px solid;">{{ $maid->place_of_birth }}</td>
@@ -162,28 +161,23 @@ $education = [
             <div>
                 <table style="width: 100%; border-collapse: collapse; text-align: center">
                     <tr style="border-bottom: #aaaaaa solid 1px;">
-                        <td style="width: 20%; border-right: #0a0a0a 3px solid;">Tinggi</td>
-                        <td style="width: 20%; border-right: #0a0a0a 3px solid;">Berat</td>
-                        <td style="width: 20%; border-right: #0a0a0a 3px solid;">Suku</td>
-                        <td style="width: 20%; border-right: #0a0a0a 3px solid;">Agama</td>
-                        <td style="width: 20%; ">Hobby</td>
+                        <td style="width: 20%; border-right: #0a0a0a 3px solid;">Height</td>
+                        <td style="width: 20%; border-right: #0a0a0a 3px solid;">Weight</td>
+                        <td style="width: 20%; border-right: #0a0a0a 3px solid;">Religion</td>
                     </tr>
                     <tr style="border-bottom: #0a0a0a solid 3px;">
                         <td style="width: 20%; border-right: #0a0a0a 3px solid;">{{ $maid->height }}</td>
                         <td style="width: 20%; border-right: #0a0a0a 3px solid;">
                             {{ $maid->weight }}</td>
                         <td style="width: 20%; border-right: #0a0a0a 3px solid;">
-                            {{ $maid->ethnic }}</td>
-                        <td style="width: 20%; border-right: #0a0a0a 3px solid;">
                             {{ convertReligion($maid->religion) }}</td>
-                        <td style="width: 20%; ">{{ $maid->hobby }}</td>
                     </tr>
                 </table>
             </div>
             <div>
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr style="border-bottom: #0a0a0a solid 3px;">
-                        <td style="width: 20%;">Bahasa</td>
+                        <td style="width: 20%;">Language</td>
                         <td>
                             @foreach ($languages as $language)
                                 {!! $language->answer == 1
@@ -198,10 +192,10 @@ $education = [
             <div>
                 <table style="width: 100%; border-collapse: collapse; text-align: center">
                     <tr style="border-bottom: #aaaaaa solid 1px;">
-                        <td style="width: 20%; border-right: #0a0a0a 3px solid;">No. Paspor</td>
-                        <td style="width: 20%; border-right: #0a0a0a 3px solid;">Tempat Issue</td>
-                        <td style="width: 20%; border-right: #0a0a0a 3px solid;">Tanggal Issue</td>
-                        <td style="width: 20%; ">Masa Berlaku</td>
+                        <td style="width: 20%; border-right: #0a0a0a 3px solid;">Passport</td>
+                        <td style="width: 20%; border-right: #0a0a0a 3px solid;">Issued</td>
+                        <td style="width: 20%; border-right: #0a0a0a 3px solid;">Issued Date</td>
+                        <td style="width: 20%; ">Expired Date</td>
                     </tr>
                     <tr style="border-bottom: #0a0a0a solid 3px;">
                         <td style="width: 20%; border-right: #0a0a0a 3px solid;">{{ $maid->paspor_no }}</td>
@@ -236,7 +230,7 @@ $education = [
             <div>
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr style="border-bottom: #0a0a0a solid 3px;">
-                        <td style="width: 20%;">Pendidikan</td>
+                        <td style="width: 20%;">Education</td>
                         <td>
                             @foreach ($education as $e => $value)
                                 {!! $e == $maid->education
@@ -255,21 +249,21 @@ $education = [
                                 <tbody>
                                     <tr style="border-bottom: #0a0a0a solid 3px;">
                                         <td colspan="4" style="text-align: center;">
-                                            Latar Belakang Keluarga
+                                            Family Background
                                         </td>
                                     </tr>
                                     <tr style="border-bottom: #aaaaaa solid 1px;">
                                         <td style="text-align: center;">
-                                            Ayah
+                                            Father
                                         </td>
                                         <td style="border-right: #0a0a0a solid 1px; text-align: center;">
-                                            Umur
+                                            Age
                                         </td>
                                         <td style="text-align: center;">
-                                            Ibu
+                                            Mother
                                         </td>
                                         <td style="text-align: center;">
-                                            Umur
+                                            Age
                                         </td>
                                     </tr>
                                     <tr style="border-bottom: #0a0a0a solid 1px;">
@@ -288,37 +282,37 @@ $education = [
                                     </tr>
                                     <tr style="border-bottom: #aaaaaa solid 1px;">
                                         <td colspan="4" style="text-align: center;">
-                                            Nama suami/istri : {{ $maid->spouse_name }}
+                                            Spouse Name : {{ $maid->spouse_name }}
                                         </td>
                                     </tr>
                                     <tr style="border-bottom: #0a0a0a solid 1px;">
                                         <td colspan="4" style="text-align: center;">
-                                            Umur : {{ $maid->spouse_age }}
+                                            Age : {{ $maid->spouse_age }}
                                         </td>
                                     </tr>
                                     <tr style="border-bottom: #aaaaaa solid 1px;">
                                         <td colspan="4" style="text-align: center;">
-                                            Jumlah saudara/saudari : {{ $maid->number_of_siblings }}
+                                            Number Brother/Sister : {{ $maid->number_of_siblings }}
                                         </td>
                                     </tr>
                                     <tr style="border-bottom: #0a0a0a solid 1px;">
                                         <td colspan="4" style="text-align: center;">
-                                            Sendiri urutan : {{ $maid->number_in_family }}
+                                            Number In Family : {{ $maid->number_in_family }}
                                         </td>
                                     </tr>
                                     <tr style="border-bottom: #aaaaaa solid 1px;">
                                         <td colspan="4" style="text-align: center;">
-                                            Jumlah anak : {{ $maid->number_of_children }}
+                                            Number Children : {{ $maid->number_of_children }}
                                         </td>
                                     </tr>
                                     <tr style="border-bottom: #0a0a0a solid 1px;">
                                         <td colspan="4" style="text-align: center;">
-                                            Umur : {{ $maid->children_ages }}
+                                            Age : {{ $maid->children_ages }}
                                         </td>
                                     </tr>
                                     <tr>
                                         <td colspan="4" style="text-align: center; font-weight: 700;">
-                                            Pengalaman Kerja
+                                            Experience
                                         </td>
                                     </tr>
                                     @foreach ($maid->workExperience as $work)
@@ -332,6 +326,11 @@ $education = [
                                         <tr>
                                             <td colspan="4">
                                                 {{ $work->description }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="4">
+                                                Note : {{ $maid->note }}
                                             </td>
                                         </tr>
                                     @endforeach

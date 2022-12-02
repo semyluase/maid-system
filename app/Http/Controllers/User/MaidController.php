@@ -6,13 +6,16 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\User\MaidResource;
 use App\Mail\BookmarkMail;
 use App\Mail\UploadedMail;
+use App\Models\EmailSending;
 use App\Models\Notification;
 use App\Models\Role;
+use App\Models\User;
 use App\Models\User\Document;
 use App\Models\User\HistoryTakenMaid;
 use App\Models\User\Maid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Mail;
 
@@ -32,9 +35,18 @@ class MaidController extends Controller
             ->where('is_bookmark', false)
             ->where('is_uploaded', false)
             ->where('is_taken', false)
+            ->where('code_maid', '<>', '')
             ->countryUser(auth()->user()->country->code, auth()->user()->is_formal)
-            ->filter(['search' => $request->search])
-            ->paginate(20));
+            ->filter([
+                'search' => request('search'),
+                'code'  =>  request('code'),
+                'name'  =>  request('name'),
+                'start_age'  =>  request('start_age'),
+                'end_age'  =>  request('end_age'),
+                'education'  =>  request('education'),
+                'marital'  =>  request('marital'),
+            ])
+            ->paginate(50));
 
         return view('userResource.maid.index', [
             'title' =>  'All Worker',
@@ -79,15 +91,15 @@ class MaidController extends Controller
                 $fileBase = str_replace('data:image/' . $value->getClientOriginalExtension() . ';base64,', '', $value);
                 $fileBase = str_replace(' ', '+', $value);
 
-                if (File::exists($_SERVER['DOCUMENT_ROOT'] . '/assets/image/maids/documents/' . $fileNameFull)) {
-                    File::delete($_SERVER['DOCUMENT_ROOT'] . '/assets/image/maids/documents/' . $fileNameFull);
+                if (File::exists(public_path('assets/image/maids/documents/' . $fileNameFull))) {
+                    File::delete(public_path('assets/image/maids/documents/' . $fileNameFull));
                 }
 
-                $value->move($_SERVER['DOCUMENT_ROOT'] . '/assets/image/maids/documents/', $fileNameFull);
+                $value->move(public_path('assets/image/maids/documents/'), $fileNameFull);
 
                 $dataDoc[] = [
                     'maid_id'   =>  columnToID('maid', 'code_maid', $request->maidCode)->id,
-                    'doc_location'  =>  '/assets/image/maids/documents/',
+                    'doc_location'  =>  'assets/image/maids/documents/',
                     'doc_base64'    =>  $fileBase,
                     'doc_filename'  =>  $fileNameFull,
                     'user_created'  =>  auth()->user()->id,
@@ -132,10 +144,11 @@ class MaidController extends Controller
                 'user_action'   =>  auth()->user()->id,
             ]);
 
-            Mail::to('gmb.backoffice@gmail.com')->send(new UploadedMail([
+            Mail::to('semyvaldes12@gmail.com')->send(new UploadedMail([
                 'title' =>  "Uploaded $request->maidCode Document",
                 'codeMaid'  =>  $request->maidCode,
                 'agency'    =>  auth()->user()->name,
+                'files' =>  'assets/image/maids/documents/' . $fileNameFull
             ]));
 
             return redirect('/workers')->with('message', 'Worker Document success to uploaded');
@@ -152,7 +165,11 @@ class MaidController extends Controller
      */
     public function show(Maid $maid)
     {
-        //
+        return view('user.mail.index', [
+            'title' =>  'Available Biodata Mail',
+            'pageTitle' =>  'Available Biodata Mail',
+            'js'    =>  ['assets/js/apps/user/maid/app.js'],
+        ]);
     }
 
     /**
@@ -175,7 +192,44 @@ class MaidController extends Controller
      */
     public function update(Request $request, Maid $maid)
     {
-        //
+        $data = array();
+        $arrWorker = array();
+        $docs = array();
+
+        $agencies = explode(',', $request->agencies);
+
+        foreach ($agencies as $key => $agency) {
+            foreach ($request->workers as $key => $worker) {
+                $dataWorker = Maid::where('id', $worker)->first();
+
+                $arrWorker[] = $dataWorker;
+                $docs[] = 'assets/pdf/' . $dataWorker->code_maid . ' - ' . $dataWorker->full_name . '.pdf';
+            }
+            $data[] = [
+                'email' =>  Str::remove(' ', $agency),
+                'files_all' =>  json_encode($docs),
+                'maid_all'  =>  json_encode($arrWorker),
+                'title' =>  'Available Workers',
+                'created_at'    =>  Carbon::now('Asia/Jakarta'),
+                'is_blast'  =>  true,
+            ];
+        }
+
+        if (EmailSending::insert($data)) {
+            return response()->json([
+                'data'  =>  [
+                    'status'    =>  true,
+                    'message'   =>  "Email success to send",
+                ]
+            ]);
+        }
+
+        return response()->json([
+            'data'  =>  [
+                'status'    =>  false,
+                'message'   =>  "Email fail to send",
+            ]
+        ]);
     }
 
     /**
@@ -187,5 +241,57 @@ class MaidController extends Controller
     public function destroy(Maid $maid)
     {
         //
+    }
+
+    public function sendMail()
+    {
+        return view('user.mail.index', [
+            'title' =>  'Available Biodata Mail',
+            'pageTitle' =>  'Available Biodata Mail',
+            'js'    =>  ['assets/js/apps/user/mail/app.js'],
+        ]);
+    }
+
+    public function sendingMail(Request $request)
+    {
+        dd($request->all());
+        $data = array();
+        $arrWorker = array();
+        $docs = array();
+
+        $agencies = explode(',', $request->agencies);
+
+        foreach ($agencies as $key => $agency) {
+            foreach ($request->workers as $key => $worker) {
+                $dataWorker = Maid::where('id', $worker)->first();
+
+                $arrWorker[] = $dataWorker;
+                $docs[] = 'assets/pdf/' . $dataWorker->code_maid . ' - ' . $dataWorker->full_name . '.pdf';
+            }
+            $data[] = [
+                'email' =>  Str::remove(' ', $agency),
+                'files_all' =>  json_encode($docs),
+                'maid_all'  =>  json_encode($arrWorker),
+                'title' =>  'Available Workers',
+                'created_at'    =>  Carbon::now('Asia/Jakarta'),
+                'is_blast'  =>  true,
+            ];
+        }
+
+        if (EmailSending::insert($data)) {
+            return response()->json([
+                'data'  =>  [
+                    'status'    =>  true,
+                    'message'   =>  "Email success to send",
+                ]
+            ]);
+        }
+
+        return response()->json([
+            'data'  =>  [
+                'status'    =>  false,
+                'message'   =>  "Email fail to send",
+            ]
+        ]);
     }
 }

@@ -7,7 +7,7 @@
                     <div class="row">
                         <div class="col">
                             <div class="form-check form-check-inline icheck-greensea">
-                                <input class="form-check-input" type="radio"
+                                <input class="form-check-input" type="checkbox"
                                     name="interviewRateMaid[{{ $interview->id }}]"
                                     id="interviewRateMaidFair1{{ $interview->id }}" value="1"
                                     {{ $interview->rate == 1 ? 'checked' : '' }}>
@@ -15,7 +15,7 @@
                                     1</label>
                             </div>
                             <div class="form-check form-check-inline icheck-greensea">
-                                <input class="form-check-input" type="radio"
+                                <input class="form-check-input" type="checkbox"
                                     name="interviewRateMaid[{{ $interview->id }}]"
                                     id="interviewRateMaidFair2{{ $interview->id }}" value="2"
                                     {{ $interview->rate == 2 ? 'checked' : '' }}>
@@ -23,7 +23,7 @@
                                     2</label>
                             </div>
                             <div class="form-check form-check-inline icheck-greensea">
-                                <input class="form-check-input" type="radio"
+                                <input class="form-check-input" type="checkbox"
                                     name="interviewRateMaid[{{ $interview->id }}]"
                                     id="interviewRateMaidGood1{{ $interview->id }}" value="3"
                                     {{ $interview->rate == 3 ? 'checked' : '' }}>
@@ -31,7 +31,7 @@
                                     1</label>
                             </div>
                             <div class="form-check form-check-inline icheck-greensea">
-                                <input class="form-check-input" type="radio"
+                                <input class="form-check-input" type="checkbox"
                                     name="interviewRateMaid[{{ $interview->id }}]"
                                     id="interviewRateMaidGood2{{ $interview->id }}" value="4"
                                     {{ $interview->rate == 4 ? 'checked' : '' }}>
@@ -39,7 +39,7 @@
                                     2</label>
                             </div>
                             <div class="form-check form-check-inline icheck-greensea">
-                                <input class="form-check-input" type="radio"
+                                <input class="form-check-input" type="checkbox"
                                     name="interviewRateMaid[{{ $interview->id }}]"
                                     id="interviewRateMaidGood3{{ $interview->id }}" value="5"
                                     {{ $interview->rate == 5 ? 'checked' : '' }}>
@@ -47,7 +47,7 @@
                                     3</label>
                             </div>
                             <div class="form-check form-check-inline icheck-greensea">
-                                <input class="form-check-input" type="radio"
+                                <input class="form-check-input" type="checkbox"
                                     name="interviewRateMaid[{{ $interview->id }}]"
                                     id="interviewRateMaidExcellent1{{ $interview->id }}" value="6"
                                     {{ $interview->rate == 6 ? 'checked' : '' }}>
@@ -55,7 +55,7 @@
                                     for="interviewRateMaidExcellent1{{ $interview->id }}">Excellent 1</label>
                             </div>
                             <div class="form-check form-check-inline icheck-greensea">
-                                <input class="form-check-input" type="radio"
+                                <input class="form-check-input" type="checkbox"
                                     name="interviewRateMaid[{{ $interview->id }}]"
                                     id="interviewRateMaidExcellent2{{ $interview->id }}" value="7"
                                     {{ $interview->rate == 7 ? 'checked' : '' }}>

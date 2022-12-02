@@ -220,18 +220,59 @@ class DropdownController extends Controller
         return response()->json($results);
     }
 
+    public function agencyMail(Request $request)
+    {
+        $dataAgency = "";
+        if ($request->country != "MY-FORMAL" && $request->country != "BN-FORMAL" && $request->country != "") {
+            $dataCountry = Country::where('code', $request->country)
+                ->first();
+
+            $dataAgency = User::where('role_id', 2)
+                ->where('country_id', $dataCountry->id)
+                ->where('is_formal', false)
+                ->get();
+        }
+
+        if ($request->country == 'MY-FORMAL') {
+            $dataAgency = User::where('role_id', 2)
+                ->where('country_id', "MY")
+                ->where('is_formal', true)
+                ->get();
+        }
+
+        if ($request->country == 'BN-FORMAL') {
+            $dataAgency = User::where('role_id', 2)
+                ->where('country_id', "BN")
+                ->where('is_formal', true)
+                ->get();
+        }
+
+        $results = array();
+
+        if ($dataAgency) {
+            foreach ($dataAgency as $key => $value) {
+                $results[]  =  [
+                    'label' =>  $value->name . ' - ' . $value->country->name,
+                    'value' =>  $value->id,
+                ];
+            }
+        }
+
+        return response()->json($results);
+    }
+
     public function maids(Request $request)
     {
         $dataAgency = User::where('id', $request->agency)
             ->first();
 
         $results = array();
-
         if ($dataAgency) {
             $dataMaids = UserMaid::where('is_bookmark', false)
                 ->where('is_uploaded', false)
                 ->where('is_delete', false)
                 ->where('is_taken', false)
+                ->where('code_maid', '<>', '')
                 ->where('is_active', true)
                 ->countryUser($dataAgency->country->code, $dataAgency->is_formal)
                 ->get();
@@ -245,6 +286,118 @@ class DropdownController extends Controller
                 }
             }
         }
+
+        return response()->json($results);
+    }
+
+    public function maidsMail(Request $request)
+    {
+        $dataMaids = "";
+        $results = array();
+        if ($request->country != "MY-FORMAL" && $request->country != "BN-FORMAL" && $request->country != "") {
+            $dataMaids = UserMaid::where('is_bookmark', false)
+                ->where('is_uploaded', false)
+                ->where('is_delete', false)
+                ->where('is_taken', false)
+                ->where('code_maid', '<>', '')
+                ->where('is_active', true)
+                ->country($request->country)
+                ->get();
+        }
+
+        if ($request->country == "MY-FORMAL") {
+            $dataMaids = UserMaid::where('is_bookmark', false)
+                ->where('is_uploaded', false)
+                ->where('is_delete', false)
+                ->where('is_taken', false)
+                ->where('is_active', true)
+                ->where('code_maid', '<>', '')
+                ->where('is_all_format', true)
+                ->whereRaw('LEFT(code_maid,1)', "M")
+                ->get();
+        }
+
+        if ($request->country == "BN-FORMAL") {
+            $dataMaids = UserMaid::where('is_bookmark', false)
+                ->where('is_uploaded', false)
+                ->where('is_delete', false)
+                ->where('is_taken', false)
+                ->where('is_active', true)
+                ->where('code_maid', '<>', '')
+                ->where('is_all_format', true)
+                ->whereRaw('LEFT(code_maid,1)', "B")
+                ->get();
+        }
+
+        if ($dataMaids) {
+            foreach ($dataMaids as $key => $value) {
+                $results[]  =  [
+                    'label' =>  $value->code_maid . ' - ' . $value->full_name,
+                    'value' =>  $value->id,
+                ];
+            }
+        }
+
+        return response()->json($results);
+    }
+
+    public function maidsUserMail(Request $request)
+    {
+        $dataMaids = "";
+        $results = array();
+        $dataMaids = UserMaid::where('is_bookmark', false)
+            ->where('is_uploaded', false)
+            ->where('is_delete', false)
+            ->where('is_taken', false)
+            ->where('code_maid', '<>', '')
+            ->where('is_active', true)
+            ->countryUser(auth()->user()->country->code, auth()->user()->is_formal)
+            ->get();
+
+        if ($dataMaids) {
+            foreach ($dataMaids as $key => $value) {
+                $results[]  =  [
+                    'label' =>  $value->code_maid . ' - ' . $value->full_name,
+                    'value' =>  $value->id,
+                ];
+            }
+        }
+
+        return response()->json($results);
+    }
+
+    public function countryMail()
+    {
+        $results = [
+            [
+                'label' =>  "Hongkong",
+                'value' =>  "HK",
+            ],
+            [
+                'label' =>  "Singapore",
+                'value' =>  "SG",
+            ],
+            [
+                'label' =>  "Malaysia",
+                'value' =>  "MY",
+            ],
+            [
+                'label' =>  "Taiwan",
+                'value' =>  "TW",
+            ],
+            [
+                'label' =>  "Brunei",
+                'value' =>  "BN",
+            ],
+            [
+                'label' =>  "Formal Malaysia",
+                'value' =>  "MY-FORMAL",
+            ],
+            [
+                'label' =>  "Formal Brunei",
+                'value' =>  "BN-FORMAL",
+            ],
+        ];
 
         return response()->json($results);
     }

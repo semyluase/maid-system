@@ -43,23 +43,22 @@ $education = [
                             <div class="col-9">
                                 <table class="table table-borderless">
                                     <tr>
-                                        <td>Nama</td>
+                                        <td>Name</td>
                                         <td>:</td>
                                         <td>
                                             <div class="row">
-                                                <div class="col border-dark border-bottom text-dark text-center">
+                                                <div class="col border-dark border-bottom text-dark">
                                                     {{ $maid->full_name }}
                                                 </div>
                                             </div>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td rowspan="2">Alamat</td>
+                                        <td rowspan="2">Address</td>
                                         <td rowspan="2">:</td>
                                         <td>
                                             <div class="row">
-                                                <div
-                                                    class="col text-uppercase border-dark border-bottom text-dark text-center">
+                                                <div class="col text-uppercase border-dark border-bottom text-dark">
                                                     {{ $maid->address }}
                                                 </div>
                                             </div>
@@ -75,11 +74,11 @@ $education = [
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>No. Telp</td>
+                                        <td>Contact</td>
                                         <td>:</td>
                                         <td>
                                             <div class="row">
-                                                <div class="col border-dark border-bottom text-dark text-center py-1">
+                                                <div class="col border-dark border-bottom text-dark py-1">
                                                     {{ $maid->contact }}
                                                 </div>
                                             </div>
@@ -93,7 +92,7 @@ $education = [
                                         <td>
                                             <div class="row">
                                                 <div class="col text-dark text-center">
-                                                    Kode
+                                                    Code
                                                 </div>
                                             </div>
                                         </td>
@@ -112,13 +111,13 @@ $education = [
                         </div>
                         <div class="row text-center">
                             <div class="col-4 border-end border-bottom border-3 border-dark font-bold text-dark">
-                                Tempat Lahir
+                                Place of birth
                             </div>
                             <div class="col-4 border-end border-bottom border-3 border-dark font-bold text-dark">
-                                Tanggal Lahir
+                                Date of birth
                             </div>
                             <div class="col-4 border-bottom border-3 border-dark font-bold text-dark">
-                                Umur
+                                Age
                             </div>
                         </div>
                         <div class="row border-bottom border-3 border-dark text-center">
@@ -134,7 +133,7 @@ $education = [
                         </div>
                         <div class="row text-center border-bottom border-dark border-3 text-dark">
                             <div class="col my-auto">
-                                Status
+                                Marital
                             </div>
                             @foreach ($marital as $m => $v)
                                 <div class="col">
@@ -150,19 +149,13 @@ $education = [
                         </div>
                         <div class="row text-center">
                             <div class="col border-end border-bottom border-3 border-dark font-bold text-dark">
-                                Tinggi
+                                Height
                             </div>
                             <div class="col border-end border-bottom border-3 border-dark font-bold text-dark">
-                                Berat
+                                Weight
                             </div>
                             <div class="col border-end border-bottom border-3 border-dark font-bold text-dark">
-                                Suku
-                            </div>
-                            <div class="col border-end border-bottom border-3 border-dark font-bold text-dark">
-                                Agama
-                            </div>
-                            <div class="col border-bottom border-3 border-dark font-bold text-dark">
-                                Hobby
+                                Region
                             </div>
                         </div>
                         <div class="row border-bottom border-3 border-dark text-center">
@@ -173,18 +166,12 @@ $education = [
                                 {{ $maid->weight }} kg
                             </div>
                             <div class="col border-end border-3 border-dark text-dark">
-                                {{ $maid->ethnic }}
-                            </div>
-                            <div class="col border-end border-3 border-dark text-dark">
                                 {{ convertReligion($maid->religion) }}
-                            </div>
-                            <div class="col border-3 border-dark font-bold text-dark">
-                                {{ $maid->hobby }}
                             </div>
                         </div>
                         <div class="row border-bottom border-3 border-dark text-center">
                             <div class="col text-dark">
-                                Bahasa
+                                Language
                             </div>
                             @foreach ($languages as $l)
                                 <div class="col border-start border-3 border-dark">
@@ -200,16 +187,16 @@ $education = [
                         </div>
                         <div class="row text-center">
                             <div class="col border-end border-bottom border-3 border-dark font-bold text-dark">
-                                No. Paspor
+                                Passport
                             </div>
                             <div class="col border-end border-bottom border-3 border-dark font-bold text-dark">
-                                Tempat Issue
+                                Issued At
                             </div>
                             <div class="col border-end border-bottom border-3 border-dark font-bold text-dark">
-                                Tanggal Issue
+                                Issued Date
                             </div>
                             <div class="col border-bottom border-3 border-dark font-bold text-dark">
-                                Masa Berlaku
+                                Expired Date
                             </div>
                         </div>
                         <div class="row border-bottom border-3 border-dark text-center">
@@ -257,7 +244,7 @@ $education = [
                         </div>
                         <div class="row border-bottom border-3 border-dark text-center">
                             <div class="col text-dark">
-                                Pendidikan
+                                Education
                             </div>
                             @foreach ($education as $e => $v)
                                 <div class="col">
@@ -275,15 +262,15 @@ $education = [
                             <div class="col-8 border-end border-3 border-dark">
                                 <div class="row">
                                     <div class="col border-bottom border-3 border-dark text-center text-dark h3">
-                                        Latar Belakang Keluarga
+                                        Family Background
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="col-6 text-center text-dark">
-                                        Ayah
+                                        Father
                                     </div>
                                     <div class="col-6 text-center text-dark">
-                                        Umur
+                                        Age
                                     </div>
                                 </div>
                                 <div class="row border-bottom border-3 border-dark">
@@ -296,7 +283,7 @@ $education = [
                                 </div>
                                 <div class="row">
                                     <div class="col-6 text-center text-dark">
-                                        Nama Suami/Istri :
+                                        Spouse Name :
                                     </div>
                                     <div class="col-6 text-center text-dark">
                                         {{ $maid->spouse_name ? $maid->spouse_name : '-' }}
@@ -304,7 +291,7 @@ $education = [
                                 </div>
                                 <div class="row border-bottom border-3 border-dark">
                                     <div class="col-6 text-center text-dark">
-                                        Umur :
+                                        Age :
                                     </div>
                                     <div class="col-6 text-center text-dark">
                                         {{ $maid->spouse_age ? $maid->spouse_age : '-' }}
@@ -312,7 +299,7 @@ $education = [
                                 </div>
                                 <div class="row border-bottom border-3 border-dark">
                                     <div class="col text-center text-dark">
-                                        Jumlah Saudara dan Saudari
+                                        Number Brother/Sister
                                     </div>
                                     <div class="col text-center text-dark">
                                         {{ $maid->number_of_siblings ? $maid->number_of_siblings : '-' }}
@@ -320,7 +307,7 @@ $education = [
                                 </div>
                                 <div class="row">
                                     <div class="col text-center font-bold text-dark">
-                                        Pengalaman Kerja
+                                        Work Experience
                                     </div>
                                 </div>
                                 <div class="row">
@@ -339,6 +326,11 @@ $education = [
                                                 </div>
                                             </div>
                                         @endforeach
+                                        <div class="row mt-3">
+                                            <div class="col text-justify text-dark">
+                                                Note : {{ $maid->note }}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

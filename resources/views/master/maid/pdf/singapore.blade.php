@@ -30,18 +30,18 @@ use App\Models\Question;
             margin: 2rem 1.5rem !important;
         }
 
-        .pagenum:before {
-            content: counter(page);
-        }
-
         body {
             margin-top: 1.9cm;
+        }
+
+        .pagenum:before {
+            content: counter(page);
         }
 
         .kolom {
             float: left !important;
             width: 50% !important;
-            padding: 8px !important;
+            /* padding: 8px !important; */
         }
 
         /* Clear floats after the columns */
@@ -89,6 +89,9 @@ use App\Models\Question;
 </head>
 
 <body>
+    <header>
+        <img src="{{ $header }}" alt="Header PDF" class="bg-white" style="width: 100%; margin-top:-1.9cm;">
+    </header>
     <div class="container">
         <div class="row mb-3">
             <div class="col">
@@ -112,20 +115,31 @@ use App\Models\Question;
                         OF FDW</u> </div>
             </div>
         </div>
-        <div class="row mb-3">
-            <div class="col-8">
-                <div style="font-weight: bold !important; font-size: 14px !important;">
-                    A1 <span
-                        style="font-weight: bold !important; font-size: 14px !important; margin-left: 35px !important;">Personal
-                        Information</span> </div>
-            </div>
-        </div>
         <div class="baris mb-3">
             <div class="kolom">
+                <div class="row mb-3">
+                    <div class="col">
+                        <div style="font-weight: bold !important; font-size: 14px !important; left:-8px !important;">
+                            A1 <span
+                                style="font-weight: bold !important; font-size: 14px !important; margin-left: 35px !important;">Personal
+                                Information</span> </div>
+                    </div>
+                </div>
                 <div class="row mb-2">
                     <div class="col">
                         <div style="font-weight: lighter !important; font-size: 14px !important;">
                             1. <span
+                                style="font-weight: lighter !important; font-size: 14px !important; margin-left: 15px !important;">Code
+                                :
+                            </span><span
+                                style="font-weight: lighter !important; font-size: 14px !important; margin-left: 15px !important;">{{ $maid->code_maid }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col">
+                        <div style="font-weight: lighter !important; font-size: 14px !important;">
+                            2. <span
                                 style="font-weight: lighter !important; font-size: 14px !important; margin-left: 15px !important;">Name
                                 :
                             </span><span
@@ -136,7 +150,7 @@ use App\Models\Question;
                 <div class="row mb-2">
                     <div class="col">
                         <div style="font-weight: lighter !important; font-size: 14px !important;">
-                            2. <span
+                            3. <span
                                 style="font-weight: lighter !important; font-size: 14px !important; margin-left: 15px !important; margin-left: 15px !important;">Date
                                 Of Birth
                                 :
@@ -153,7 +167,7 @@ use App\Models\Question;
                 <div class="row mb-2">
                     <div class="col">
                         <div style="font-weight: lighter !important; font-size: 14px !important;">
-                            3. <span
+                            4. <span
                                 style="font-weight: lighter !important; font-size: 14px !important; margin-left: 15px !important;">Place
                                 Of Birth
                                 :
@@ -165,7 +179,7 @@ use App\Models\Question;
                 <div class="row mb-2">
                     <div class="col">
                         <div style="font-weight: lighter !important; font-size: 14px !important;">
-                            4. <span
+                            5. <span
                                 style="font-weight: lighter !important; font-size: 14px !important; margin-left: 15px !important;">Height
                                 & Weight
                                 :
@@ -180,7 +194,7 @@ use App\Models\Question;
                 <div class="row mb-2">
                     <div class="col">
                         <div style="font-weight: lighter !important; font-size: 14px !important;">
-                            5. <span
+                            6. <span
                                 style="font-weight: lighter !important; font-size: 14px !important; margin-left: 15px !important;">Nationality
                                 :
                             </span><span
@@ -191,7 +205,7 @@ use App\Models\Question;
                 <div class="row mb-2">
                     <div class="col">
                         <div style="font-weight: lighter !important; font-size: 14px !important;">
-                            6. <span
+                            7. <span
                                 style="font-weight: lighter !important; font-size: 14px !important; margin-left: 15px !important;">Residential
                                 address in home country
                                 :
@@ -203,7 +217,7 @@ use App\Models\Question;
                 <div class="row mb-2">
                     <div class="col">
                         <div style="font-weight: lighter !important; font-size: 14px !important;">
-                            7. <span
+                            8. <span
                                 style="font-weight: lighter !important; font-size: 14px !important; margin-left: 15px !important;">Name
                                 of port / airport to be repatriated to
                                 :
@@ -215,7 +229,7 @@ use App\Models\Question;
                 <div class="row mb-2">
                     <div class="col">
                         <div style="font-weight: lighter !important; font-size: 14px !important;">
-                            8. <span
+                            9. <span
                                 style="font-weight: lighter !important; font-size: 14px !important; margin-left: 15px !important;">Contact
                                 number in home country
                                 :
@@ -227,7 +241,7 @@ use App\Models\Question;
                 <div class="row mb-2">
                     <div class="col">
                         <div style="font-weight: lighter !important; font-size: 14px !important;">
-                            9. <span
+                            10. <span
                                 style="font-weight: lighter !important; font-size: 14px !important; margin-left: 15px !important;">Religion
                                 :
                             </span><span
@@ -238,7 +252,7 @@ use App\Models\Question;
                 <div class="row mb-2">
                     <div class="col">
                         <div style="font-weight: lighter !important; font-size: 14px !important;">
-                            10. <span
+                            11. <span
                                 style="font-weight: lighter !important; font-size: 14px !important; margin-left: 15px !important;">Education
                                 level
                                 :
@@ -250,7 +264,7 @@ use App\Models\Question;
                 <div class="row mb-2">
                     <div class="col">
                         <div style="font-weight: lighter !important; font-size: 14px !important;">
-                            11. <span
+                            12. <span
                                 style="font-weight: lighter !important; font-size: 14px !important; margin-left: 15px !important;">Number
                                 of siblings
                                 :
@@ -262,7 +276,7 @@ use App\Models\Question;
                 <div class="row mb-2">
                     <div class="col">
                         <div style="font-weight: lighter !important; font-size: 14px !important;">
-                            12. <span
+                            13. <span
                                 style="font-weight: lighter !important; font-size: 14px !important; margin-left: 15px !important;">Marital
                                 status
                                 :
@@ -274,7 +288,7 @@ use App\Models\Question;
                 <div class="row mb-2">
                     <div class="col">
                         <div style="font-weight: lighter !important; font-size: 14px !important;">
-                            13. <span
+                            14. <span
                                 style="font-weight: lighter !important; font-size: 14px !important; margin-left: 15px !important;">Number
                                 of children
                                 :
@@ -299,8 +313,8 @@ use App\Models\Question;
             <div class="kolom">
                 <div class="row mb-3 justify-content-center">
                     <div class="col-4 text-center">
-                        <img src="{{ $photo }}" alt="Photo of {{ $maid->code_maid }}"
-                            style="width: 225px; height: 325px;" class="text-center">
+                        <img src="{{ $photo }}" alt="Photo of {{ $maid->code_maid }}" style="height: 435px;"
+                            class="text-center">
                     </div>
                 </div>
             </div>
@@ -783,7 +797,7 @@ use App\Models\Question;
         </div>
         <div class="row mb-3">
             <div class="col">
-                <div class="border border-dark text-dark"
+                <div class="border border-dark"
                     style="min-height: 10rem; width: 100%; border : solid 1px #242424 !important;">
                     {{ $maid->note }}
                 </div>

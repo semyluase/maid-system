@@ -135,6 +135,10 @@ $codeMaid = $maid ? $maid->code_maid : '';
 </div>
 <div class="row">
     <div class="col-lg-3 col-md-4 col-6 mb-3">
+        <label for="heirMaid" class="form-label">Heir Name</label>
+        <input type="text" name="heirMaid" id="heirMaid" class="form-control" value="{{ $maid->hobby }}">
+    </div>
+    <div class="col-lg-3 col-md-4 col-6 mb-3">
         <label for="siblingsMaid" class="form-label">Brother & Sister</label>
         <input type="number" min="0" name="siblingsMaid" id="siblingsMaid" class="form-control"
             value="{{ $maid->number_of_siblings }}">

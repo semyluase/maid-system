@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Announcement;
+use App\Models\ConcactPerson;
+use App\Models\ContactPerson;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -18,10 +20,12 @@ class AnnouncementController extends Controller
      */
     public function index()
     {
+        $dataAnnouncement = Announcement::latest()->first();
         return view('master.announcement.index', [
             'title' =>  'Announcement',
             'pageTitle' =>  'Announcement',
-            'js'    =>  ['assets/js/apps/master/announcement/app.js']
+            'announcement'  =>  $dataAnnouncement,
+            'js'    =>  ['assets/mazer/dist/assets/vendors/quill/quill.min.js', 'assets/js/apps/master/announcement/app.js']
         ]);
     }
 
@@ -43,49 +47,57 @@ class AnnouncementController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'title' =>  'required',
-            'body'  =>  'required',
-        ], [
-            'title.required'    =>  'Title field is Required',
-            'body.required' =>  'Body is Required',
-        ]);
+        if ($request->type == 'announcement') {
+            $dataAnnouncement = Announcement::latest()->first();
 
-        if ($validator->fails()) {
+            $data = [
+                'body'  =>  $request->body,
+                'user_created'  =>  auth()->user()->id,
+                'user_updated'  =>  auth()->user()->id,
+            ];
+
+            if (Announcement::find($dataAnnouncement->id)->update($data)) {
+                return response()->json([
+                    'data'  =>  [
+                        'status'    =>  true,
+                        'message'   =>  'Data Announcement successfully updated'
+                    ]
+                ]);
+            }
+
             return response()->json([
                 'data'  =>  [
                     'status'    =>  false,
-                    'message'   =>  $validator->errors()
+                    'message'   =>  'Data Announcement failed updated'
                 ]
             ]);
         }
 
-        $slug = SlugService::createSlug(Announcement::class, 'slug', $request->title);
+        if ($request->type == 'contact') {
+            $data = [
+                'name'  =>  $request->name,
+                'branch'  =>  $request->branch,
+                'whatsapp'  =>  $request->whatsapp,
+                'code'  =>  $request->code,
+                'user_created'  =>  auth()->user()->id,
+            ];
 
-        $data = [
-            'title' =>  Str::title($request->title),
-            'body'  =>  $request->body,
-            'slug'  =>  $slug,
-            'date_start'    =>  $request->dateStart,
-            'date_end'    =>  $request->dateEnd,
-            'user_created'  =>  auth()->user()->id,
-        ];
+            if (ContactPerson::create($data)) {
+                return response()->json([
+                    'data'  =>  [
+                        'status'    =>  true,
+                        'message'   =>  'Data Contact Person successfully added'
+                    ]
+                ]);
+            }
 
-        if (Announcement::create($data)) {
             return response()->json([
                 'data'  =>  [
-                    'status'    =>  true,
-                    'message'   =>  'Data Announcement successfully added'
+                    'status'    =>  false,
+                    'message'   =>  'Data Contact Person failed added'
                 ]
             ]);
         }
-
-        return response()->json([
-            'data'  =>  [
-                'status'    =>  false,
-                'message'   =>  'Data Announcement failed add'
-            ]
-        ]);
     }
 
     /**
@@ -105,7 +117,7 @@ class AnnouncementController extends Controller
      * @param  \App\Models\Announcement  $announcement
      * @return \Illuminate\Http\Response
      */
-    public function edit(Announcement $announcement)
+    public function edit(ContactPerson $announcement)
     {
         return response()->json($announcement);
     }
@@ -117,46 +129,21 @@ class AnnouncementController extends Controller
      * @param  \App\Models\Announcement  $announcement
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Announcement $announcement)
+    public function update(Request $request, ContactPerson $announcement)
     {
-        dd($request->all());
-        $validator = Validator::make($request->all(), [
-            'title' =>  'required',
-            'body'  =>  'required',
-        ], [
-            'title.required'    =>  'Title field is Required',
-            'body.required' =>  'Body is Required',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'data'  =>  [
-                    'status'    =>  false,
-                    'message'   =>  $validator->errors()
-                ]
-            ]);
-        }
-
-        $slug = '';
-
-        if (Str::lower($request->title) != Str::lower($announcement->title)) {
-            $slug = SlugService::createSlug(Announcement::class, 'slug', $request->title);
-        }
-
         $data = [
-            'title' =>  Str::title($request->title),
-            'body'  =>  $request->body,
-            'slug'  =>  $slug == '' ? $announcement->slug : $slug,
-            'date_start'    =>  $request->dateStart,
-            'date_end'    =>  $request->dateEnd,
+            'name'  =>  $request->name,
+            'branch'  =>  $request->branch,
+            'whatsapp'  =>  $request->whatsapp,
+            'code'  =>  $request->code,
             'user_updated'  =>  auth()->user()->id,
         ];
 
-        if (Announcement::find($announcement->id)->update($data)) {
+        if (ContactPerson::find($announcement->id)->update($data)) {
             return response()->json([
                 'data'  =>  [
                     'status'    =>  true,
-                    'message'   =>  'Data Announcement successfully updated'
+                    'message'   =>  'Data Contact Person successfully updated'
                 ]
             ]);
         }
@@ -164,7 +151,7 @@ class AnnouncementController extends Controller
         return response()->json([
             'data'  =>  [
                 'status'    =>  false,
-                'message'   =>  'Data Announcement failed update'
+                'message'   =>  'Data Contact Person failed update'
             ]
         ]);
     }
@@ -175,18 +162,13 @@ class AnnouncementController extends Controller
      * @param  \App\Models\Announcement  $announcement
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Announcement $announcement)
+    public function destroy(ContactPerson $announcement)
     {
-        $data = [
-            'is_active' =>  false,
-            'user_updated'  =>  auth()->user()->id,
-        ];
-
-        if (Announcement::find($announcement->id)->update($data)) {
+        if (ContactPerson::find($announcement->id)->delete()) {
             return response()->json([
                 'data'  =>  [
                     'status'    =>  true,
-                    'message'   =>  'Data Announcement successfully deleted'
+                    'message'   =>  'Data Contact Person successfully deleted'
                 ]
             ]);
         }
@@ -194,7 +176,7 @@ class AnnouncementController extends Controller
         return response()->json([
             'data'  =>  [
                 'status'    =>  false,
-                'message'   =>  'Data Announcement failed delete'
+                'message'   =>  'Data Contact Person failed delete'
             ]
         ]);
     }
@@ -202,47 +184,40 @@ class AnnouncementController extends Controller
     public function getAllData(Request $request)
     {
         Carbon::setLocale('id');
-        $totalData = collect(Announcement::where('date_start', '>=', Carbon::now()->isoFormat("YYYY-MM-DD"))
-            ->where('is_active', true)
-            ->orderBy(columnOrder(['id', 'title'], $request->order[0]['column']), $request->order[0]['dir'])
+        $totalData = collect(ContactPerson::orderBy(columnOrder(['id', 'name', 'branch', 'whatsapp', 'code'], $request->order[0]['column']), $request->order[0]['dir'])
             ->get())->count();
 
-        $totalFiltered = collect(Announcement::where('date_start', '>=', Carbon::now()->isoFormat("YYYY-MM-DD"))
-            ->where('is_active', true)
-            ->filter(['search' => $request->search['value']])
-            ->orderBy(columnOrder(['id', 'title'], $request->order[0]['column']), $request->order[0]['dir'])
+        $totalFiltered = collect(ContactPerson::filter(['search' => $request->search['value']])
+            ->orderBy(columnOrder(['id', 'name', 'branch', 'whatsapp', 'code'], $request->order[0]['column']), $request->order[0]['dir'])
             ->get())->count();
 
-        $dataAnnouncement = Announcement::with(['userCreated', 'userUpdated'])
-            ->where('date_start', '>=', Carbon::now()->isoFormat("YYYY-MM-DD"))
-            ->where('is_active', true)
-            ->filter(['search' => $request->search['value']])
+        $dataContactPerson = ContactPerson::filter(['search' => $request->search['value']])
             ->skip($request->start)
             ->limit($request->length == -1 ? $totalData : $request->length)
-            ->orderBy(columnOrder(['id', 'title'], $request->order[0]['column']), $request->order[0]['dir'])
+            ->orderBy(columnOrder(['id', 'name', 'branch', 'whatsapp', 'code'], $request->order[0]['column']), $request->order[0]['dir'])
             ->get();
 
         $results = array();
         $no = $request->start + 1;
 
-        if ($dataAnnouncement) {
-            foreach ($dataAnnouncement as $key => $value) {
+        if ($dataContactPerson) {
+            foreach ($dataContactPerson as $key => $value) {
                 $btnAction = '<div class="dropdown">
                                 <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdown-menu-detail" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fa-solid fa-layer-group me-2"></i>Details
                                 </button>
                                 <ul class="dropdown-menu" aria-labelledby="dropdown-menu-detail">
-                                    <li><a class="dropdown-item" href="javascript:;" onclick="fnAnnouncement.onEdit(\'' . $value->slug . '\')"><i class="fa-solid fa-edit me-2"></i>Edit Data</a></li>
-                                    <li><a class="dropdown-item" href="javascript:;" onclick="fnAnnouncement.onDelete(\'' . $value->slug . '\',\'' . csrf_token() . '\')"><i class="fa-solid fa-trash me-2"></i>Delete Data</a></li>
+                                    <li><a class="dropdown-item" href="javascript:;" onclick="fnAnnouncement.onEdit(\'' . $value->id . '\')"><i class="fa-solid fa-edit me-2"></i>Edit Data</a></li>
+                                    <li><a class="dropdown-item" href="javascript:;" onclick="fnAnnouncement.onDelete(\'' . $value->id . '\',\'' . csrf_token() . '\')"><i class="fa-solid fa-trash me-2"></i>Delete Data</a></li>
                                 </ul>
                             </div>';
 
                 $results[] = [
                     $no,
-                    $value->title,
-                    Carbon::parse($value->date_end)->diffInDays(Carbon::parse($value->date_start)) + 1 . ' Days',
-                    $value->userCreated ? $value->userCreated->name : '',
-                    $value->userUpdated ? $value->userUpdated->name : '',
+                    $value->name,
+                    $value->branch,
+                    $value->whatsapp,
+                    $value->code,
                     $btnAction,
                 ];
 

@@ -157,7 +157,7 @@ $education = [
                                 <td>
                                     <div class="row">
                                         <div class="col border-dark border-bottom text-primary">
-                                            {{ $maid->note ? $maid->note : '-' }}</div>
+                                            {{ $maid->hobby ? $maid->hobby : '-' }}</div>
                                     </div>
                                 </td>
                             </tr>
@@ -240,16 +240,37 @@ $education = [
                                         <div class="col-6">
                                             <div class="row">
                                                 @foreach ($willingnesses as $willingness)
-                                                    <div class="col-6 mb-3">
-                                                        <div class="form-check icheck-greensea">
-                                                            <input class="form-check-input" type="checkbox"
-                                                                value="" id="flexCheckDefault"
-                                                                {{ $willingness->answer == 1 ? 'checked' : '' }}>
-                                                            <label class="form-check-label" for="flexCheckDefault">
-                                                                {{ $willingness->question }}
-                                                            </label>
+                                                    @if ($willingness->is_check)
+                                                        <div class="col-6 mb-3">
+                                                            <div class="form-check icheck-greensea">
+                                                                <input class="form-check-input" type="checkbox"
+                                                                    value="" id="flexCheckDefault"
+                                                                    {{ $willingness->answer == 1 ? 'checked' : '' }}>
+                                                                <label class="form-check-label" for="flexCheckDefault">
+                                                                    {{ $willingness->question }}
+                                                                </label>
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    @else
+                                                        <div class="col-6 mb-3">
+                                                            <div class="form-check icheck-greensea">
+                                                                <input class="form-check-input" type="checkbox"
+                                                                    value="" id="flexCheckDefault"
+                                                                    {{ $willingness->answer == 1 ? 'checked' : '' }}>
+                                                                <label class="form-check-label" for="flexCheckDefault">
+                                                                    {{ $willingness->question }} :
+                                                                    @if ($willingness->note != null)
+                                                                        <span
+                                                                            class="ms-3">{{ $willingness->note }}</span>
+                                                                    @else
+                                                                        <div class="ms-5"
+                                                                            style="margin-left: 4rem !important; min-width: 10rem !important; border-bottom:solid 1px #1b1b1b !important;">
+                                                                            {{ $willingness->note }}</div>
+                                                                    @endif
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    @endif
                                                 @endforeach
                                             </div>
                                             <div class="row">
@@ -355,6 +376,11 @@ $education = [
                                                     </div>
                                                 </div>
                                             @endforeach
+                                            <div class="row mt-3">
+                                                <div class="col text-justify text-primary">
+                                                    Note : {{ $maid->note }}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </td>

@@ -1,6 +1,6 @@
 <div class="card shadow">
     <div class="card-body">
-        <h5 class="card-title">Data Maid</h5>
+        <h5 class="card-title">Data Worker</h5>
     </div>
     <ul class="list-group list-group-flush">
         <li class="list-group-item">

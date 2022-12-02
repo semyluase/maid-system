@@ -370,6 +370,10 @@ use Illuminate\Support\Str;
                                                         <p class="card-text text-dark p-0 m-0">Contact :
                                                             {{ $maid->contact }}</p>
                                                     @endif
+                                                    @if ($maid->note)
+                                                        <p class="card-text text-dark p-0 m-0">Note :
+                                                            {{ $maid->note }}</p>
+                                                    @endif
                                                 </div>
                                             </div>
                                         </div>

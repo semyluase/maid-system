@@ -6,6 +6,9 @@ use App\Models\Country;
 ?>
 @extends('layouts.main')
 @section('content')
+    <script>
+        document.querySelector('#sidebar').classList.remove('active')
+    </script>
     <div class="page-heading">
         <div class="page-title">
             <div class="row mb-3">
@@ -27,7 +30,7 @@ use App\Models\Country;
                     <div class="card">
                         <div class="card-body">
                             <div class="row justify-content-center">
-                                <div class="col-6">
+                                <div class="col-8">
                                     <form action="/booked/maids" method="get">
                                         <div class="input-group">
                                             <input type="text" class="form-control" id="search" name="search"
@@ -35,12 +38,93 @@ use App\Models\Country;
                                             @if (request('country'))
                                                 <input type="hidden" name="country" value="{{ request('country') }}">
                                             @endif
+                                            @if (request('code'))
+                                                <input type="hidden" name="code" value="{{ request('code') }}">
+                                            @endif
+                                            @if (request('name'))
+                                                <input type="hidden" name="name" value="{{ request('name') }}">
+                                            @endif
+                                            @if (request('start_age'))
+                                                <input type="hidden" name="start_age" value="{{ request('start_age') }}">
+                                            @endif
+                                            @if (request('end_age'))
+                                                <input type="hidden" name="end_age" value="{{ request('end_age') }}">
+                                            @endif
+                                            @if (request('countries'))
+                                                <input type="hidden" name="countries" value="{{ request('countries') }}">
+                                            @endif
+                                            @if (request('education'))
+                                                <input type="hidden" name="education" value="{{ request('education') }}">
+                                            @endif
+                                            @if (request('marital'))
+                                                <input type="hidden" name="marital" value="{{ request('marital') }}">
+                                            @endif
                                             <button class="btn btn-outline-primary" type="submit" id="btn-search"><i
                                                     class="fa-solid fa-search me-2"></i>Search</button>
+                                            <button class="btn btn-outline-primary" type="button"
+                                                id="btn-additional-search" data-bs-toggle="modal"
+                                                data-bs-target="#modal-additional-search"><i
+                                                    class="fa-solid fa-filter me-2"></i>Additional Search</button>
                                         </div>
                                     </form>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="row my-3">
+                        <div class="col-12 d-flex gap-2">
+                            @php
+                                $countries = [
+                                    [
+                                        'code' => 'HK',
+                                        'name' => 'Hongkong',
+                                    ],
+                                    [
+                                        'code' => 'TW',
+                                        'name' => 'Taiwan',
+                                    ],
+                                    [
+                                        'code' => 'SG',
+                                        'name' => 'Singapore',
+                                    ],
+                                    [
+                                        'code' => 'MY',
+                                        'name' => 'Malaysia',
+                                    ],
+                                    [
+                                        'code' => 'BN',
+                                        'name' => 'Brunei',
+                                    ],
+                                    [
+                                        'code' => 'FM',
+                                        'name' => 'Formal',
+                                    ],
+                                ];
+                            @endphp
+                            @foreach ($countries as $country)
+                                <a href="{{ url('') }}/booked/maids?country={{ $country['code'] }}"
+                                    class="badge bg-success text-bg-success text-decoration-none">{{ $country['name'] }}</a>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-6 d-flex gap-2">
+                            <a href="{{ url('') }}/master/maids"
+                                class="badge bg-primary text-bg-primary text-decoration-none">All
+                                Workers</a>
+                            <a href="{{ url('') }}/transaction/maids"
+                                class="badge bg-primary text-bg-primary text-decoration-none">Approval
+                                Workers</a>
+                            <a href="{{ url('') }}/taken/maids"
+                                class="badge bg-primary text-bg-primary text-decoration-none">Taken
+                                Workers</a>
+                        </div>
+                        <div class="col-6 d-flex justify-content-end">
+                            {{ $maids->links() }}
                         </div>
                     </div>
                 </div>
@@ -75,28 +159,28 @@ use App\Models\Country;
                                 }
 
                                 if ($maid->is_all_format) {
-                                    $country = 'ALL';
+                                    $country = 'FM';
                                 }
 
                                 ?>
-                                <div class="col-12 col-md-12 col-lg-6 col-xl-4 mb-3">
+                                <div class="col-12 col-md-3 col-lg-3 col-xl-3 mb-3">
                                     <div class="card shadow">
                                         <div class="card-content">
                                             @if ($maid->picture_name)
                                                 <img class="card-img-bottom img-fluid"
                                                     src="{{ asset($maid->picture_location . $maid->picture_name) }}"
                                                     alt="Photo of {{ $maid->code_maid }}"
-                                                    style="height: 20rem; object-fit: fill">
+                                                    style="height: 20rem; object-fit: cover; object-position: 100% 0;">
                                             @else
                                                 <img class="card-img-bottom img-fluid"
                                                     src="{{ asset('assets/image/web/no_content.jpg') }}" alt="No Content"
-                                                    style="height: 20rem; object-fit: fill">
+                                                    style="height: 20rem; object-fit: cover; object-position: 50% 0;">
                                             @endif
                                             <div class="card-body">
-                                                <h4 class="card-title">
+                                                <h6 class="card-title" style="font-size: 1rem;">
                                                     {{ $maid->code_maid . ' - ' . $maid->full_name . ' (' . Carbon::parse($maid->date_of_birth)->age . ' Years)' }}
-                                                </h4>
-                                                <div class="btn-group align-items-center gap-2">
+                                                </h6>
+                                                <div class="align-items-center gap-2">
                                                     <a href="{{ url('') }}/master/maids?country={{ $country }}"
                                                         class="badge bg-info text-bg-info"><small>{{ Country::where('code', $country)->first()->name }}</small></a>
                                                     @if ($maid->is_bookmark)
@@ -112,8 +196,10 @@ use App\Models\Country;
                                             </div>
                                             <div class="btn-group align-items-center mx-2 px-1">
                                                 @if (collect($maid->historyAction)->count() > 0)
-                                                    <button type="button" class="btn btn-link p-2 m-1 text-decoration-none"
-                                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Activities"
+                                                    <button type="button"
+                                                        class="btn btn-link p-2 m-1 text-decoration-none"
+                                                        data-bs-toggle="tooltip" data-bs-placement="top"
+                                                        title="Activities"
                                                         onclick="window.open('{{ url('') }}/timelines/maids?maid={{ $maid->code_maid }}')">
                                                         <i
                                                             class="bi bi-clock-history d-flex align-items-center justify-content-center text-primary"></i>
@@ -123,7 +209,8 @@ use App\Models\Country;
                                                     method="post">
                                                     @csrf
                                                     @method('delete')
-                                                    <button type="submit" class="btn btn-link p-2 m-1 text-decoration-none"
+                                                    <button type="submit"
+                                                        class="btn btn-link p-2 m-1 text-decoration-none"
                                                         data-bs-toggle="tooltip" data-bs-placement="top"
                                                         title="Cancel Booking">
                                                         <i
@@ -150,5 +237,130 @@ use App\Models\Country;
                 </div>
             </div>
         </section>
+    </div>
+    <div class="modal fade" id="modal-additional-search" tabindex="-1" aria-labelledby="modal-additional-search-label"
+        aria-hidden="true">
+        @php
+            $marital = [
+                1 => 'Single',
+                2 => 'Married',
+                3 => 'Widowed',
+                4 => 'Divorced',
+            ];
+
+            $education = [
+                1 => 'Kindergarten',
+                2 => 'Primary School',
+                3 => 'Junior High School',
+                4 => 'Senior High School',
+                5 => 'Bachelor',
+                6 => 'Master',
+                7 => 'Doctor',
+            ];
+
+            $countries = [
+                'HK' => 'Hongkong',
+                'SG' => 'Singapore',
+                'TW' => 'Taiwan',
+                'MY' => 'Malaysia',
+                'BN' => 'Brunei',
+                'FM' => 'All Formal',
+            ];
+        @endphp
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modal-additional-search-label">Additional Search</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ url('') }}/booked/maids" method="get">
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="code" class="form-label">Code Worker</label>
+                                <input type="text" name="code" id="code" class="form-control"
+                                    value="{{ request('code') }}" placeholder="Code Worker">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="name" class="form-label">Worker Name</label>
+                                <input type="text" name="name" id="name" class="form-control"
+                                    value="{{ request('name') }}" placeholder="Worker Name">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="start-age" class="form-label">Worker Age</label>
+                                <div class="row">
+                                    <div class="col">
+                                        <input type="text" name="start_age" id="start_age" class="form-control"
+                                            value="{{ request('start_age') }}" placeholder="Start Age">
+                                    </div>
+                                    <div class="col">
+                                        <input type="text" name="end_age" id="end_age" class="form-control"
+                                            value="{{ request('end_age') }}" placeholder="End Age">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="name" class="form-label">Worker Country</label>
+                                <div class="input-group">
+                                    @foreach ($countries as $c => $value)
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="countries"
+                                                id="{{ $c }}" value="{{ $c }}"
+                                                {{ request('countries') == $c ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="{{ $c }}">{{ $value }}</label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="name" class="form-label">Worker Education</label>
+                                <div class="input-group">
+                                    @foreach ($education as $edu => $value)
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="education"
+                                                id="{{ $edu }}" value="{{ $edu }}"
+                                                {{ request('education') == $edu ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="{{ $edu }}">{{ $value }}</label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="name" class="form-label">Worker Marital Status</label>
+                                <div class="input-group">
+                                    @foreach ($marital as $m => $value)
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="marital"
+                                                id="{{ $m }}" value="{{ $m }}"
+                                                {{ request('marital') == $m ? 'checked' : '' }}>
+                                            <label class="form-check-label"
+                                                for="{{ $m }}">{{ $value }}</label>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal"><i
+                                class="fa-solid fa-times me-2"></i>Cancel</button>
+                        <button type="submit" class="btn btn-outline-primary"><i
+                                class="fa-solid fa-search me-2"></i>Search</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 @endsection

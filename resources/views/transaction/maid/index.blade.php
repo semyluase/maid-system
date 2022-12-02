@@ -10,41 +10,9 @@ use App\Models\Country;
         <div class="page-title">
             <div class="row mb-3">
                 <div class="col-6 col-md-6">
-                    <a href="{{ url('') }}/master/maids">
+                    <a href="{{ url('') }}/transaction/maids">
                         <h3>{{ $pageTitle }}</h3>
                     </a>
-                </div>
-                <div class="col-6 d-flex justify-content-end">
-                    <div class="dropdown">
-                        <a class="btn btn-primary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            <i class="fa-solid fa-plus me-2"></i>Add New
-                            Maid
-                        </a>
-
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="javascript:;"
-                                    onclick="window.open('{{ url('') }}/master/maids/register-maid?country=HK')">Hongkong</a>
-                            </li>
-                            <li><a class="dropdown-item" href="javascript:;"
-                                    onclick="window.open('{{ url('') }}/master/maids/register-maid?country=SG')">Singapore</a>
-                            </li>
-                            <li><a class="dropdown-item" href="javascript:;"
-                                    onclick="window.open('{{ url('') }}/master/maids/register-maid?country=TW')">Taiwan</a>
-                            </li>
-                            <li><a class="dropdown-item" href="javascript:;"
-                                    onclick="window.open('{{ url('') }}/master/maids/register-maid?country=MY')">Malaysia</a>
-                            </li>
-                            <li><a class="dropdown-item" href="javascript:;"
-                                    onclick="window.open('{{ url('') }}/master/maids/register-maid?country=BN')">Brunei</a>
-                            </li>
-                            <li><a class="dropdown-item" href="javascript:;"
-                                    onclick="window.open('{{ url('') }}/master/maids/register-maid?country=ALL')">All
-                                    Format</a>
-                            </li>
-                            </li>
-                        </ul>
-                    </div>
                 </div>
             </div>
         </div>
@@ -105,22 +73,22 @@ use App\Models\Country;
                                 }
 
                                 if ($maid->is_all_format) {
-                                    $country = 'ALL';
+                                    $country = 'FM';
                                 }
 
                                 ?>
-                                <div class="col-12 col-md-12 col-lg-6 col-xl-4 mb-3">
+                                <div class="col-12 col-md-3 col-lg-3 col-xl-3 mb-3">
                                     <div class="card shadow">
                                         <div class="card-content">
                                             @if ($maid->picture_name)
                                                 <img class="card-img-bottom img-fluid"
                                                     src="{{ asset($maid->picture_location . $maid->picture_name) }}"
                                                     alt="Photo of {{ $maid->code_maid }}"
-                                                    style="height: 20rem; object-fit: fill">
+                                                    style="height: 20rem; object-fit: cover; object-position: 100% 0;">
                                             @else
                                                 <img class="card-img-bottom img-fluid"
                                                     src="{{ asset('assets/image/web/no_content.jpg') }}" alt="No Content"
-                                                    style="height: 20rem; object-fit: fill">
+                                                    style="height: 20rem; object-fit: cover; object-position: 50% 0;">
                                             @endif
                                             <div class="card-body">
                                                 <h4 class="card-title">
@@ -131,7 +99,8 @@ use App\Models\Country;
                                                         class="badge bg-info text-bg-info"><small>{{ Country::where('code', $country)->first()->name }}</small></a>
                                                     @if ($maid->is_bookmark)
                                                         <a href="#"
-                                                            class="badge bg-danger text-bg-danger text-decoration-none"><small>Booked</small></a>
+                                                            class="badge bg-danger text-bg-danger text-decoration-none text-wrap"><small>Hold
+                                                                By {{ $maid->userBookmark->name }}</small></a>
                                                     @endif
                                                     @if ($maid->is_uploaded)
                                                         <a href="{{ url('') }}/transaction/maids/{{ $maid->code_maid }}"
@@ -156,7 +125,7 @@ use App\Models\Country;
                                                 @if ($maid->is_uploaded)
                                                     <button type="button" class="btn btn-link p-2 m-1 text-decoration-none"
                                                         title="Document"
-                                                        onclick="{{ url('transaction/maids/document/') . $maid->code_maid }}">
+                                                        onclick="window.open('{{ url('transaction/maids/documents/') . '/' . $maid->code_maid }}','_blank')">
                                                         <i
                                                             class="bi bi-eye d-flex align-items-center justify-content-center text-primary"></i>
                                                     </button>
@@ -188,8 +157,8 @@ use App\Models\Country;
             </div>
         </section>
     </div>
-    <div class="modal fade text-left" id="approved" tabindex="-1" aria-labelledby="myModalLabel160"
-        aria-hidden="true" style="display: none;">
+    <div class="modal fade text-left" id="approved" tabindex="-1" aria-labelledby="myModalLabel160" aria-hidden="true"
+        style="display: none;">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable" role="document">
             <div class="modal-content">
                 <div class="modal-header bg-primary">

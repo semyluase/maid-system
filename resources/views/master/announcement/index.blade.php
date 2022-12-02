@@ -1,12 +1,7 @@
 @extends('layouts.main')
 @section('content')
-    <style>
-        .ck-editor__editable[role="textbox"] {
-            /* editing area */
-            min-height: 200px;
-            margin-bottom: 2rem;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ asset('assets/mazer/dist/assets/vendors/quill/quill.snow.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/mazer/dist/assets/vendors/quill/quill.bubble.css') }}">
     <div class="page-heading">
         <div class="page-title">
             <div class="row">
@@ -22,75 +17,87 @@
                         <div class="col-6">
                             <h4 class="card-title">Announcement</h4>
                         </div>
-                        <div class="col-6 d-flex hstack gap-2 justify-content-end">
-                            <a href="javascript:;" class="btn btn-primary" id="btn-add"><i
-                                    class="fa-solid fa-plus me-2"></i>New Data</a>
-                        </div>
                     </div>
                 </div>
                 <div class="card-body">
+                    <div class="row mb-4 pb-4">
+                        <div class="col">
+                            <div id="body">{!! $announcement->body !!}</div>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col d-flex justify-content-end">
+                            <button type="button" class="btn btn-primary" id="btn-save-announcement"
+                                data-csrf="{{ csrf_token() }}"><i class="fa-solid fa-save me-2"></i>Save
+                                Announcement</button>
+                        </div>
+                    </div>
                     <div class="row mb-3">
                         <div class="col">
-                            <table class="table table-striped table-responsive" id="tb-announcement">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col">Title</th>
-                                        <th scope="col">Duration</th>
-                                        <th scope="col">Insert</th>
-                                        <th scope="col">Update</th>
-                                        <th scope="col">#</th>
-                                    </tr>
-                                </thead>
-                            </table>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-responsive" id="tb-contact-person">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Branch</th>
+                                            <th scope="col">Whatsapp</th>
+                                            <th scope="col">Code</th>
+                                            <th scope="col">
+                                                <a href="javascript:;" class="btn btn-primary"
+                                                    id="btn-add-contact-person"><i class="fa-solid fa-plus me-2"></i>New
+                                                    Contact Person</a>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
     </div>
-    <div class="modal fade" id="modalAnnouncement" tabindex="-1" aria-labelledby="modalAnnouncementLabel"
+    <div class="modal fade" id="modal-contact-person" tabindex="-1" aria-labelledby="modal-contact-person-label"
         aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="modalAnnouncementLabel">Modal title</h5>
+                    <h5 class="modal-title" id="modal-contact-person-label">Contact Person</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="row mb-3">
                         <div class="col">
-                            <label for="titleAnnouncement" class="form-label">Title</label>
-                            <input type="text" name="titleAnnouncement" id="titleAnnouncement" class="form-control">
-                            <input type="hidden" name="idAnnouncement" id="idAnnouncement" class="form-control">
-                            <input type="hidden" name="oldSlugAnnouncement" id="oldSlugAnnouncement" class="form-control">
-                            <div class="invalid-feedback" id="titleAnnouncementFeedback"></div>
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" name="name" id="name" class="form-control">
+                            <input type="hidden" name="id-contact" id="id-contact" class="form-control">
                         </div>
                     </div>
-                    <div class="row mb-6">
+                    <div class="row mb-3">
                         <div class="col">
-                            <label for="bodyAnnouncement" class="form-label">Body</label>
-                            <textarea id="bodyAnnouncement" class="form-control" rows="10" name="bodyAnnouncement"></textarea>
-                            <div class="invalid-feedback" id="bodyAnnouncementFeedback"></div>
+                            <label for="branch" class="form-label">Branch</label>
+                            <input type="text" name="branch" id="branch" class="form-control">
                         </div>
                     </div>
-                    <div class="row mb-3 mt-6">
+                    <div class="row mb-3">
                         <div class="col">
-                            <label for="durationAnnouncement" class="form-label">Start - End Announcement</label>
-                            <div class="input-group mb-3 input-daterange" id="rangeDateAnnouncement">
-                                <input type="text" class="form-control" id="startDate" name="startDate">
-                                <span class="input-group-text">to</span>
-                                <input type="text" class="form-control" id="endDate" name="endDate">
-                            </div>
-                            <div class="invalid-feedback" id="rangeDateAnnouncementFeedback"></div>
+                            <label for="whatsapp" class="form-label">Whatsapp</label>
+                            <input type="text" name="whatsapp" id="whatsapp" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col">
+                            <label for="code" class="form-label">Code</label>
+                            <input type="text" name="code" id="code" class="form-control">
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal"><i
                             class="fa-solid fa-times me-2"></i>Cancel</button>
-                    <button type="button" class="btn btn-outline-primary" id="btn-save" data-csrf="{{ csrf_token() }}"><i
-                            class="fa-solid fa-save me-2"></i>Save</button>
+                    <button type="button" class="btn btn-outline-primary" id="btn-save"
+                        data-csrf="{{ csrf_token() }}"><i class="fa-solid fa-save me-2"></i>Save</button>
                 </div>
             </div>
         </div>

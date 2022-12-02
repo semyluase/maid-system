@@ -59,9 +59,32 @@ class Maid extends Model
         return $this->hasMany(Document::class, 'maid_id', 'id');
     }
 
+    public function userTaken()
+    {
+        return $this->belongsTo(User::class, 'user_taken', 'id');
+    }
+
     public function scopeFilter($query, array $filter)
     {
-        return $query->when($filter['search'] ?? false, fn ($query, $search) => ($query->where('full_name', 'like', "%$search%")->orWhere('code_maid', 'like', "%$search%")->orWhere('date_of_birth', 'like', "%" . Carbon::now()->subYears($search)->isoFormat('YYYY') . "%")));
+        $query->when($filter['search'] ?? false, fn ($query, $search) => ($query->where('full_name', 'like', "%$search%")->orWhere('code_maid', 'like', "%$search%")->orWhere('date_of_birth', 'like', "%" . Carbon::now()->subYears(intval($search))->isoFormat('YYYY') . "%")));
+
+        $query->when($filter['code'] ?? false, fn ($query, $search) => ($query->where("code_maid", "LIKE", "%$search%")));
+
+        $query->when($filter['name'] ?? false, fn ($query, $search) => ($query->where("full_name", "LIKE", "%$search%")));
+
+        if ($filter['start_age'] != '' || $filter['start_age'] != null) {
+            $query->when($filter['start_age'] ?? false, fn ($query, $search) => ($query->where("date_of_birth", "like", "%" . Carbon::now()->subYears($search)->isoFormat('YYYY') . "%")));
+        }
+
+        if ($filter['end_age'] != '' || $filter['end_age'] != null) {
+            $query->when($filter['end_age'] ?? false, fn ($query, $search) => ($query->where("date_of_birth", "like", "%" . Carbon::now()->subYears($search)->isoFormat('YYYY') . "%")));
+        }
+
+        $query->when($filter['education'] ?? false, fn ($query, $search) => ($query->where("education", "$search")));
+
+        $query->when($filter['marital'] ?? false, fn ($query, $search) => ($query->where("marital", "$search")));
+
+        return $query;
     }
 
     public function scopeCountry($query, $country)
@@ -71,7 +94,7 @@ class Maid extends Model
         if ($country === "TW") $query->where('is_taiwan', true);
         if ($country === "MY") $query->where('is_malaysia', true);
         if ($country === "BN") $query->where('is_brunei', true);
-        if ($country === "ALL") $query->where('is_all_format', true);
+        if ($country === "FM") $query->where('is_all_format', true);
         return $query;
     }
 

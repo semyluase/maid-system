@@ -126,12 +126,12 @@ function convertSex($sexID)
         return "Female";
     }
 
-    return "No Choose";
+    return "None";
 }
 
 function convertReligion($religionID)
 {
-    $religion = "No Choose";
+    $religion = "None";
 
     switch ($religionID) {
         case 1:
@@ -164,7 +164,7 @@ function convertReligion($religionID)
 
 function convertBloodType($bloodID)
 {
-    $blood = "N/A";
+    $blood = "None";
 
     switch ($bloodID) {
         case 1:
@@ -189,7 +189,7 @@ function convertBloodType($bloodID)
 
 function convertEducation($educationID)
 {
-    $education = "N/A";
+    $education = "None";
 
     switch ($educationID) {
         case 1:
@@ -226,7 +226,7 @@ function convertEducation($educationID)
 
 function convertMaritalStatus($maritalID)
 {
-    $maritalStatus = "N/A";
+    $maritalStatus = "None";
 
     switch ($maritalID) {
         case 1:
@@ -305,7 +305,7 @@ function convertCountry($country)
             return 'is_brunei';
             break;
 
-        case 'ALL':
+        case 'FM':
             return 'is_all_format';
             break;
     }

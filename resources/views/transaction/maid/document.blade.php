@@ -13,11 +13,11 @@
                 <div class="card-header">
                     <div class="row mb-3">
                         <div class="col-6">
-                            <h4 class="card-title">Master Country</h4>
+                            <h4 class="card-title">Job Document</h4>
                         </div>
                         <div class="col-6 d-flex hstack gap-2 justify-content-end">
-                            <a href="javascript:;" class="btn btn-primary" id="btn-add"><i
-                                    class="fa-solid fa-plus me-2"></i>New Data</a>
+                            <a href="javascript:;" class="btn btn-primary" onclick="window.close()"><i
+                                    class="fa-solid fa-arrow-left me-2"></i>Back</a>
                         </div>
                     </div>
                 </div>
@@ -30,6 +30,13 @@
                             </div>
                         </div>
                     @endforeach
+                    <div class="row">
+                        <div class="col">
+                            <button class="btn btn-primary"
+                                onclick="window.open('{{ url('') }}/transaction/maids/downloads?maids={{ $maid->code_maid }}','_blanks')"><i
+                                    class="fa-solid fa-download me-2"></i>Download Data</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>

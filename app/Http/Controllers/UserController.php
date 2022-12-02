@@ -6,6 +6,8 @@ use App\Models\TemplateUser;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -48,7 +50,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'username'  =>  'required|unique:users',
             'name'  =>  'required',
-            'email' =>  'required|unique:users|email:dns',
+            'email' =>  'required|email:dns',
             'role'  =>  'required',
             'country'  =>  'required',
             'password'  =>  'required',
@@ -57,7 +59,6 @@ class UserController extends Controller
             'username.unique'   =>  'This username is exists',
             'name.required'  =>  'Name User field is required',
             'email.required'    =>  'User Email is required',
-            'email.unique'  =>  'User with this email is exists',
             'email.email'  =>  'Wrong format',
             'role.required' =>  'Please choose User Role',
             'country.required' =>  'Please choose Country',
@@ -142,7 +143,7 @@ class UserController extends Controller
                 'role_id'   =>  $request->role,
                 'country_id'   =>  $request->country,
                 'password'  =>  bcrypt($request->password),
-                'is_formal'  =>  $request->formal ? $request->formal : false,
+                'is_formal'  =>  $user->role_id == 2 ? ($request->formal ? $request->formal : false) : false,
             ];
         } else {
             $data = [
@@ -151,7 +152,7 @@ class UserController extends Controller
                 'email' =>  $request->email,
                 'role_id'   =>  $request->role,
                 'country_id'   =>  $request->country,
-                'is_formal'  =>  $request->formal ? $request->formal : false,
+                'is_formal'  =>  $user->role_id == 2 ? ($request->formal ? $request->formal : false) : false,
             ];
         }
 
@@ -180,21 +181,20 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        TemplateUser::where('user_id', $user->id)
-            ->delete();
-
-        if (User::destroy($user->id)) {
+        if (User::find($user->id)->update([
+            'is_locked' =>  $user->is_locked ? false : true,
+        ])) {
             return response()->json([
                 'data'  =>  [
                     'status'    =>  true,
-                    'message'   =>  'Data successfully deleted'
+                    'message'   =>  $user->is_locked ? 'Data successfully locked' : 'Data successfully unlocked'
                 ]
             ]);
         } else {
             return response()->json([
                 'data'  =>  [
                     'status'    =>  false,
-                    'message'   =>  'Data failed to delete'
+                    'message'   =>  'Data failed to lock'
                 ]
             ]);
         }
@@ -223,16 +223,23 @@ class UserController extends Controller
 
         if ($dataUser) {
             foreach ($dataUser as $row => $valUser) {
+                $btnAction = '<div class="d-flex hstack gap-3">
+                                <a href="javascript:;" class="btn btn-outline-info" onclick="user.editData(\'' . $valUser->username . '\')"><i class="fas fa-edit"></i></a>';
+                if ($valUser->is_locked) {
+                    $btnAction .= '<a href="javascript:;" class="btn btn-outline-success" onclick="user.deleteData(\'' . $valUser->username . '\',\'' . csrf_token() . '\')"><i class="fas fa-key"></i></a>';
+                } else {
+                    $btnAction .= '<a href="javascript:;" class="btn btn-outline-danger" onclick="user.deleteData(\'' . $valUser->username . '\',\'' . csrf_token() . '\')"><i class="fas fa-key"></i></a>';
+                }
+
+                $btnAction .= '</div>';
                 $results[] = [
                     $valUser->username,
                     $valUser->name,
                     $valUser->role->name,
+                    $valUser->is_locked ? '<span class="badge bg-danger px-3 py-2">Locked</span>' : '<span class="badge bg-success px-3 py-2">Active</span>',
                     date_format($valUser->created_at, 'd M Y H:i:s'),
                     date_format($valUser->updated_at, 'd M Y H:i:s'),
-                    '<div class="d-flex hstack gap-3">
-                        <a href="javascript:;" class="btn btn-outline-info" onclick="user.editData(\'' . $valUser->username . '\')"><i class="fas fa-edit"></i></a>
-                        <a href="javascript:;" class="btn btn-outline-danger" onclick="user.deleteData(\'' . $valUser->username . '\',\'' . csrf_token() . '\')"><i class="fas fa-times"></i></a>
-                    </div>'
+                    $btnAction,
                 ];
             }
         }
@@ -246,6 +253,14 @@ class UserController extends Controller
 
     public function myProfile()
     {
+        if (auth()->user()->role_id == 2) {
+            return view('manage.profile.userIndex', [
+                'title' =>  'My Profile',
+                'pageTitle' =>  'My Profile',
+                'js'    =>  ['assets/js/apps/manage/profile/app.js']
+            ]);
+        }
+
         return view('manage.profile.index', [
             'title' =>  'My Profile',
             'pageTitle' =>  'My Profile',
@@ -253,14 +268,80 @@ class UserController extends Controller
         ]);
     }
 
-    public function updateProfile(Request $request, User $user)
+    public function updateProfile(Request $request)
     {
+        $user = User::where('username', $request->username)->first();
+
+        $filename = $user->username;
+        if ($request->file('profilePictureFile')) {
+            $dataAvatar = $request->file('profilePictureFile');
+
+            $filename = $filename . '.' . $dataAvatar->getClientOriginalExtension();
+
+            if ($user->image != 'default.jpg') {
+                File::delete(public_path('assets/image/user/' . $user->image));
+            }
+            $dataAvatar->move(public_path('assets/image/user'), $filename);
+        }
+
         $data = [
-            'name'  =>  ucwords($request->name),
-            'email' =>  $request->email
+            'name'  =>  ucwords($request->profilName),
+            'email' =>  $request->profileEmail,
+            'about_me'  =>  Str::title($request->aboutMe),
+            'image' =>  $request->file('profilePictureFile') ? $filename : 'default.jpg',
         ];
 
-        if (User::find($user->id)->update($data)) {
+        if ($request->oldPassword != "") {
+            $validator = Validator::make($request->all(), [
+                'oldPassword'   =>  'required',
+                'newPassword'   =>  'required',
+                'confirmPassword'   =>  'required'
+            ], [
+                'oldPassword.required'  =>  'Old Password is required',
+                'newPassword.required'  =>  'New Password is required',
+                'confirmPassword.required'  =>  'Confirm Password is required',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'data'  =>  [
+                        'status'    =>  false,
+                        'message'   =>  $validator->errors()
+                    ]
+                ]);
+            } else {
+                if (!Hash::check($request->oldPassword, $user->password)) {
+                    return response()->json([
+                        'data'  =>  [
+                            'status'    =>  false,
+                            'message'   =>  'Old Password is not match'
+                        ]
+                    ]);
+                }
+
+                if ($request->newPassword !== $request->confirmPassword) {
+                    return response()->json([
+                        'data'  =>  [
+                            'status'    =>  false,
+                            'message'   =>  'New Password & Confirm Password is not match'
+                        ]
+                    ]);
+                }
+
+                if (Hash::check($request->newPassword, $user->password)) {
+                    return response()->json([
+                        'data'  =>  [
+                            'status'    =>  false,
+                            'message'   =>  'New Password cannot same with Old Password'
+                        ]
+                    ]);
+                }
+
+                $data['password'] = bcrypt($request->newPassword);
+            }
+        }
+
+        if (User::where('username', $user->username)->update($data)) {
             return response()->json([
                 'data'  =>  [
                     'status'    =>  true,
@@ -277,72 +358,8 @@ class UserController extends Controller
         }
     }
 
-    public function changePassword(Request $request, User $user)
+    public function getProfile(User $user)
     {
-        $validator = Validator::make($request->all(), [
-            'oldPassword'   =>  'required',
-            'newPassword'   =>  'required',
-            'confirmPassword'   =>  'required'
-        ], [
-            'oldPassword.required'  =>  'Old Password is required',
-            'newPassword.required'  =>  'New Password is required',
-            'confirmPassword.required'  =>  'Confirm Password is required',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json([
-                'data'  =>  [
-                    'status'    =>  false,
-                    'message'   =>  $validator->errors()
-                ]
-            ]);
-        } else {
-            if (!Hash::check($request->oldPassword, $user->password)) {
-                return response()->json([
-                    'data'  =>  [
-                        'status'    =>  false,
-                        'message'   =>  'Old Password is not match'
-                    ]
-                ]);
-            }
-
-            if ($request->newPassword !== $request->confirmPassword) {
-                return response()->json([
-                    'data'  =>  [
-                        'status'    =>  false,
-                        'message'   =>  'New Password & Confirm Password is not match'
-                    ]
-                ]);
-            }
-
-            if (!Hash::check($request->newPassword, $user->password)) {
-                return response()->json([
-                    'data'  =>  [
-                        'status'    =>  false,
-                        'message'   =>  'New Password cannot same with Old Password'
-                    ]
-                ]);
-            }
-
-            $data = [
-                'password'  =>  bcrypt($request->newPassword)
-            ];
-
-            if (User::find($user->id)->update($data)) {
-                return response()->json([
-                    'data'  =>  [
-                        'status'    =>  true,
-                        'message'   =>  'Password is successfully change'
-                    ]
-                ]);
-            } else {
-                return response()->json([
-                    'data'  =>  [
-                        'status'    =>  false,
-                        'message'   =>  'Password failed to change'
-                    ]
-                ]);
-            }
-        }
+        return response()->json($user);
     }
 }

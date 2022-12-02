@@ -10,7 +10,7 @@ use App\Models\Country;
         <div class="page-title">
             <div class="row mb-3">
                 <div class="col-6 col-md-6">
-                    <a href="{{ url('') }}/booking/maids">
+                    <a href="{{ url('') }}/booked/maids">
                         <h3>{{ $pageTitle }}</h3>
                     </a>
                 </div>
@@ -47,7 +47,7 @@ use App\Models\Country;
                         <div class="card-footer">
                             <div class="row">
                                 <div class="col d-flex justify-content-end gap-2">
-                                    <a href="{{ url('') }}/booking/maids" class="btn btn-danger"><i
+                                    <a href="{{ url('') }}/booked/maids" class="btn btn-danger"><i
                                             class="fa-solid fa-times me-2"></i>Cancel</a>
                                     <a href="javascript:;" class="btn btn-primary" id="btn-save"
                                         data-csrf="{{ csrf_token() }}"><i class="fa-solid fa-save me-2"></i>Save</a>

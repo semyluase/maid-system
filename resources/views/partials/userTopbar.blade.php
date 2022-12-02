@@ -3,7 +3,7 @@
         <a class="h4 text-primary" href="{{ url('') }}">
             <img class="avatar avatar-xl" src="{{ asset('assets/image/header/logo.png') }}" alt="Logo"
                 style="width: 40px; height: 40px;">
-            {{ config('app.name_user') }}
+            {{ config('app.name') }}
         </a>
     </div>
     <div class="header-top-right">
@@ -22,8 +22,10 @@
                 </div>
             </a>
             <ul class="dropdown-menu dropdown-menu-end shadow-lg" aria-labelledby="topbarUserDropdown">
-                <li><a class="dropdown-item" href="#">My Account</a></li>
-                <li><a class="dropdown-item" href="#">Settings</a></li>
+                <li>
+                    <h6 class="dropdown-header">Hello, {{ Auth::user()->name }}</h6>
+                </li>
+                <li><a class="dropdown-item" href="{{ url('') }}/manage/profile">My Profile</a></li>
                 <li>
                     <hr class="dropdown-divider" />
                 </li>

@@ -7,12 +7,14 @@ use App\Http\Resources\User\MaidResource;
 use App\Mail\ApprovalMail;
 use App\Models\Master\Maid\Maid;
 use App\Models\Notification;
+use App\Models\Report\Taken;
 use App\Models\User;
 use App\Models\User\Document;
 use App\Models\User\HistoryTakenMaid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Mail;
+use ZipArchive;
 
 class MaidController extends Controller
 {
@@ -25,10 +27,20 @@ class MaidController extends Controller
     {
         $dataMaid = new MaidResource(Maid::where('is_uploaded', true)
             ->where('is_taken', false)
+            ->where('code_maid', '<>', '')
             ->latest()
             ->country($request->country)
-            ->filter(['search' => $request->search])
-            ->paginate(9));
+            ->country($request->countries)
+            ->filter([
+                'search' => request('search'),
+                'code'  =>  request('code'),
+                'name'  =>  request('name'),
+                'start_age'  =>  request('start_age'),
+                'end_age'  =>  request('end_age'),
+                'education'  =>  request('education'),
+                'marital'  =>  request('marital'),
+            ])
+            ->paginate(50));
 
         return view('transaction.maid.index', [
             'title' =>  'Transaction Maid',
@@ -94,6 +106,8 @@ class MaidController extends Controller
             if (Maid::find($maid->id)->update([
                 'is_taken'  =>  true,
                 'is_approved'  =>  true,
+                'is_bookmark'   =>  false,
+                'is_uploaded'   =>  false,
                 'user_taken'    =>  $maid->user_uploaded,
                 'user_approved'   =>  auth()->user()->id,
                 'apporoved_at' =>  Carbon::now('Asia/Jakarta'),
@@ -111,6 +125,12 @@ class MaidController extends Controller
                     'type_action'   =>  "approved",
                     'message'   =>  auth()->user()->name . ' has approved ' . $maid->code_maid . ' to ' . $maid->userUploaded->name,
                     'user_action'   =>  auth()->user()->id,
+                ]);
+
+                Taken::create([
+                    'maid_id'   =>  $maid->id,
+                    'user_id'   =>  $maid->user_uploaded,
+                    'taken_at'  =>  Carbon::now('Asia/Jakarta'),
                 ]);
 
                 $agency = User::where('id', $maid->user_uploaded)->first();
@@ -207,7 +227,22 @@ class MaidController extends Controller
             'title' =>  'Uploaded Document',
             'pageTitle' =>  'Uploaded Document',
             'documents' =>  $dataDocument,
+            'maid'  =>  $dataMaid,
             'js'    =>  ['assets/js/apps/transaction/maid/document.js']
         ]);
+    }
+
+    public function download(Request $request)
+    {
+        // $zip = new ZipArchive;
+
+        // $fileNameZip = 'JO-' . $request->maids . '.zip';
+        $dataMaid = Maid::where('code_maid', $request->maids)
+            ->first();
+
+        $document = Document::where('maid_id', $dataMaid->id)
+            ->first();
+
+        return response()->download($_SERVER['DOCUMENT_ROOT'] . $document->doc_location . $document->doc_filename, $document->doc_filename);
     }
 }

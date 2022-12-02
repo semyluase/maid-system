@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Master\Maid;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\User\MaidResource;
 use App\Models\Country;
+use App\Models\Document;
+use App\Models\EmailSending;
 use App\Models\Master\Maid\Interview;
 use App\Models\Master\Maid\Language;
 use App\Models\Master\Maid\Maid;
@@ -13,8 +15,10 @@ use App\Models\Master\Maid\Other;
 use App\Models\Master\Maid\Skill;
 use App\Models\Master\Maid\WorkExperience;
 use App\Models\Question;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use PDF;
@@ -34,10 +38,20 @@ class MaidController extends Controller
             ->where('is_blacklist', false)
             ->where('is_delete', false)
             ->where('is_taken', false)
+            ->where('code_maid', '<>', '')
             ->latest()
-            ->filter(['search' => request('search')])
+            ->filter([
+                'search' => request('search'),
+                'code'  =>  request('code'),
+                'name'  =>  request('name'),
+                'start_age'  =>  request('start_age'),
+                'end_age'  =>  request('end_age'),
+                'education'  =>  request('education'),
+                'marital'  =>  request('marital'),
+            ])
             ->country(request('country'))
-            ->paginate(20));
+            ->country(request('countries'))
+            ->paginate(50));
 
         return view('master.maid.index', [
             'title' =>  'Maid Data',
@@ -118,7 +132,7 @@ class MaidController extends Controller
             $js = 'assets/js/apps/master/maid/forms/singapore.js';
         }
 
-        if ($request->country === 'ALL') {
+        if ($request->country === 'FM') {
             $view = 'master.maid.forms.allFormat';
             $js = 'assets/js/apps/master/maid/forms/allFormat.js';
         }
@@ -329,7 +343,7 @@ class MaidController extends Controller
                     }
                 }
             }
-        } else if ($request->countryRequest == 'ALL') {
+        } else if ($request->countryRequest == 'FM') {
             $data = [
                 convertCountry($request->countryRequest)    =>  true,
                 'code_maid' =>  $request->codeMaid,
@@ -348,11 +362,12 @@ class MaidController extends Controller
                 'number_of_children'  =>  $request->childrenNumberMaid,
                 'family_background'    =>  $request->familyMaid,
                 'children_ages'  =>  $request->childrenAgeMaid,
-                'note'  =>  $request->heirMaid,
+                'hobby'  =>  $request->heirMaid,
+                'note'  =>  $request->noteMaid,
                 'paspor_no'  =>  $request->pasporNoMaid,
                 'paspor_issue'  =>  $request->placeIssueMaid,
-                'paspor_date'  =>  Carbon::parse($request->doiPasporMaid, 'Asia/Jakarta')->isoFormat('YYYY-MM-DD'),
-                'expire_date'  =>  Carbon::parse($request->doePasporMaid, 'Asia/Jakarta')->isoFormat('YYYY-MM-DD'),
+                'paspor_date'  =>  $request->doiPasporMaid ? Carbon::parse($request->doiPasporMaid, 'Asia/Jakarta')->isoFormat('YYYY-MM-DD') : null,
+                'expire_date'  =>  $request->doePasporMaid ? Carbon::parse($request->doePasporMaid, 'Asia/Jakarta')->isoFormat('YYYY-MM-DD') : null,
                 'picture_location'  =>  'assets/image/maids/photos/',
                 'picture_base64'    =>  base64_encode($fileBase),
                 'picture_name'  =>  $fileNameFull,
@@ -420,6 +435,8 @@ class MaidController extends Controller
                         convertCountry($request->countryRequest)    =>  true,
                         'question_id'   =>  $key,
                         'answer'  =>  true,
+                        'is_willingness'  =>  true,
+                        'note'  =>  $value == "" ? null : $value,
                         'created_at'    =>  Carbon::now('Asia/Jakarta')->isoFormat('YYYY-MM-DD HH:mm:ss'),
                         'updated_at'    =>  Carbon::now('Asia/Jakarta')->isoFormat('YYYY-MM-DD HH:mm:ss')
                     ];
@@ -475,6 +492,7 @@ class MaidController extends Controller
                 'picture_name'  =>  $fileNameFull,
                 'youtube_link'  =>  $request->youtubeMaid,
                 'user_updated'  =>  auth()->user()->id,
+                'note'  =>  $request->noteMaid,
                 'is_active' =>  true,
             ];
 
@@ -605,6 +623,23 @@ class MaidController extends Controller
                 Interview::insert($dataInterview);
             }
 
+            $dataDocument = Document::where('id', $dataMaid->id)
+                ->first();
+
+            if ($dataMaid->full_name != '') {
+                if ($dataDocument) {
+                    Document::find($dataDocument->id)->update([
+                        'is_generate'   =>  false,
+                    ]);
+                } else {
+                    Document::create([
+                        'maid_id'   =>  $dataMaid->id,
+                        'location_file'   =>  'assets/pdf/',
+                        'file_name'   =>  $dataMaid->code_maid . ' - ' . $dataMaid->full_name . '.pdf',
+                    ]);
+                }
+            }
+
             return response()->json([
                 'data'  =>  [
                     'status'    =>  true,
@@ -649,7 +684,7 @@ class MaidController extends Controller
             if ($request->country === 'TW') $country = 'is_taiwan';
             if ($request->country === 'MY') $country = 'is_malaysia';
             if ($request->country === 'BR') $country = 'is_brunei';
-            if ($request->country === 'ALL') $country = 'is_all_format';
+            if ($request->country === 'FM') $country = 'is_all_format';
 
             $dataMaid = Maid::create([
                 'code_maid' =>  Str::upper($request->maid),
@@ -765,7 +800,7 @@ class MaidController extends Controller
             $js = 'assets/js/apps/master/maid/detail/singapore.js';
         }
 
-        if ($request->country === 'ALL') {
+        if ($request->country === 'FM') {
             $view = 'master.maid.detail.allFormat';
             $js = 'assets/js/apps/master/maid/detail/allFormat.js';
         }
@@ -859,7 +894,7 @@ class MaidController extends Controller
             $js = 'assets/js/apps/master/maid/edit/singapore.js';
         }
 
-        if ($request->country === 'ALL') {
+        if ($request->country === 'FM') {
             $view = 'master.maid.edit.allFormat';
             $js = 'assets/js/apps/master/maid/edit/allFormat.js';
         }
@@ -1068,6 +1103,21 @@ class MaidController extends Controller
                 Other::insert($dataOther);
             }
 
+            $dataDocument = Document::where('id', $maid->id)
+                ->first();
+
+            if ($dataDocument) {
+                Document::find($dataDocument->id)->update([
+                    'is_generate'   =>  false,
+                ]);
+            } else {
+                Document::create([
+                    'maid_id'   =>  $maid->id,
+                    'location_file'   =>  'assets/pdf/',
+                    'file_name'   =>  $maid->code_maid . ' - ' . $maid->full_name . '.pdf',
+                ]);
+            }
+
             return response()->json([
                 'data'  =>  [
                     'status'    =>  true,
@@ -1206,7 +1256,7 @@ class MaidController extends Controller
         if ($request->country === 'TW') $country = 'is_taiwan';
         if ($request->country === 'MY') $country = 'is_malaysia';
         if ($request->country === 'BR') $country = 'is_brunei';
-        if ($request->country === 'ALL') $country = 'is_all_format';
+        if ($request->country === 'FM') $country = 'is_all_format';
 
         if ($dataCounter) {
             return response()->json([
@@ -1253,8 +1303,6 @@ class MaidController extends Controller
 
         if ($dataWork) {
             foreach ($dataWork as $key => $value) {
-                $displayNone = auth()->user()->role->slug == "super-admin" ? '' : 'd-none';
-
                 if ($request->country == 'SG') {
                     $results[] = [
                         $value->year_start,
@@ -1265,7 +1313,7 @@ class MaidController extends Controller
                         $value->remarks,
                         '<div class="d-flex gap-2">
                             <a href="javascript:;" onClick="fnFormMaid.onEditWork(\'' . $value->id . '\')" class="btn btn-outline-warning"><i class="fa-solid fa-edit"></i></a>
-                            <a href="javascript:;" onClick="fnFormMaid.onDeleteWork(\'' . $value->id . '\',\'' . csrf_token() . '\')" class="btn btn-outline-danger ' . $displayNone . '"><i class="fa-solid fa-trash"></i></a>
+                            <a href="javascript:;" onClick="fnFormMaid.onDeleteWork(\'' . $value->id . '\',\'' . csrf_token() . '\')" class="btn btn-outline-danger"><i class="fa-solid fa-trash"></i></a>
                         </div>'
                     ];
                 } else {
@@ -1277,7 +1325,7 @@ class MaidController extends Controller
                         $value->description,
                         '<div class="d-flex gap-2">
                             <a href="javascript:;" onClick="fnFormMaid.onEditWork(\'' . $value->id . '\')" class="btn btn-outline-warning"><i class="fa-solid fa-edit"></i></a>
-                            <a href="javascript:;" onClick="fnFormMaid.onDeleteWork(\'' . $value->id . '\',\'' . csrf_token() . '\')" class="btn btn-outline-danger ' . $displayNone . '"><i class="fa-solid fa-trash"></i></a>
+                            <a href="javascript:;" onClick="fnFormMaid.onDeleteWork(\'' . $value->id . '\',\'' . csrf_token() . '\')" class="btn btn-outline-danger"><i class="fa-solid fa-trash"></i></a>
                         </div>'
                     ];
                 }
@@ -1445,7 +1493,7 @@ class MaidController extends Controller
             ->where('work_overseas', false)
             ->get();
 
-        $path = $_SERVER['DOCUMENT_ROOT'] . '/assets/image/header/header.png';
+        $path = public_path('assets/image/header/header.png');
         $type = pathinfo($path, PATHINFO_EXTENSION);
         $dataLogo = file_get_contents($path);
         $baseLogo = 'data:image/' . $type . ';base64,' . base64_encode($dataLogo);
@@ -1453,20 +1501,18 @@ class MaidController extends Controller
         $view = 'master.maid.pdf.other';
 
         if ($request->country == 'SG') {
-            $baseLogo = '';
             $view = 'master.maid.pdf.singapore';
         }
 
-        if ($request->country == 'ALL') {
-            $baseLogo = '';
-            if ($request->format == 'formatA') {
+        if ($request->country == 'FM') {
+            if (substr($dataMaid->code_maid, 0, 1) == "M") {
                 $view = 'master.maid.pdf.allFormatA';
             } else {
                 $view = 'master.maid.pdf.allFormatB';
             }
         }
 
-        $photoPath = $_SERVER['DOCUMENT_ROOT'] . '/assets/image/maids/photos/' . $dataMaid->picture_name;
+        $photoPath = $dataMaid->picture_name ? public_path('assets/image/maids/photos/' . $dataMaid->picture_name) : public_path('assets/image/web/no_content.jpg');
         $photoType = pathinfo($photoPath, PATHINFO_EXTENSION);
         $dataPhoto = file_get_contents($photoPath);
         $basePhoto = 'data:image/' . $photoType . ';base64,' . base64_encode($dataPhoto);
@@ -1493,8 +1539,14 @@ class MaidController extends Controller
             'pdf'   =>  $pdf,
         ]);
 
-        PDF::createPDF($html, $dataMaid->code_maid . '.pdf', true);
+        if (File::exists(public_path('assets/pdf/' . $dataMaid->code_maid . ' - ' . $dataMaid->full_name . '.pdf'))) {
+            File::delete(public_path('assets/pdf/' . $dataMaid->code_maid . ' - ' . $dataMaid->full_name . '.pdf'));
+        }
+
+        PDF::createPDF($html, $dataMaid->code_maid . ' - ' . $dataMaid->full_name . '.pdf', true);
         exit;
+
+        // return response()->download(public_path('assets/pdf/' . $dataMaid->code_maid . ' - ' . $dataMaid->full_name . '.pdf'));
     }
 
     public function getTrashedData(Request $request)
@@ -1507,5 +1559,56 @@ class MaidController extends Controller
             ->latest()
             ->filter(['search' => request('search', 'country')])
             ->paginate(10);
+    }
+
+    public function sendMail()
+    {
+        return view('master.maid.mail.index', [
+            'title' =>  'Available Worker Mail',
+            'pageTitle' =>  'Available Worker Mail',
+            'js'    =>  ['assets/js/apps/master/maid/mail/app.js'],
+        ]);
+    }
+
+    public function sendingMail(Request $request)
+    {
+        $data = array();
+        $arrWorker = array();
+        $docs = array();
+
+        $agencies = explode(',', $request->agencies);
+
+        foreach ($agencies as $key => $agency) {
+            foreach ($request->workers as $key => $worker) {
+                $dataWorker = Maid::where('id', $worker)->first();
+
+                $arrWorker[] = $dataWorker;
+                $docs[] = '/assets/pdf/' . $dataWorker->code_maid . ' - ' . $dataWorker->full_name . '.pdf';
+            }
+            $data[] = [
+                'email' =>  Str::remove(' ', $agencies),
+                'files_all' =>  json_encode($docs),
+                'maid_all'  =>  json_encode($arrWorker),
+                'title' =>  'Available Workers',
+                'created_at'    =>  Carbon::now('Asia/Jakarta'),
+                'is_blast'  =>  true,
+            ];
+        }
+
+        if (EmailSending::insert($data)) {
+            return response()->json([
+                'data'  =>  [
+                    'status'    =>  true,
+                    'message'   =>  "Email success to send",
+                ]
+            ]);
+        }
+
+        return response()->json([
+            'data'  =>  [
+                'status'    =>  false,
+                'message'   =>  "Email fail to send",
+            ]
+        ]);
     }
 }

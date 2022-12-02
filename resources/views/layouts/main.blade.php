@@ -66,7 +66,6 @@
     <script src="{{ asset('assets/mazer/dist/assets/vendors/rater-js/rater-js.js') }}"></script>
     <script src="{{ asset('assets/mazer/dist/assets/vendors/jquery-datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/momentjs/min/moment-with-locales.min.js') }}"></script>
-    <script src="{{ asset('assets/mazer/dist/assets/vendors/ckeditor/ckeditor.js') }}"></script>
     <script src="{{ asset('assets/vendor/datepicker/js/datepicker-full.min.js') }}"></script>
     <script
         src="{{ asset('assets/mazer/dist/assets/vendors/jquery-datatables/custom.jquery.dataTables.bootstrap5.min.js') }}">
@@ -108,7 +107,7 @@
         const loggedOut = async (csrf) => {
             await swalWithBootstrapButtons.fire({
                 title: 'Log Out',
-                text: "Apakah yakin akan logout?",
+                text: "Are you sure to logged out?",
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',

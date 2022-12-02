@@ -17,7 +17,7 @@ class Question extends Model
         if ($country === "TW") $query->where('is_taiwan', true);
         if ($country === "MY") $query->where('is_malaysia', true);
         if ($country === "BN") $query->where('is_brunei', true);
-        if ($country === "ALL") $query->where('is_all_format', true);
+        if ($country === "FM") $query->where('is_all_format', true);
         return $query;
     }
 

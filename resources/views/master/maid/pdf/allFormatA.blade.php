@@ -53,7 +53,7 @@ $education = [
         }
 
         body {
-            margin: 50px 64px;
+            margin: 0 64px 0 64px;
         }
 
         .text-mandarin {
@@ -75,6 +75,9 @@ $education = [
 </head>
 
 <body>
+    <header>
+        <img src="{{ $header }}" alt="Header PDF" class="bg-white" style="width: 100%;">
+    </header>
     <div style="color: #8d3f3f; font-size:20px; text-align: center; font-weight: 700">PERSONAL BIODATA</div>
     <div
         style="border-style:solid none; border-top-width: 1px; border-bottom-width: 2px; border-color: #0a0a0a; background: rgba(18, 141, 199, 0.836)">
@@ -144,7 +147,7 @@ $education = [
                 <td style="width: 25%;">Heir name</td>
                 <td>:</td>
                 <td colspan="5" style="width:73%;border-bottom: #0a0a0a solid 1px; color: #0f29a0;">
-                    {{ $maid->note }}</td>
+                    {{ $maid->hobby }}</td>
             </tr>
             <tr>
                 <td style="width: 25%;">Number and ages of children</td>
@@ -212,10 +215,25 @@ $education = [
                             <tr>
                                 <td>
                                     @foreach ($willingnesses as $willingness)
-                                        {!! $willingness->answer == 1
-                                            ? '<span style="border: #0a0a0a solid 1px; margin-right:5px;">V</span>'
-                                            : '<span style="border: #0a0a0a solid 1px; margin-right:5px; color:#ffffff;">V</span>' !!} <span
-                                            style="margin-right: 10px;">{{ $willingness->question }}</span>
+                                        @if ($willingness->is_check)
+                                            {!! $willingness->answer == 1
+                                                ? '<span style="border: #0a0a0a solid 1px; margin-right:5px;">V</span>'
+                                                : '<span style="border: #0a0a0a solid 1px; margin-right:5px; color:#ffffff;">V</span>' !!} <span
+                                                style="margin-right: 10px;">{{ $willingness->question }}</span>
+                                        @else
+                                            {!! $willingness->note != null
+                                                ? '<span style="border: #0a0a0a solid 1px; margin-right:5px; margin-bottom:20px;">V</span>'
+                                                : '<span style="border: #0a0a0a solid 1px; margin-right:5px; color:#ffffff; margin-bottom:20px;">V</span>' !!} <span
+                                                style="margin-right: 10px; margin-bottom:20px;">{{ $willingness->question }}
+                                                : </span>
+                                            @if ($willingness->note != null)
+                                                <span
+                                                    style="margin-right: 10px;"><u>{{ $willingness->note }}</u></span>
+                                            @else
+                                                <span
+                                                    style="margin-right: 10px; margin-bottom:20px;">..............................</span>
+                                            @endif
+                                        @endif
                                     @endforeach
                                 </td>
                             </tr>
@@ -284,6 +302,8 @@ $education = [
                                         <div>{{ $work->description }}
                                         </div>
                                     @endforeach
+                                    <div>Note : {{ $maid->note }}
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
