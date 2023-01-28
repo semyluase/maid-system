@@ -26,6 +26,7 @@
     <link rel="shortcut icon" href="{{ asset('assets/image/header/logo.ico') }}" type="image/png" />
 
     <link rel="stylesheet" href="{{ asset('assets/mazer/dist/assets/vendors/iconly/bulk.css') }}" />
+    @livewireStyles()
 
     <script>
         const baseUrl = '{{ url('') }}'
@@ -160,6 +161,7 @@
         }
     }
     ?>
+    @livewireScripts()
 </body>
 
 </html>

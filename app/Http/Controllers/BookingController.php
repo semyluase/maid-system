@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\User\MaidResource;
 use App\Models\Master\Maid\Maid;
+use App\Models\Notification;
 use App\Models\User\HistoryTakenMaid;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -13,7 +14,6 @@ class BookingController extends Controller
     public function index(Request $request)
     {
         $dataMaid = new MaidResource(Maid::where('is_bookmark', true)
-            ->where('is_taken', false)
             ->where('is_active', true)
             ->where('code_maid', '<>', '')
             ->latest()
@@ -27,8 +27,10 @@ class BookingController extends Controller
                 'end_age'  =>  request('end_age'),
                 'education'  =>  request('education'),
                 'marital'  =>  request('marital'),
-            ])
-            ->paginate(50));
+                'category'  =>  request('category'),
+                'branch'  =>  request('branch'),
+            ], request('countries'))
+            ->paginate(50)->withQueryString());
 
         return view('booking.index', [
             'title' =>  'Booking Worker',
@@ -66,6 +68,14 @@ class BookingController extends Controller
                 'type_action'   =>  'booked',
                 'message'   =>  'Booking worker ' . $dataMaid->code_maid . ' till ' . Carbon::now('Asia/Jakarta')->addDays($request->days)->isoFormat("DD MMMM YYYY"),
                 'user_action'   =>  auth()->user()->id,
+            ]);
+
+            Notification::create([
+                'tanggal' => Carbon::now('Asia/Jakarta'),
+                'message'   =>  $dataMaid->code_maid . ' - ' . $dataMaid->full_name . " Has Hold to you, please upload JO before " . Carbon::now('Asia/Jakarta')->addDays($request->days)->isoFormat("DD MMMM YYYY"),
+                'type'  =>  "Hold",
+                'from_user' =>  auth()->user()->id,
+                'to_user'   =>  $request->agency,
             ]);
         }
 

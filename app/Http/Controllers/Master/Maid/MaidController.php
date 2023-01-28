@@ -14,6 +14,7 @@ use App\Models\Master\Maid\Medical;
 use App\Models\Master\Maid\Other;
 use App\Models\Master\Maid\Skill;
 use App\Models\Master\Maid\WorkExperience;
+use App\Models\Notification;
 use App\Models\Question;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use PDF;
+use Spatie\Image\Image;
 
 class MaidController extends Controller
 {
@@ -37,7 +39,6 @@ class MaidController extends Controller
             ->where('is_trash', false)
             ->where('is_blacklist', false)
             ->where('is_delete', false)
-            ->where('is_taken', false)
             ->where('code_maid', '<>', '')
             ->latest()
             ->filter([
@@ -48,10 +49,12 @@ class MaidController extends Controller
                 'end_age'  =>  request('end_age'),
                 'education'  =>  request('education'),
                 'marital'  =>  request('marital'),
-            ])
+                'category'  =>  request('category'),
+                'branch'  =>  request('branch'),
+            ], request('countries'))
             ->country(request('country'))
             ->country(request('countries'))
-            ->paginate(50));
+            ->paginate(50)->withQueryString());
 
         return view('master.maid.index', [
             'title' =>  'Maid Data',
@@ -195,7 +198,11 @@ class MaidController extends Controller
             $fileBase = str_replace('data:image/' . $photoMaid->getClientOriginalExtension() . ';base64,', '', $photoMaid);
             $fileBase = str_replace(' ', '+', $photoMaid);
 
-            $photoMaid->move($_SERVER['DOCUMENT_ROOT'] . '/assets/image/maids/photos/', $fileNameFull);
+            $photoMaid->move(public_path('assets/image/maids/photos/'), $fileNameFull);
+
+            Image::load(public_path('assets/image/maids/photos/') . $fileNameFull)
+                ->quality(15)
+                ->save(public_path('assets/image/maids/photos/') . $fileNameFull);
         }
 
         $data = [];
@@ -551,75 +558,75 @@ class MaidController extends Controller
         }
 
         if (Maid::where('code_maid', $request->codeMaid)->update($data)) {
+            $language = Language::where('maid_id', $dataMaid->id)
+                ->get();
+
+            if ($language) {
+                Language::where('maid_id', $dataMaid->id)->delete();
+            }
+
             if ($dataLanguage) {
-                $language = Language::where('maid_id', $dataMaid->id)
-                    ->get();
-
-                if ($language) {
-                    Language::where('maid_id', $dataMaid->id)->delete();
-                }
-
                 Language::insert($dataLanguage);
             }
 
+            $skill = Skill::where('maid_id', $dataMaid->id)
+                ->where('is_willingness', false)
+                ->get();
+
+            if ($skill) {
+                Skill::where('maid_id', $dataMaid->id)
+                    ->where('is_willingness', false)->delete();
+            }
+
             if ($dataSkill) {
-                $skill = Skill::where('maid_id', $dataMaid->id)
-                    ->where('is_willingness', false)
-                    ->get();
-
-                if ($skill) {
-                    Skill::where('maid_id', $dataMaid->id)
-                        ->where('is_willingness', false)->delete();
-                }
-
                 foreach ($dataSkill as $key => $value) {
                     Skill::create($value);
                 }
             }
 
+            $willingness = Skill::where('maid_id', $dataMaid->id)
+                ->where('is_willingness', true)
+                ->get();
+
+            if ($willingness) {
+                Skill::where('maid_id', $dataMaid->id)
+                    ->where('is_willingness', true)->delete();
+            }
+
             if ($dataWilling) {
-                $willingness = Skill::where('maid_id', $dataMaid->id)
-                    ->where('is_willingness', true)
-                    ->get();
-
-                if ($willingness) {
-                    Skill::where('maid_id', $dataMaid->id)
-                        ->where('is_willingness', true)->delete();
-                }
-
                 Skill::insert($dataWilling);
             }
 
+            $other = Other::where('maid_id', $dataMaid->id)
+                ->get();
+
+            if ($other) {
+                Other::where('maid_id', $dataMaid->id)->delete();
+            }
+
             if ($dataOther) {
-                $other = Other::where('maid_id', $dataMaid->id)
-                    ->get();
-
-                if ($other) {
-                    Other::where('maid_id', $dataMaid->id)->delete();
-                }
-
                 Other::insert($dataOther);
             }
 
+            $medical = Medical::where('maid_id', $dataMaid->id)
+                ->get();
+
+            if ($medical) {
+                Medical::where('maid_id', $dataMaid->id)->delete();
+            }
+
             if ($dataMedical) {
-                $medical = Medical::where('maid_id', $dataMaid->id)
-                    ->get();
-
-                if ($medical) {
-                    Medical::where('maid_id', $dataMaid->id)->delete();
-                }
-
                 Medical::insert($dataMedical);
             }
 
+            $interview = Interview::where('maid_id', $dataMaid->id)
+                ->get();
+
+            if ($interview) {
+                Interview::where('maid_id', $dataMaid->id)->delete();
+            }
+
             if ($dataInterview) {
-                $interview = Interview::where('maid_id', $dataMaid->id)
-                    ->get();
-
-                if ($interview) {
-                    Interview::where('maid_id', $dataMaid->id)->delete();
-                }
-
                 Interview::insert($dataInterview);
             }
 
@@ -637,6 +644,50 @@ class MaidController extends Controller
                         'location_file'   =>  'assets/pdf/',
                         'file_name'   =>  $dataMaid->code_maid . ' - ' . $dataMaid->full_name . '.pdf',
                     ]);
+                }
+
+
+                $country = Country::where('code', $request->countryRequest)
+                    ->first();
+
+                $dataUser = null;
+
+                if ($country) {
+                    $dataUser = User::where('country_id', $country->id)
+                        ->where('is_formal', false)
+                        ->get();
+
+                    if ($country->code == 'FM') {
+                        if (Str::substr($dataMaid->code_maid, 0, 1) == 'M') {
+                            $countryFormal = Country::where('code', 'MY')
+                                ->first();
+
+                            $dataUser = User::where('country_id', $countryFormal->id)
+                                ->where('is_formal', true)
+                                ->get();
+                        }
+
+                        if (Str::substr($dataMaid->code_maid, 0, 1) == 'B') {
+                            $countryFormal = Country::where('code', 'BN')
+                                ->first();
+
+                            $dataUser = User::where('country_id', $countryFormal->id)
+                                ->where('is_formal', true)
+                                ->get();
+                        }
+                    }
+                }
+
+                if ($dataUser) {
+                    foreach ($dataUser as $key => $value) {
+                        Notification::create([
+                            'tanggal'   =>  Carbon::now('Asia/Jakarta')->isoFormat('YYYY-MM-DD'),
+                            'message'   =>  'New Worker ' . $dataMaid->code_maid . ' - ' . $dataMaid->full_name . ' is Available to you',
+                            'from_user' =>  auth()->user()->id,
+                            'to_user'   =>  $value->id,
+                            'type'  =>  'new worker',
+                        ]);
+                    }
                 }
             }
 
@@ -1249,7 +1300,9 @@ class MaidController extends Controller
     public function generateCounter(Request $request)
     {
         // $dataCounter = createCounter(Str::upper($request->maid), 'maid');
-        $dataCounter = columnToID('maid', 'code_maid', $request->maid);
+        // $dataCounter = columnToID('maid', 'code_maid', $request->maid);
+        $dataCounter = Maid::where('code_maid', $request->maid)
+            ->first();
 
         if ($request->country === 'HK') $country = 'is_hongkong';
         if ($request->country === 'SG') $country = 'is_singapore';
@@ -1259,6 +1312,15 @@ class MaidController extends Controller
         if ($request->country === 'FM') $country = 'is_all_format';
 
         if ($dataCounter) {
+            if ($dataCounter->is_trash) {
+                return response()->json([
+                    'data'  =>  [
+                        'status'    =>  false,
+                        'message'   =>  'Data with Code <b>' . $dataCounter->code_maid . '</b> is in Trash. Please Delete or Activated the data'
+                    ]
+                ]);
+            }
+
             return response()->json([
                 'data'  =>  [
                     'status'    =>  false,
@@ -1584,9 +1646,10 @@ class MaidController extends Controller
 
                 $arrWorker[] = $dataWorker;
                 $docs[] = '/assets/pdf/' . $dataWorker->code_maid . ' - ' . $dataWorker->full_name . '.pdf';
+                $this->generateDocument($dataWorker);
             }
             $data[] = [
-                'email' =>  Str::remove(' ', $agencies),
+                'email' =>  Str::remove(' ', $agency),
                 'files_all' =>  json_encode($docs),
                 'maid_all'  =>  json_encode($arrWorker),
                 'title' =>  'Available Workers',
@@ -1610,5 +1673,154 @@ class MaidController extends Controller
                 'message'   =>  "Email fail to send",
             ]
         ]);
+    }
+
+    public function generateDocument($maidData)
+    {
+        if ($maidData) {
+            $country = 'FM';
+
+            if ($maidData->is_hongkong) $country = 'HK';
+            if ($maidData->is_taiwan) $country = 'TW';
+            if ($maidData->is_singapore) $country = 'SG';
+            if ($maidData->is_malaysia) $country = 'MY';
+            if ($maidData->is_brunei) $country = 'BN';
+
+            $language = Question::questionMaid($maidData->id)
+                ->where('is_active', true)
+                ->country($country)
+                ->orderBy('id')
+                ->get();
+
+            $skill = Question::specialityMaid($maidData->id)
+                ->where('is_active', true)
+                ->country($country)
+                ->where('is_child', false)
+                ->orderBy('id')
+                ->get();
+
+            $willingness = Question::willingnessMaid($maidData->id)
+                ->where('is_active', true)
+                ->country($country)
+                ->orderBy('id')
+                ->get();
+
+            $other = Question::otherMaid($maidData->id)
+                ->where('is_active', true)
+                ->country($country)
+                ->get();
+
+            $medical = Question::medicalMaid($maidData->id)
+                ->where('is_active', true)
+                ->where('is_child', false)
+                ->country($country)
+                ->orderBy('id')
+                ->get();
+
+            $medicaltotal = collect(Question::medicalMaid($maidData->id)
+                ->where('is_active', true)
+                ->where('is_child', false)
+                ->where('is_check', true)
+                ->country($country)
+                ->orderBy('id')
+                ->get())->count();
+
+            $medicalLeft = Question::medicalMaid($maidData->id)
+                ->where('is_active', true)
+                ->where('is_child', false)
+                ->where('is_check', true)
+                ->country($country)
+                ->orderBy('id')
+                ->limit(ceil($medicaltotal / 2))
+                ->get();
+
+            $medicalRight = Question::medicalMaid($maidData->id)
+                ->where('is_active', true)
+                ->where('is_child', false)
+                ->where('is_check', true)
+                ->country($country)
+                ->orderBy('id')
+                ->skip(ceil($medicaltotal / 2))
+                ->limit($medicaltotal - ceil($medicaltotal / 2))
+                ->get();
+
+            $method = Question::methodMaid($maidData->id)
+                ->where('is_active', true)
+                ->where('is_child', false)
+                ->country($country)
+                ->orderBy('id')
+                ->get();
+
+            $interview = Question::interviewMaid($maidData->id)
+                ->where('is_active', true)
+                ->where('is_child', false)
+                ->country($country)
+                ->orderBy('id')
+                ->get();
+
+            $workOverseases = WorkExperience::where('maid_id', $maidData->id)
+                ->country($country)
+                ->where('work_overseas', true)
+                ->get();
+
+            $workDomestics = WorkExperience::where('maid_id', $maidData->id)
+                ->country($country)
+                ->where('work_overseas', false)
+                ->get();
+
+            $path = public_path('assets/image/header/header.png');
+            $type = pathinfo($path, PATHINFO_EXTENSION);
+            $dataLogo = file_get_contents($path);
+            $baseLogo = 'data:image/' . $type . ';base64,' . base64_encode($dataLogo);
+
+            $view = 'master.maid.pdf.other';
+
+            if ($country == 'SG') {
+                $view = 'master.maid.pdf.singapore';
+            }
+
+            if ($country == 'FM') {
+                if (substr($maidData->code_maid, 0, 1) == "M") {
+                    $view = 'master.maid.pdf.allFormatA';
+                } else {
+                    $view = 'master.maid.pdf.allFormatB';
+                }
+            }
+
+            $photoPath = $maidData->picture_name ? public_path('assets/image/maids/photos/' . $maidData->picture_name) : public_path('assets/image/web/no_content.jpg');
+            $photoType = pathinfo($photoPath, PATHINFO_EXTENSION);
+            $dataPhoto = file_get_contents($photoPath);
+            $basePhoto = 'data:image/' . $photoType . ';base64,' . base64_encode($dataPhoto);
+
+            $pdf = app('dompdf.wrapper');
+            $pdf->getDomPDF()->set_option("enable_php", true);
+
+            $html = view($view, [
+                'title' =>  $maidData->code_maid,
+                'maid'  =>  $maidData,
+                'languages'  =>  $language,
+                'specialities'  =>  $skill,
+                'willingnesses'  =>  $willingness,
+                'others'  =>  $other,
+                'header'    =>  $baseLogo,
+                'photo'    =>  $basePhoto,
+                'overseases'    =>  $workOverseases,
+                'domestics'    =>  $workDomestics,
+                'medicals'  =>  $medical,
+                'medicalsLeft'  =>  $medicalLeft,
+                'medicalsRight'  =>  $medicalRight,
+                'methods'   =>  $method,
+                'interviews'    =>  $interview,
+                'pdf'   =>  $pdf,
+            ]);
+
+            if (File::exists(public_path('assets/pdf/' . $maidData->code_maid . ' - ' . $maidData->full_name . '.pdf'))) {
+                File::delete(public_path('assets/pdf/' . $maidData->code_maid . ' - ' . $maidData->full_name . '.pdf'));
+            }
+
+            PDF::createDownloadPDF($html, $maidData->code_maid . ' - ' . $maidData->full_name . '.pdf', false);
+
+            return true;
+        }
     }
 }

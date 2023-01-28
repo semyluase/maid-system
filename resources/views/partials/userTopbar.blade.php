@@ -7,6 +7,8 @@
         </a>
     </div>
     <div class="header-top-right">
+        @include('partials.userNotification')
+
         <div class="dropdown">
             <a href="#" id="topbarUserDropdown"
                 class="user-dropdown d-flex align-items-center dropend dropdown-toggle" data-bs-toggle="dropdown"

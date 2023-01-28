@@ -64,7 +64,7 @@ class Maid extends Model
         return $this->belongsTo(User::class, 'user_taken', 'id');
     }
 
-    public function scopeFilter($query, array $filter)
+    public function scopeFilter($query, array $filter, $country)
     {
         $query->when($filter['search'] ?? false, fn ($query, $search) => ($query->where('full_name', 'like', "%$search%")->orWhere('code_maid', 'like', "%$search%")->orWhere('date_of_birth', 'like', "%" . Carbon::now()->subYears(intval($search))->isoFormat('YYYY') . "%")));
 
@@ -83,6 +83,86 @@ class Maid extends Model
         $query->when($filter['education'] ?? false, fn ($query, $search) => ($query->where("education", "$search")));
 
         $query->when($filter['marital'] ?? false, fn ($query, $search) => ($query->where("marital", "$search")));
+
+        $query->when($filter['category'] ?? false, function ($query, $category) {
+            if ($category == 'taken') {
+                return $query->where('is_taken', true);
+            }
+
+            if ($category == 'hold') {
+                return $query->where('is_bookmark', true);
+            }
+
+            if ($category == 'upload') {
+                return $query->where('is_uploaded', true);
+            }
+
+            if ($category == 'avail') {
+                return $query->where('is_uploaded', false)
+                    ->where('is_bookmark', false)
+                    ->where('is_uploaded', false);
+            }
+        });
+
+        if ($country == '') {
+            $query->when($filter['branch'] ?? false, function ($query, $branch) {
+                if ($branch == 'K') {
+                    return $query->whereRaw("(LEFT(code_maid,1) = 'K' OR RIGHT(LEFT(code_maid,2),1) = 'K')");
+                }
+
+                if ($branch == 'T') {
+                    return $query->whereRaw("(LEFT(code_maid,1) = 'T' OR RIGHT(LEFT(code_maid,2),1) = 'T')");
+                }
+
+                if ($branch == 'G') {
+                    return $query->whereRaw("(LEFT(code_maid,1) = 'G' OR RIGHT(LEFT(code_maid,2),1) = 'G')");
+                }
+
+                if ($branch == 'B') {
+                    return $query->whereRaw("(LEFT(code_maid,1) = 'B' OR RIGHT(LEFT(code_maid,2),1) = 'B')");
+                }
+            });
+        }
+
+        if ($country != '' && $country != 'FM') {
+            $query->when($filter['branch'] ?? false, function ($query, $branch) {
+                if ($branch == 'K') {
+                    return $query->whereRaw("LEFT(code_maid,1) = 'K'");
+                }
+
+                if ($branch == 'T') {
+                    return $query->whereRaw("LEFT(code_maid,1) = 'T'");
+                }
+
+                if ($branch == 'G') {
+                    return $query->whereRaw("LEFT(code_maid,1) = 'G'");
+                }
+
+                if ($branch == 'B') {
+                    return $query->whereRaw("LEFT(code_maid,1) = 'B'");
+                }
+            });
+        }
+
+        if ($country != '' && $country == 'FM') {
+            $query->when($filter['branch'] ?? false, function ($query, $branch) {
+                if ($branch == 'K') {
+                    return $query->whereRaw("RIGHT(LEFT(code_maid,2),1) = 'K'");
+                }
+
+                if ($branch == 'T') {
+                    return $query->whereRaw("RIGHT(LEFT(code_maid,2),1) = 'T'");
+                }
+
+                if ($branch == 'G') {
+                    return $query->whereRaw("RIGHT(LEFT(code_maid,2),1) = 'G'");
+                }
+
+                if ($branch == 'B') {
+                    return $query->whereRaw("RIGHT(LEFT(code_maid,2),1) = 'B'");
+                }
+            });
+        }
 
         return $query;
     }

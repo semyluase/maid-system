@@ -24,7 +24,9 @@
                             </li>
                         </ul>
                     </li> --}}
-                    {{-- @include('partials.notification') --}}
+                    @if (auth()->user()->role->id == 1)
+                        @include('partials.notification')
+                    @endif
                 </ul>
                 <div class="dropdown">
                     <a href="#" data-bs-toggle="dropdown" aria-expanded="false">

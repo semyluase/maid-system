@@ -32,10 +32,12 @@ class TakenController extends Controller
                 'end_age'  =>  request('end_age'),
                 'education'  =>  request('education'),
                 'marital'  =>  request('marital'),
-            ])
+                'category'  =>  request('category'),
+                'branch'  =>  request('branch'),
+            ], request('countries'))
             ->country(request('country'))
             ->country(request('countries'))
-            ->paginate(50));
+            ->paginate(50)->withQueryString());
 
         return view('taken.maid.index', [
             'title' =>  'Taken Worker Data',

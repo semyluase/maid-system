@@ -55,7 +55,7 @@ use Illuminate\Support\Str;
                     </div>
                     <div class="row my-2">
                         <div class="col-12">
-                            <a href="{{ url('') }}/workers/send-batch-mail"
+                            <a href="{{ url('') }}/workers/send-batch-mail" target="_blank"
                                 class="badge bg-primary text-bg-primary text-decoration-none">Available
                                 Workers Mail</a>
                         </div>

@@ -19,6 +19,8 @@ class Document extends Model
             ->fromRaw("(SELECT a.* FROM maids a
             LEFT JOIN document_workers b
             ON a.id = b.maid_id
-            WHERE b.location_file IS NULL) tb");
+            WHERE a.code_maid <> ''
+            AND LENGTH(a.code_maid) > 3
+            AND b.location_file IS NULL) tb");
     }
 }

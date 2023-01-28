@@ -10,4 +10,9 @@ class Notification extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+
+    public function fromUser()
+    {
+        return $this->belongsTo(User::class, 'from_user', 'id');
+    }
 }

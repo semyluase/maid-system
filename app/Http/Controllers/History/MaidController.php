@@ -146,7 +146,7 @@ class MaidController extends Controller
                 'end_age'  =>  $request->end_age,
                 'education'  =>  $request->education,
                 'marital'  =>  $request->marital,
-            ])
+            ], $request->country)
             ->get())->count();
 
         $maidData = Maid::with(['userTrashed'])
@@ -160,7 +160,7 @@ class MaidController extends Controller
                 'end_age'  =>  $request->end_age,
                 'education'  =>  $request->education,
                 'marital'  =>  $request->marital,
-            ])
+            ], $request->country)
             ->skip($request->start)
             ->limit($request->length)
             ->get();

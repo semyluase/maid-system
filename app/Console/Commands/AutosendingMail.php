@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Mail\ApprovalMail;
 use App\Mail\BroadcastWorker;
+use App\Mail\UploadedMail;
 use App\Models\EmailSending;
 use App\Models\User;
 use Illuminate\Console\Command;
@@ -51,7 +53,7 @@ class AutosendingMail extends Command
                     case 'BroadcastWorker':
                         $mailData = [
                             'maid'  =>  $value->maid,
-                            'files' =>  $value->files,
+                            'files' =>  $value->file_attachment,
                             'title' =>  $value->title,
                         ];
 
@@ -63,8 +65,20 @@ class AutosendingMail extends Command
                             ]);
                         break;
 
-                    default:
-                        # code...
+                    case 'UploadedWorker':
+                        $mailData = [
+                            'agency'  =>  $value->agency,
+                            'codeMaid'  =>  $value->codeMaid,
+                            'files' =>  $value->file_attachment,
+                            'title' =>  $value->title,
+                        ];
+
+                        Mail::to($value->email)->send(new UploadedMail($mailData));
+
+                        EmailSending::where('id', $value->id)
+                            ->update([
+                                'is_send'   =>  true,
+                            ]);
                         break;
                 }
             }

@@ -65,7 +65,7 @@ use Illuminate\Support\Str;
                                             value="{{ $maid->code_maid }}">
                                         <div class="row mb-3">
                                             <div class="col">
-                                                <input type="file" class="form-control" id="uploadDoc" name="uploadDoc[]"
+                                                <input type="file" class="form-control" id="uploadDoc" name="uploadDoc"
                                                     aria-label="Upload Doc">
                                             </div>
                                         </div>

@@ -34,6 +34,6 @@ class BroadcastWorker extends Mailable
      */
     public function build()
     {
-        return $this->subject('Available Worker')->view('email.broadcast')->attach($this->mailData['files']);
+        return $this->subject('Available Worker')->view('email.broadcast')->attach(public_path($this->mailData['files']));
     }
 }

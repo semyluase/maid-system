@@ -1,9 +1,8 @@
-<li class="nav-item dropdown me-6 pe-5">
-    <a class="nav-link active dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-bell fs-5 position-relative">
-            <span
-                class="position-absolute top-0 start-100 translate-middle p-2 border border-light rounded-circle bg-danger">
-                <span class="visually-hidden">999+</span>
+<div class="dropdown me-3 pe-3 d-none d-md-block d-lg-block d-xl-block">
+    <a class="dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="bi bi-bell fs-3 position-relative">
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem;">
+                @livewire('notification-total-user')
             </span>
         </i>
     </a>
@@ -11,8 +10,6 @@
         <li>
             <h6 class="dropdown-header">Notifications</h6>
         </li>
-        <li>
-            <a class="dropdown-item">No notification available</a>
-        </li>
+        @livewire('show-notification-user')
     </ul>
-</li>
+</div>

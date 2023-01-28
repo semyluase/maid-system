@@ -165,7 +165,7 @@ const user = {
                 emailUserInput.value = response.email;
                 nameUserInput.value = response.name;
                 passwordUserInput.value = "";
-                if (response.is_formal) {
+                if (response.is_formal == 1) {
                     formalTrue.checked = true;
                 } else {
                     formalFalse.checked = true;

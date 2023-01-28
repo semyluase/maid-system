@@ -169,6 +169,7 @@ return [
          * Package Service Providers...
          */
         Barryvdh\DomPDF\ServiceProvider::class,
+        Spatie\LaravelImageOptimizer\ImageOptimizerServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -193,6 +194,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         'PDF' => Barryvdh\DomPDF\Facade::class,
+        'ImageOptimizer' => Spatie\LaravelImageOptimizer\ImageOptimizerFacade::class,
     ])->toArray(),
 
 ];

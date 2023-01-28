@@ -43,160 +43,165 @@ class GenerateDocument extends Command
      */
     public function handle()
     {
-        $dataMaid = Document::where('is_generate', false)
+        $dataMaid = Document::getData()
             ->get();
 
-        if ($dataMaid) {
+        if (collect($dataMaid)->count() > 0) {
             foreach ($dataMaid as $key => $value) {
-                $maid = Maid::where('id', $value->maid_id)
-                    ->first();
-                $country = 'FM';
+                $maid = Maid::find($value->id);
 
-                if ($maid->is_hongkong) $country = 'HK';
-                if ($maid->is_taiwan) $country = 'TW';
-                if ($maid->is_singapore) $country = 'SG';
-                if ($maid->is_malaysia) $country = 'MY';
-                if ($maid->is_brunei) $country = 'BN';
+                if ($maid) {
+                    $country = 'FM';
 
-                $language = Question::questionMaid($maid->id)
-                    ->where('is_active', true)
-                    ->country($country)
-                    ->orderBy('id')
-                    ->get();
+                    if ($maid->is_hongkong) $country = 'HK';
+                    if ($maid->is_taiwan) $country = 'TW';
+                    if ($maid->is_singapore) $country = 'SG';
+                    if ($maid->is_malaysia) $country = 'MY';
+                    if ($maid->is_brunei) $country = 'BN';
 
-                $skill = Question::specialityMaid($maid->id)
-                    ->where('is_active', true)
-                    ->country($country)
-                    ->where('is_child', false)
-                    ->orderBy('id')
-                    ->get();
+                    $language = Question::questionMaid($maid->id)
+                        ->where('is_active', true)
+                        ->country($country)
+                        ->orderBy('id')
+                        ->get();
 
-                $willingness = Question::willingnessMaid($maid->id)
-                    ->where('is_active', true)
-                    ->country($country)
-                    ->orderBy('id')
-                    ->get();
+                    $skill = Question::specialityMaid($maid->id)
+                        ->where('is_active', true)
+                        ->country($country)
+                        ->where('is_child', false)
+                        ->orderBy('id')
+                        ->get();
 
-                $other = Question::otherMaid($maid->id)
-                    ->where('is_active', true)
-                    ->country($country)
-                    ->get();
+                    $willingness = Question::willingnessMaid($maid->id)
+                        ->where('is_active', true)
+                        ->country($country)
+                        ->orderBy('id')
+                        ->get();
 
-                $medical = Question::medicalMaid($maid->id)
-                    ->where('is_active', true)
-                    ->where('is_child', false)
-                    ->country($country)
-                    ->orderBy('id')
-                    ->get();
+                    $other = Question::otherMaid($maid->id)
+                        ->where('is_active', true)
+                        ->country($country)
+                        ->get();
 
-                $medicaltotal = collect(Question::medicalMaid($maid->id)
-                    ->where('is_active', true)
-                    ->where('is_child', false)
-                    ->where('is_check', true)
-                    ->country($country)
-                    ->orderBy('id')
-                    ->get())->count();
+                    $medical = Question::medicalMaid($maid->id)
+                        ->where('is_active', true)
+                        ->where('is_child', false)
+                        ->country($country)
+                        ->orderBy('id')
+                        ->get();
 
-                $medicalLeft = Question::medicalMaid($maid->id)
-                    ->where('is_active', true)
-                    ->where('is_child', false)
-                    ->where('is_check', true)
-                    ->country($country)
-                    ->orderBy('id')
-                    ->limit(ceil($medicaltotal / 2))
-                    ->get();
+                    $medicaltotal = collect(Question::medicalMaid($maid->id)
+                        ->where('is_active', true)
+                        ->where('is_child', false)
+                        ->where('is_check', true)
+                        ->country($country)
+                        ->orderBy('id')
+                        ->get())->count();
 
-                $medicalRight = Question::medicalMaid($maid->id)
-                    ->where('is_active', true)
-                    ->where('is_child', false)
-                    ->where('is_check', true)
-                    ->country($country)
-                    ->orderBy('id')
-                    ->skip(ceil($medicaltotal / 2))
-                    ->limit($medicaltotal - ceil($medicaltotal / 2))
-                    ->get();
+                    $medicalLeft = Question::medicalMaid($maid->id)
+                        ->where('is_active', true)
+                        ->where('is_child', false)
+                        ->where('is_check', true)
+                        ->country($country)
+                        ->orderBy('id')
+                        ->limit(ceil($medicaltotal / 2))
+                        ->get();
 
-                $method = Question::methodMaid($maid->id)
-                    ->where('is_active', true)
-                    ->where('is_child', false)
-                    ->country($country)
-                    ->orderBy('id')
-                    ->get();
+                    $medicalRight = Question::medicalMaid($maid->id)
+                        ->where('is_active', true)
+                        ->where('is_child', false)
+                        ->where('is_check', true)
+                        ->country($country)
+                        ->orderBy('id')
+                        ->skip(ceil($medicaltotal / 2))
+                        ->limit($medicaltotal - ceil($medicaltotal / 2))
+                        ->get();
 
-                $interview = Question::interviewMaid($maid->id)
-                    ->where('is_active', true)
-                    ->where('is_child', false)
-                    ->country($country)
-                    ->orderBy('id')
-                    ->get();
+                    $method = Question::methodMaid($maid->id)
+                        ->where('is_active', true)
+                        ->where('is_child', false)
+                        ->country($country)
+                        ->orderBy('id')
+                        ->get();
 
-                $workOverseases = WorkExperience::where('maid_id', $maid->id)
-                    ->country($country)
-                    ->where('work_overseas', true)
-                    ->get();
+                    $interview = Question::interviewMaid($maid->id)
+                        ->where('is_active', true)
+                        ->where('is_child', false)
+                        ->country($country)
+                        ->orderBy('id')
+                        ->get();
 
-                $workDomestics = WorkExperience::where('maid_id', $maid->id)
-                    ->country($country)
-                    ->where('work_overseas', false)
-                    ->get();
+                    $workOverseases = WorkExperience::where('maid_id', $maid->id)
+                        ->country($country)
+                        ->where('work_overseas', true)
+                        ->get();
 
-                $path = public_path('assets/image/header/header.png');
-                $type = pathinfo($path, PATHINFO_EXTENSION);
-                $dataLogo = file_get_contents($path);
-                $baseLogo = 'data:image/' . $type . ';base64,' . base64_encode($dataLogo);
+                    $workDomestics = WorkExperience::where('maid_id', $maid->id)
+                        ->country($country)
+                        ->where('work_overseas', false)
+                        ->get();
 
-                $view = 'master.maid.pdf.other';
+                    $path = public_path('assets/image/header/header.png');
+                    $type = pathinfo($path, PATHINFO_EXTENSION);
+                    $dataLogo = file_get_contents($path);
+                    $baseLogo = 'data:image/' . $type . ';base64,' . base64_encode($dataLogo);
 
-                if ($country == 'SG') {
-                    $view = 'master.maid.pdf.singapore';
-                }
+                    $view = 'master.maid.pdf.other';
 
-                if ($country == 'FM') {
-                    if (substr($maid->code_maid, 0, 1) == "M") {
-                        $view = 'master.maid.pdf.allFormatA';
-                    } else {
-                        $view = 'master.maid.pdf.allFormatB';
+                    if ($country == 'SG') {
+                        $view = 'master.maid.pdf.singapore';
                     }
+
+                    if ($country == 'FM') {
+                        if (substr($maid->code_maid, 0, 1) == "M") {
+                            $view = 'master.maid.pdf.allFormatA';
+                        } else {
+                            $view = 'master.maid.pdf.allFormatB';
+                        }
+                    }
+
+                    $photoPath = $maid->picture_name ? public_path('assets/image/maids/photos/' . $maid->picture_name) : public_path('assets/image/web/no_content.jpg');
+                    $photoType = pathinfo($photoPath, PATHINFO_EXTENSION);
+                    $dataPhoto = file_get_contents($photoPath);
+                    $basePhoto = 'data:image/' . $photoType . ';base64,' . base64_encode($dataPhoto);
+
+                    $pdf = app('dompdf.wrapper');
+                    $pdf->getDomPDF()->set_option("enable_php", true);
+
+                    $html = view($view, [
+                        'title' =>  $maid->code_maid,
+                        'maid'  =>  $maid,
+                        'languages'  =>  $language,
+                        'specialities'  =>  $skill,
+                        'willingnesses'  =>  $willingness,
+                        'others'  =>  $other,
+                        'header'    =>  $baseLogo,
+                        'photo'    =>  $basePhoto,
+                        'overseases'    =>  $workOverseases,
+                        'domestics'    =>  $workDomestics,
+                        'medicals'  =>  $medical,
+                        'medicalsLeft'  =>  $medicalLeft,
+                        'medicalsRight'  =>  $medicalRight,
+                        'methods'   =>  $method,
+                        'interviews'    =>  $interview,
+                        'pdf'   =>  $pdf,
+                    ]);
+
+                    if (File::exists(public_path('assets/pdf/' . $maid->code_maid . ' - ' . $maid->full_name . '.pdf'))) {
+                        File::delete(public_path('assets/pdf/' . $maid->code_maid . ' - ' . $maid->full_name . '.pdf'));
+                    }
+
+                    PDF::createDownloadPDF($html, $maid->code_maid . ' - ' . $maid->full_name . '.pdf', false);
+
+                    Document::create([
+                        'maid_id'   =>  $maid->id,
+                        'location_file' =>  'assets/pdf/',
+                        'file_name' =>  $maid->code_maid . ' - ' . $maid->full_name . '.pdf',
+                        'is_generate'   =>  true,
+                    ]);
+
+                    $this->info('Generate Document For ' . $maid->code_maid);
                 }
-
-                $photoPath = $maid->picture_name ? public_path('assets/image/maids/photos/' . $maid->picture_name) : public_path('assets/image/web/no_content.jpg');
-                $photoType = pathinfo($photoPath, PATHINFO_EXTENSION);
-                $dataPhoto = file_get_contents($photoPath);
-                $basePhoto = 'data:image/' . $photoType . ';base64,' . base64_encode($dataPhoto);
-
-                $pdf = app('dompdf.wrapper');
-                $pdf->getDomPDF()->set_option("enable_php", true);
-
-                $html = view($view, [
-                    'title' =>  $maid->code_maid,
-                    'maid'  =>  $maid,
-                    'languages'  =>  $language,
-                    'specialities'  =>  $skill,
-                    'willingnesses'  =>  $willingness,
-                    'others'  =>  $other,
-                    'header'    =>  $baseLogo,
-                    'photo'    =>  $basePhoto,
-                    'overseases'    =>  $workOverseases,
-                    'domestics'    =>  $workDomestics,
-                    'medicals'  =>  $medical,
-                    'medicalsLeft'  =>  $medicalLeft,
-                    'medicalsRight'  =>  $medicalRight,
-                    'methods'   =>  $method,
-                    'interviews'    =>  $interview,
-                    'pdf'   =>  $pdf,
-                ]);
-
-                if (File::exists(public_path('assets/pdf/' . $maid->code_maid . ' - ' . $maid->full_name . '.pdf'))) {
-                    File::delete(public_path('assets/pdf/' . $maid->code_maid . ' - ' . $maid->full_name . '.pdf'));
-                }
-
-                PDF::createDownloadPDF($html, $maid->code_maid . ' - ' . $maid->full_name . '.pdf', false);
-
-                Document::find($value->id)->update([
-                    'is_generate'   =>  true
-                ]);
-
-                $this->info('Generate Document For ' . $maid->code_maid);
             }
         }
         $this->info('Data is null');

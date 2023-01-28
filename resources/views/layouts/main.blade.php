@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="{{ asset('assets/mazer/dist/assets/css/app.css') }}">
     {{-- <link rel="shortcut icon" href="{{ asset('assets/mazer/dist/assets/images/favicon.svg') }}" type="image/x-icon"> --}}
     <link rel="shortcut icon" href="{{ asset('assets/image/header/logo.ico') }}" type="image/x-icon">
+    @livewireStyles()
 
     <script>
         const baseUrl = '{{ url('') }}'
@@ -153,6 +154,7 @@
         }
     }
     ?>
+    @livewireScripts()
 </body>
 
 </html>

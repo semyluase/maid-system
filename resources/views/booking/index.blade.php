@@ -59,6 +59,12 @@ use App\Models\Country;
                                             @if (request('marital'))
                                                 <input type="hidden" name="marital" value="{{ request('marital') }}">
                                             @endif
+                                            @if (request('category'))
+                                                <input type="hidden" name="category" value="{{ request('category') }}">
+                                            @endif
+                                            @if (request('branch'))
+                                                <input type="hidden" name="branch" value="{{ request('branch') }}">
+                                            @endif
                                             <button class="btn btn-outline-primary" type="submit" id="btn-search"><i
                                                     class="fa-solid fa-search me-2"></i>Search</button>
                                             <button class="btn btn-outline-primary" type="button"
@@ -266,6 +272,20 @@ use App\Models\Country;
                 'BN' => 'Brunei',
                 'FM' => 'All Formal',
             ];
+
+            $categories = [
+                'taken' => 'Taken',
+                'hold' => 'Hold',
+                'upload' => 'JO Uploaded',
+                'avail' => 'Available',
+            ];
+
+            $branch = [
+                'K' => 'Kendal',
+                'T' => 'Tegal',
+                'G' => 'Grobogan',
+                'B' => 'Banyumas',
+            ];
         @endphp
         <div class="modal-dialog">
             <div class="modal-content">
@@ -352,6 +372,40 @@ use App\Models\Country;
                                 </div>
                             </div>
                         </div>
+                        @if (auth()->user()->role->id == 1)
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label for="name" class="form-label">Status</label>
+                                    <div class="input-group">
+                                        @foreach ($categories as $c => $value)
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="category"
+                                                    id="{{ $c }}" value="{{ $c }}"
+                                                    {{ request('category') == $c ? 'checked' : '' }}>
+                                                <label class="form-check-label"
+                                                    for="{{ $c }}">{{ $value }}</label>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label for="name" class="form-label">Branch</label>
+                                    <div class="input-group">
+                                        @foreach ($branch as $b => $value)
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="branch"
+                                                    id="{{ $b }}" value="{{ $b }}"
+                                                    {{ request('branch') == $b ? 'checked' : '' }}>
+                                                <label class="form-check-label"
+                                                    for="{{ $b }}">{{ $value }}</label>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal"><i

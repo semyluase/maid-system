@@ -49,33 +49,33 @@ use App\Models\Country;
                         @if ($maids->count() > 0)
                             @foreach ($maids as $maid)
                                 <?php
-
+                                
                                 $country = '';
-
+                                
                                 if ($maid->is_hongkong) {
                                     $country = 'HK';
                                 }
-
+                                
                                 if ($maid->is_singapore) {
                                     $country = 'SG';
                                 }
-
+                                
                                 if ($maid->is_taiwan) {
                                     $country = 'TW';
                                 }
-
+                                
                                 if ($maid->is_malaysia) {
                                     $country = 'MY';
                                 }
-
+                                
                                 if ($maid->is_brunei) {
                                     $country = 'BN';
                                 }
-
+                                
                                 if ($maid->is_all_format) {
                                     $country = 'FM';
                                 }
-
+                                
                                 ?>
                                 <div class="col-12 col-md-3 col-lg-3 col-xl-3 mb-3">
                                     <div class="card shadow">
@@ -122,6 +122,12 @@ use App\Models\Country;
                                                             class="bi bi-clock-history d-flex align-items-center justify-content-center text-primary"></i>
                                                     </button>
                                                 @endif
+                                                <button type="button" class="btn btn-link p-2 m-1 text-decoration-none"
+                                                    title="Download"
+                                                    onclick="fnMaid.onDownload('{{ $maid->code_maid }}', '{{ $country }}')">
+                                                    <i
+                                                        class="bi bi-file-arrow-down d-flex align-items-center justify-content-center text-primary"></i>
+                                                </button>
                                                 @if ($maid->is_uploaded)
                                                     <button type="button" class="btn btn-link p-2 m-1 text-decoration-none"
                                                         title="Document"

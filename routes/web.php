@@ -10,6 +10,7 @@ use App\Http\Controllers\History\MaidController as HistoryMaidController;
 use App\Http\Controllers\MailController;
 use App\Http\Controllers\Master\Maid\MaidController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TakenController;
 use App\Http\Controllers\TimelineController;
@@ -19,6 +20,7 @@ use App\Http\Controllers\User\WorkerController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserMenuController;
 use App\Http\Controllers\Utils\DropdownController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -76,6 +78,8 @@ Route::middleware('auth')->group(function () {
 
     // broadcast
     Route::resource('/mail/broadcasting', MailController::class);
+
+    Route::get('/notification', [NotificationController::class, 'index']);
 
     // User
     Route::get('/workers/upload', [UserMaidController::class, 'create']);
@@ -145,5 +149,22 @@ Route::middleware('guest')->group(function () {
 
     Route::controller(AuthController::class)->group(function () {
         Route::get('/login', 'login')->name('login');
+    });
+
+    Route::get('/generate-document', function () {
+        Artisan::call('document:generate');
+    });
+
+    Route::get('/send-available', function () {
+        Artisan::call('workers:available');
+    });
+
+    Route::get('/clear', function () {
+        Artisan::call('config:clear');
+        Artisan::call('event:clear');
+        Artisan::call('view:clear');
+        Artisan::call('route:clear');
+        Artisan::call('cache:clear');
+        Artisan::call('dump-autoload');
     });
 });

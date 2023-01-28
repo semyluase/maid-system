@@ -34,7 +34,6 @@ class MaidController extends Controller
             ->where('is_delete', false)
             ->where('is_bookmark', false)
             ->where('is_uploaded', false)
-            ->where('is_taken', false)
             ->where('code_maid', '<>', '')
             ->countryUser(auth()->user()->country->code, auth()->user()->is_formal)
             ->filter([
@@ -46,7 +45,7 @@ class MaidController extends Controller
                 'education'  =>  request('education'),
                 'marital'  =>  request('marital'),
             ])
-            ->paginate(50));
+            ->paginate(50)->withQueryString());
 
         return view('userResource.maid.index', [
             'title' =>  'All Worker',
@@ -82,31 +81,18 @@ class MaidController extends Controller
      */
     public function store(Request $request)
     {
-        $dataDoc = array();
         if ($request->file('uploadDoc')) {
             $docMaid = $request->file('uploadDoc');
 
-            foreach ($docMaid as $key => $value) {
-                $fileNameFull = $request->maidCode . '-' . $key + 1 . '.' . $value->getClientOriginalExtension();
-                $fileBase = str_replace('data:image/' . $value->getClientOriginalExtension() . ';base64,', '', $value);
-                $fileBase = str_replace(' ', '+', $value);
+            $fileNameFull = $request->maidCode . '.' . $docMaid->getClientOriginalExtension();
+            $fileBase = str_replace('data:image/' . $docMaid->getClientOriginalExtension() . ';base64,', '', $docMaid);
+            $fileBase = str_replace(' ', '+', $docMaid);
 
-                if (File::exists(public_path('assets/image/maids/documents/' . $fileNameFull))) {
-                    File::delete(public_path('assets/image/maids/documents/' . $fileNameFull));
-                }
-
-                $value->move(public_path('assets/image/maids/documents/'), $fileNameFull);
-
-                $dataDoc[] = [
-                    'maid_id'   =>  columnToID('maid', 'code_maid', $request->maidCode)->id,
-                    'doc_location'  =>  'assets/image/maids/documents/',
-                    'doc_base64'    =>  $fileBase,
-                    'doc_filename'  =>  $fileNameFull,
-                    'user_created'  =>  auth()->user()->id,
-                    'created_at'    =>  Carbon::now('Asia/Jakarta'),
-                    'updated_at'    =>  Carbon::now('Asia/Jakarta'),
-                ];
+            if (File::exists(public_path('assets/image/maids/documents/' . $fileNameFull))) {
+                File::delete(public_path('assets/image/maids/documents/' . $fileNameFull));
             }
+
+            $docMaid->move(public_path('assets/image/maids/documents/'), $fileNameFull);
 
             $docs = Document::where('maid_id', columnToID('maid', 'code_maid', $request->maidCode)->id)
                 ->get();
@@ -115,11 +101,16 @@ class MaidController extends Controller
                 Document::where('maid_id', columnToID('maid', 'code_maid', $request->maidCode)->id)
                     ->delete();
             }
+
+            Document::create([
+                'maid_id'   =>  columnToID('maid', 'code_maid', $request->maidCode)->id,
+                'doc_location'  =>  'assets/image/maids/documents/',
+                'doc_base64'    =>  $fileBase,
+                'doc_filename'  =>  $fileNameFull,
+                'user_created'  =>  auth()->user()->id,
+            ]);
         }
 
-        if (collect($dataDoc)->count() > 0) {
-            Document::insert($dataDoc);
-        }
 
         if (Maid::find(columnToID('maid', 'code_maid', $request->maidCode)->id)->update([
             'is_uploaded'   =>  true,
@@ -131,9 +122,11 @@ class MaidController extends Controller
             'bookmark_max_at'   =>  null,
         ])) {
             Notification::create([
-                'message'   =>  'Agency ' . auth()->user()->country->name . ' has upload worker document ',
+                'tanggal'   =>  Carbon::now('Asia/Jakarta'),
+                'message'   =>  auth()->user()->name . ' has Upload JO ',
                 'from_user' =>  auth()->user()->id,
                 'to_role'   =>  Role::where('slug', 'super-admin')->first()->id,
+                'type'  =>  'upload jo'
             ]);
 
             HistoryTakenMaid::create([
@@ -144,12 +137,21 @@ class MaidController extends Controller
                 'user_action'   =>  auth()->user()->id,
             ]);
 
-            Mail::to('semyvaldes12@gmail.com')->send(new UploadedMail([
-                'title' =>  "Uploaded $request->maidCode Document",
-                'codeMaid'  =>  $request->maidCode,
+            EmailSending::create([
+                'maid_id'   => columnToID('maid', 'code_maid', $request->maidCode)->id,
                 'agency'    =>  auth()->user()->name,
-                'files' =>  'assets/image/maids/documents/' . $fileNameFull
-            ]));
+                'file_attachment'   =>  'assets/image/maids/documents/' . $fileNameFull,
+                'mail_fragment' =>  'UploadedWorker',
+                'maid'  =>  $request->maidCode,
+                'email' =>  'gmb.backoffice@gmail.com',
+            ]);
+
+            // Mail::to('gmb.backoffice@gmail.com')->send(new UploadedMail([
+            //     'title' =>  "Uploaded $request->maidCode Document",
+            //     'codeMaid'  =>  $request->maidCode,
+            //     'agency'    =>  auth()->user()->name,
+            //     'files' =>  'assets/image/maids/documents/' . $fileNameFull
+            // ]));
 
             return redirect('/workers')->with('message', 'Worker Document success to uploaded');
         }
@@ -254,7 +256,6 @@ class MaidController extends Controller
 
     public function sendingMail(Request $request)
     {
-        dd($request->all());
         $data = array();
         $arrWorker = array();
         $docs = array();

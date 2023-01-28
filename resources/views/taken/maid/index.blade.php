@@ -51,6 +51,12 @@ use App\Models\Country;
                                             @if (request('marital'))
                                                 <input type="hidden" name="marital" value="{{ request('marital') }}">
                                             @endif
+                                            @if (request('category'))
+                                                <input type="hidden" name="category" value="{{ request('category') }}">
+                                            @endif
+                                            @if (request('branch'))
+                                                <input type="hidden" name="branch" value="{{ request('branch') }}">
+                                            @endif
                                             <button class="btn btn-outline-primary" type="submit" id="btn-search"><i
                                                     class="fa-solid fa-search me-2"></i>Search</button>
                                             <button class="btn btn-outline-primary" type="button"
@@ -189,7 +195,8 @@ use App\Models\Country;
                                                     <div class="col-6">
                                                         <p class="text-dark text-right"
                                                             style="font-size: .98rem !important;">
-                                                            {{ convertReligion($maid->religion) }}</p>
+                                                            {{ convertReligion($maid->religion) }}
+                                                        </p>
                                                     </div>
                                                 </div>
                                                 <div class="row my-0 py-0" style="margin-bottom:-1.25rem !important;">
@@ -200,7 +207,8 @@ use App\Models\Country;
                                                     <div class="col-6">
                                                         <p class="text-dark text-right"
                                                             style="font-size: .98rem !important;">
-                                                            {{ convertMaritalStatus($maid->marital) }}</p>
+                                                            {{ convertMaritalStatus($maid->marital) }}
+                                                        </p>
                                                     </div>
                                                 </div>
                                                 <div class="row my-0 py-0" style="margin-bottom:-1.25rem !important;">
@@ -211,7 +219,8 @@ use App\Models\Country;
                                                     <div class="col-6">
                                                         <p class="text-dark text-right"
                                                             style="font-size: .98rem !important;">
-                                                            {{ $maid->height }} cm</p>
+                                                            {{ $maid->height }} cm
+                                                        </p>
                                                     </div>
                                                 </div>
                                                 <div class="row my-0 py-0" style="margin-bottom:-1.25rem !important;">
@@ -307,6 +316,12 @@ use App\Models\Country;
                                                             class="bi bi-clock-history d-flex align-items-center justify-content-center text-primary"></i>
                                                     </button>
                                                 @endif
+                                                <button type="button" class="btn btn-link p-2 m-1 text-decoration-none"
+                                                    title="Download"
+                                                    onclick="window.open('{{ url('') }}/master/maids/download-data?maid={{ $maid->code_maid }}&country={{ $country }}','_blank')">
+                                                    <i
+                                                        class="bi bi-file-arrow-down d-flex align-items-center justify-content-center text-primary"></i>
+                                                </button>
                                                 <form action="{{ url('') }}/taken/maids/{{ $maid->code_maid }}"
                                                     method="post">
                                                     @csrf
@@ -365,6 +380,20 @@ use App\Models\Country;
                 'MY' => 'Malaysia',
                 'BN' => 'Brunei',
                 'FM' => 'All Formal',
+            ];
+
+            $categories = [
+                'taken' => 'Taken',
+                'hold' => 'Hold',
+                'upload' => 'JO Uploaded',
+                'avail' => 'Available',
+            ];
+
+            $branch = [
+                'K' => 'Kendal',
+                'T' => 'Tegal',
+                'G' => 'Grobogan',
+                'B' => 'Banyumas',
             ];
         @endphp
         <div class="modal-dialog">
@@ -452,6 +481,40 @@ use App\Models\Country;
                                 </div>
                             </div>
                         </div>
+                        @if (auth()->user()->role->id == 1)
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label for="name" class="form-label">Status</label>
+                                    <div class="input-group">
+                                        @foreach ($categories as $c => $value)
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="category"
+                                                    id="{{ $c }}" value="{{ $c }}"
+                                                    {{ request('category') == $c ? 'checked' : '' }}>
+                                                <label class="form-check-label"
+                                                    for="{{ $c }}">{{ $value }}</label>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col">
+                                    <label for="name" class="form-label">Branch</label>
+                                    <div class="input-group">
+                                        @foreach ($branch as $b => $value)
+                                            <div class="form-check form-check-inline">
+                                                <input class="form-check-input" type="radio" name="branch"
+                                                    id="{{ $b }}" value="{{ $b }}"
+                                                    {{ request('branch') == $b ? 'checked' : '' }}>
+                                                <label class="form-check-label"
+                                                    for="{{ $b }}">{{ $value }}</label>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal"><i
