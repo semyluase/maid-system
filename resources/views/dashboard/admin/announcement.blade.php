@@ -3,7 +3,15 @@ use Illuminate\Support\Carbon;
 ?>
 <div class="card shadow">
     <div class="card-header">
-        <h4 class="card-title">Announcement</h4>
+        <div class="row">
+            <div class="col-6">
+                <h4>Announcement</h4>
+            </div>
+            <div class="col-6 d-flex justify-content-end">
+                <button class="btn btn-primary" onclick="window.open('{{ url('') }}/announcements')"><i
+                        class="fa-solid fa-download me-2"></i>Announcement</button>
+            </div>
+        </div>
     </div>
     <div class="card-body">
         @if (collect($announcement)->count() > 0)

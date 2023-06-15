@@ -44,9 +44,14 @@
                                             <th scope="col">Whatsapp</th>
                                             <th scope="col">Code</th>
                                             <th scope="col">
-                                                <a href="javascript:;" class="btn btn-primary"
-                                                    id="btn-add-contact-person"><i class="fa-solid fa-plus me-2"></i>New
-                                                    Contact Person</a>
+                                                <div class="d-flex gap-2">
+                                                    <a href="javascript:;" class="btn btn-primary btn-sm"
+                                                        id="btn-add-contact-person"><i class="fa-solid fa-plus me-2"></i>New
+                                                        Contact Person</a>
+                                                    <a href="javascript:;" class="btn btn-outline-primary btn-sm"
+                                                        id="btn-sort-contact-person"><i
+                                                            class="fa-solid fa-sync me-2"></i>Sort Contact Person</a>
+                                                </div>
                                             </th>
                                         </tr>
                                     </thead>
@@ -97,6 +102,64 @@
                     <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal"><i
                             class="fa-solid fa-times me-2"></i>Cancel</button>
                     <button type="button" class="btn btn-outline-primary" id="btn-save"
+                        data-csrf="{{ csrf_token() }}"><i class="fa-solid fa-save me-2"></i>Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="modal-sort-contact-person" tabindex="-1" aria-labelledby="modal-contact-person-label"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal-contact-person-label">Sort Contact Person</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{-- <div class="row mb-3">
+                        <div class="col">
+                            <table class="table table-striped table-sortable" id="tb-sort" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Branch</th>
+                                        <th>Code</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($contactPerson as $contact)
+                                        <tr>
+                                            <td>
+                                                <span class="fa-solid fa-grip-lines-vertical" id="index"
+                                                    data-sort="{{ $contact->id }}"></span>
+                                                {{ $loop->iteration }}
+                                            </td>
+                                            <td>
+                                                {{ $contact->name }}
+                                            </td>
+                                            <td>
+                                                {{ $contact->branch }}
+                                            </td>
+                                            <td>
+                                                {{ $contact->code }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div> --}}
+                    <div id="simple-list" class="row">
+                        <div id="example1" class="list-group col">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal"><i
+                            class="fa-solid fa-times me-2"></i>Cancel</button>
+                    <button type="button" class="btn btn-outline-primary" id="btn-save-sort"
                         data-csrf="{{ csrf_token() }}"><i class="fa-solid fa-save me-2"></i>Save</button>
                 </div>
             </div>

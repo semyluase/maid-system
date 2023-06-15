@@ -56,10 +56,10 @@ class MailController extends Controller
         EmailSending::create([
             'email' =>  $request->agency,
             'maid_id'   =>  $dataMaid->id,
-            'file_attachment'   =>  public_path('/assets/pdf/' . $dataMaid->code_maid . ' - ' . $dataMaid->full_name . '.pdf'),
+            'file_attachment'   =>  '/assets/pdf/' . $dataMaid->code_maid . ' - ' . $dataMaid->full_name . '.pdf',
             'mail_fragment' =>  'BroadcastWorker',
             'maid'  => $dataMaid->code_maid,
-            'files' =>  public_path('/assets/pdf/' . $dataMaid->code_maid . ' - ' . $dataMaid->full_name . '.pdf'),
+            'files' =>  '/assets/pdf/' . $dataMaid->code_maid . ' - ' . $dataMaid->full_name . '.pdf',
             'title' =>  "Available Maid",
         ]);
 

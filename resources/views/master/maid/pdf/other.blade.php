@@ -76,7 +76,7 @@ use Illuminate\Support\Str;
     <header>
         <img src="{{ $header }}" alt="Header PDF" class="bg-white" style="width: 100%;">
     </header>
-    <div class="row">
+    <div class="row text-mandarin">
         <div class="column">
             <div class="text-center border border-1 border-dark" style="border: 1px solid #1b1b1b;"><span
                     class="text-mandarin">女傭履歷表</span> / Biodata
@@ -234,10 +234,10 @@ use Illuminate\Support\Str;
             @if (collect($overseases)->count() > 0)
                 @foreach ($overseases as $overseas)
                     <div style="min-height: 48px; border: 1px solid #1b1b1b; margin-bottom: 5px;">
-                        <p style="margin-bottom: 1px;">
+                        <p class="text-mandarin" style="margin-bottom: 1px;">
                             {{ $overseas->country }} ({{ $overseas->year_start . ' - ' . $overseas->year_end }})
                         </p>
-                        <p>
+                        <p class="text-mandarin">
                             {{ $overseas->description }}
                         </p>
                     </div>
@@ -251,11 +251,11 @@ use Illuminate\Support\Str;
             </div>
             @if (collect($domestics)->count() > 0)
                 @foreach ($domestics as $domestic)
-                    <div style="min-height: 48px; border: 1px solid #1b1b1b; margin-bottom: 5px;">
-                        <p style="margin-bottom: 1px;">
+                    <div class="text-mandarin" style="min-height: 48px; border: 1px solid #1b1b1b; margin-bottom: 5px;">
+                        <p class="text-mandarin" style="margin-bottom: 1px;">
                             {{ $domestic->country }} ({{ $domestic->year_start . ' - ' . $domestic->year_end }})
                         </p>
-                        <p>
+                        <p class="text-mandarin">
                             {{ $domestic->description }}
                         </p>
                     </div>
@@ -264,8 +264,8 @@ use Illuminate\Support\Str;
                 <div style="min-height: 48px; border: 1px solid #1b1b1b; margin-bottom: 5px;">
                 </div>
             @endif
-            <div class="text-center border border-1 border-dark" style="border: 1px solid #1b1b1b;"><span
-                    class="text-mandarin">外語能力</span> / Languages</div>
+            <div class="text-center border border-1 border-dark text-mandarin" style="border: 1px solid #1b1b1b;">
+                <span class="text-mandarin">外語能力</span> / Languages</div>
             <table class="border-0" style="width: 100%;">
                 @foreach ($languages as $language)
                     <tr>
@@ -309,8 +309,9 @@ use Illuminate\Support\Str;
                     </tr>
                 @endforeach
             </table>
-            <div class="text-center border border-1 border-dark" style="border: 1px solid #1b1b1b;"><span
-                    class="text-mandarin">女傭是否同意以下條件</span> / Willingness</div>
+            <div class="text-center border border-1 border-dark text-mandarin" style="border: 1px solid #1b1b1b;">
+                <span class="text-mandarin">女傭是否同意以下條件</span> / Willingness
+            </div>
             <table class="border-0" style="width: 100%;">
                 @foreach ($willingnesses as $willingness)
                     <tr>

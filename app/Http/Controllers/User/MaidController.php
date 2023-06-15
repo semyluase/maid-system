@@ -34,6 +34,7 @@ class MaidController extends Controller
             ->where('is_delete', false)
             ->where('is_bookmark', false)
             ->where('is_uploaded', false)
+            ->where('is_taken', false)
             ->where('code_maid', '<>', '')
             ->countryUser(auth()->user()->country->code, auth()->user()->is_formal)
             ->filter([

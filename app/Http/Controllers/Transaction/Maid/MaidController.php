@@ -135,8 +135,9 @@ class MaidController extends Controller
 
                 $agency = User::where('id', $maid->user_uploaded)->first();
                 Mail::to($agency->email)->send(new ApprovalMail([
-                    'title' =>  "Approval Status $request->maidCode",
-                    'codeMaid'  =>  $request->maidCode,
+                    'title' =>  "Approval Status $maid->code_maid",
+                    'codeMaid'  =>  $maid->code_maid,
+                    'maidName'  =>  $maid->full_name,
                     'user'    =>  auth()->user()->name,
                     'status'    =>  "ACCEPTED",
                 ]));

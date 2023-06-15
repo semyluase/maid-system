@@ -68,6 +68,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('/master/maids', MaidController::class);
 
     Route::get('/master/announcements/get-all-data', [AnnouncementController::class, 'getAllData']);
+    Route::get('/master/announcements/sorted-data', [AnnouncementController::class, 'sortedData']);
+    Route::post('/master/announcements/sort-contact', [AnnouncementController::class, 'sortedDataSave']);
     Route::resource('/master/announcements', AnnouncementController::class);
 
     // history
@@ -157,6 +159,10 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/send-available', function () {
         Artisan::call('workers:available');
+    });
+
+    Route::get('/send-email', function () {
+        Artisan::call('mailing:sending');
     });
 
     Route::get('/clear', function () {

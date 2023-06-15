@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Announcement;
 use App\Models\ConcactPerson;
 use App\Models\ContactPerson;
+use App\Models\ContactPersonSort;
 use Cviebrock\EloquentSluggable\Services\SlugService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -20,11 +21,16 @@ class AnnouncementController extends Controller
      */
     public function index()
     {
+        $dataContact = ContactPerson::contactSorted()
+            ->orderBy('sort')
+            ->get();
+
         $dataAnnouncement = Announcement::latest()->first();
         return view('master.announcement.index', [
             'title' =>  'Announcement',
             'pageTitle' =>  'Announcement',
             'announcement'  =>  $dataAnnouncement,
+            'contactPerson' =>  $dataContact,
             'js'    =>  ['assets/mazer/dist/assets/vendors/quill/quill.min.js', 'assets/js/apps/master/announcement/app.js']
         ]);
     }
@@ -184,17 +190,23 @@ class AnnouncementController extends Controller
     public function getAllData(Request $request)
     {
         Carbon::setLocale('id');
-        $totalData = collect(ContactPerson::orderBy(columnOrder(['id', 'name', 'branch', 'whatsapp', 'code'], $request->order[0]['column']), $request->order[0]['dir'])
+        $totalData = collect(ContactPerson::contactSorted()
+            ->orderBy('sort')
+            ->orderBy('id')
             ->get())->count();
 
-        $totalFiltered = collect(ContactPerson::filter(['search' => $request->search['value']])
-            ->orderBy(columnOrder(['id', 'name', 'branch', 'whatsapp', 'code'], $request->order[0]['column']), $request->order[0]['dir'])
+        $totalFiltered = collect(ContactPerson::contactSorted()
+            ->filter(['search' => $request->search['value']])
+            ->orderBy('sort')
+            ->orderBy('id')
             ->get())->count();
 
-        $dataContactPerson = ContactPerson::filter(['search' => $request->search['value']])
+        $dataContactPerson = ContactPerson::contactSorted()
+            ->filter(['search' => $request->search['value']])
             ->skip($request->start)
             ->limit($request->length == -1 ? $totalData : $request->length)
-            ->orderBy(columnOrder(['id', 'name', 'branch', 'whatsapp', 'code'], $request->order[0]['column']), $request->order[0]['dir'])
+            ->orderBy('sort')
+            ->orderBy('id')
             ->get();
 
         $results = array();
@@ -230,6 +242,64 @@ class AnnouncementController extends Controller
             'recordsTotal'  =>  $totalData,
             'recordsFiltered'   =>  $totalFiltered,
             'draw'  =>  $request->draw,
+        ]);
+    }
+
+    public function sortedData(Request $request)
+    {
+        $dataContact = ContactPerson::contactSorted()
+            ->orderBy('sort')
+            ->orderBy('id')
+            ->get();
+
+        $results = null;
+
+        foreach ($dataContact as $key => $value) {
+            $results .= '<div class="list-group-item" id="index-sort" data-id="' . $value->id . '">
+                ' . $value->name . ' = ' . $value->branch . ' = (' . $value->code . ')</div>';
+        }
+
+        return response()->json([
+            'data'  =>  $results
+        ]);
+    }
+
+    public function sortedDataSave(Request $request)
+    {
+        ContactPersonSort::whereNotNull('id')->delete();
+
+        $data = array();
+
+        foreach ($request->arrIndex as $key => $value) {
+            $data[] = [
+                'contact_people_id' =>  $value,
+                'created_at'    =>  Carbon::now("Asia/Jakarta"),
+            ];
+        }
+
+        if (collect($data)->count() > 0) {
+            if (ContactPersonSort::insert($data)) {
+                return response()->json([
+                    'data'  =>  [
+                        'status'    =>  true,
+                        'message'   =>  "Contact Person is sorted"
+                    ]
+                ]);
+            }
+
+            return response()->json([
+                'data'  =>  [
+                    'status'    =>  false,
+                    'message'   =>  "Contact Person is not sorted"
+                ]
+            ]);
+        }
+
+        return response()->json([
+            'data'  =>  [
+                'status'    =>  false,
+                'message'   =>  "Contact Person is null"
+            ]
         ]);
     }
 }

@@ -18,8 +18,10 @@
         </div>
         <div class="row">
             <div class="col">
-                <p class="text-center">{{ $mailData['codeMaid'] }} Has been <b>{{ $mailData['status'] }}</b> by
-                    {{ $mailData['user'] }}. Please check in My Worker Menu</p>
+                <p class="text-center">{{ $mailData['codeMaid'] }} - {{ $mailData['maidName'] }} Has been
+                    <b>{{ $mailData['status'] }}</b> by
+                    {{ $mailData['user'] }}. Please check in My Worker Menu
+                </p>
             </div>
         </div>
         <div class="row my-5 py-5">

@@ -81,11 +81,11 @@ use Illuminate\Support\Str;
                                                 </h4>
                                                 <div class="row mb-3">
                                                     <div class="col d-flex gap-2">
-                                                        @if ($maid->is_bookmark)
+                                                        @if ($maid->is_bookmark == 1 && $maid->is_uploaded == 0)
                                                             <span class="badge text-bg-primary">Bookmark till
                                                                 {{ Carbon::parse($maid->bookmark_max_at)->isoFormat('DD MMM YYYY') }}</span>
                                                         @endif
-                                                        @if ($maid->is_uploaded)
+                                                        @if ($maid->is_uploaded == 1 && $maid->is_taken == 0)
                                                             <span class="badge text-bg-primary">Wait Approval</span>
                                                         @endif
                                                         @if ($maid->is_taken)
@@ -148,7 +148,7 @@ use Illuminate\Support\Str;
                                                                 @if (collect($maid->workExperience)->count() >= 3)
                                                                     @foreach ($maid->workExperience as $key => $work)
                                                                         @if ($key < 3)
-                                                                            <li class="list-group-item text-dark"
+                                                                            <li class="list-group-item"
                                                                                 style="font-size: .98rem !important;">
                                                                                 {{ $work->country }}
                                                                                 ({{ $work->year_start }} -

@@ -173,33 +173,33 @@ use App\Models\Country;
                         @if ($maids->count() > 0)
                             @foreach ($maids as $maid)
                                 <?php
-
+                                
                                 $country = '';
-
+                                
                                 if ($maid->is_hongkong) {
                                     $country = 'HK';
                                 }
-
+                                
                                 if ($maid->is_singapore) {
                                     $country = 'SG';
                                 }
-
+                                
                                 if ($maid->is_taiwan) {
                                     $country = 'TW';
                                 }
-
+                                
                                 if ($maid->is_malaysia) {
                                     $country = 'MY';
                                 }
-
+                                
                                 if ($maid->is_brunei) {
                                     $country = 'BN';
                                 }
-
+                                
                                 if ($maid->is_all_format) {
                                     $country = 'FM';
                                 }
-
+                                
                                 ?>
                                 <div class="col-12 col-md-3 col-lg-3 col-xl-3 mb-3">
                                     <div class="card shadow" style="min-height: 47em; max-height: 54em;">
@@ -237,7 +237,8 @@ use App\Models\Country;
                                                         <span
                                                             href="{{ url('') }}/taken/maids/{{ $maid->code_maid }}"
                                                             class="badge bg-success text-bg-success text-decoration-none text-wrap"><small>Taken
-                                                                By {{ $maid->userTaken->name }}</small></span>
+                                                                By
+                                                                {{ $maid->userTaken ? $maid->userTaken->name : 'N/A' }}</small></span>
                                                     @endif
                                                 </div>
                                                 <div class="row my-0 py-0" style="margin-bottom:-1.25rem !important;">
@@ -434,7 +435,7 @@ use App\Models\Country;
                 3 => 'Widowed',
                 4 => 'Divorced',
             ];
-
+            
             $education = [
                 1 => 'Kindergarten',
                 2 => 'Primary School',
@@ -444,7 +445,7 @@ use App\Models\Country;
                 6 => 'Master',
                 7 => 'Doctor',
             ];
-
+            
             $countries = [
                 'HK' => 'Hongkong',
                 'SG' => 'Singapore',
@@ -453,14 +454,14 @@ use App\Models\Country;
                 'BN' => 'Brunei',
                 'FM' => 'All Formal',
             ];
-
+            
             $categories = [
                 'taken' => 'Taken',
                 'hold' => 'Hold',
                 'upload' => 'JO Uploaded',
                 'avail' => 'Available',
             ];
-
+            
             $branch = [
                 'K' => 'Kendal',
                 'T' => 'Tegal',

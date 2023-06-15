@@ -68,6 +68,7 @@
     <script src="{{ asset('assets/mazer/dist/assets/vendors/jquery-datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/momentjs/min/moment-with-locales.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/datepicker/js/datepicker-full.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/sortableEs6/Sortable.min.js') }}"></script>
     <script
         src="{{ asset('assets/mazer/dist/assets/vendors/jquery-datatables/custom.jquery.dataTables.bootstrap5.min.js') }}">
     </script>

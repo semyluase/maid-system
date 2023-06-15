@@ -13,6 +13,9 @@ const fnAnnouncement = {
             contactPersons: new bootstrap.Modal(
                 document.querySelector("#modal-contact-person")
             ),
+            contactPersonsSort: new bootstrap.Modal(
+                document.querySelector("#modal-sort-contact-person")
+            ),
         },
         buttons: {
             btnSaveAnnoucement: document.querySelector(
@@ -20,21 +23,25 @@ const fnAnnouncement = {
             ),
             btnAddContact: document.querySelector("#btn-add-contact-person"),
             btnSaveContact: document.querySelector("#btn-save"),
+            btnSaveSortContact: document.querySelector("#btn-save-sort"),
+            btnSortContact: document.querySelector("#btn-sort-contact-person"),
         },
         tables: {
             tbContactPerson: $("#tb-contact-person").DataTable({
                 ajax: `${baseUrl}/master/announcements/get-all-data`,
                 serverSide: true,
                 paging: false,
-                columnDefs: [{
-                    targets: 5,
-                    orderable: false,
-                }, ],
+                orderable: [
+                    {
+                        targets: [0, 1, 2, 3, 4, 5],
+                        orderable: false,
+                    },
+                ],
             }),
         },
     },
 
-    onInit: async() => {
+    onInit: async () => {
         blockUI();
 
         new Quill(bodyInput, {
@@ -62,20 +69,20 @@ const fnAnnouncement = {
         unBlockUI();
     },
 
-    onLoad: async() => {
+    onLoad: async () => {
         fnAnnouncement.init.tables.tbContactPerson.ajax
             .url(`${baseUrl}/master/announcements/get-all-data`)
             .draw();
     },
 
-    onSave: async(url, data, method) => {
+    onSave: async (url, data, method) => {
         return await fetch(url, {
-                method: method,
-                body: data,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            })
+            method: method,
+            body: data,
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
             .then((response) => {
                 if (!response.ok) {
                     method == "delete" ? unBlockUI() : unBlockModal();
@@ -96,7 +103,7 @@ const fnAnnouncement = {
             .then((response) => response);
     },
 
-    onEdit: async(id) => {
+    onEdit: async (id) => {
         await fetch(`${baseUrl}/master/announcements/${id}/edit`)
             .then((response) => {
                 if (!response.ok) {
@@ -115,7 +122,7 @@ const fnAnnouncement = {
 
                 return response.json();
             })
-            .then(async(response) => {
+            .then(async (response) => {
                 await fnAnnouncement.init.modals.contactPersons.show();
 
                 idInput.value = response.id;
@@ -131,7 +138,7 @@ const fnAnnouncement = {
             });
     },
 
-    onDelete: async(id, csrf) => {
+    onDelete: async (id, csrf) => {
         await swalWithBootstrapButtons
             .fire({
                 icon: "info",
@@ -143,7 +150,7 @@ const fnAnnouncement = {
                 cancelButtonColor: "#dc3545",
                 cancelButtonText: "No, Cancel",
             })
-            .then(async(result) => {
+            .then(async (result) => {
                 if (result.value) {
                     blockUI();
 
@@ -204,7 +211,7 @@ fnAnnouncement.init.buttons.btnAddContact.addEventListener("click", () => {
 
 fnAnnouncement.init.buttons.btnSaveAnnoucement.addEventListener(
     "click",
-    async() => {
+    async () => {
         bodyInput.removeChild(document.querySelector(".ql-clipboard"));
         bodyInput.removeChild(document.querySelector(".ql-tooltip"));
         blockUI();
@@ -248,7 +255,7 @@ fnAnnouncement.init.buttons.btnSaveAnnoucement.addEventListener(
 
 fnAnnouncement.init.buttons.btnSaveContact.addEventListener(
     "click",
-    async() => {
+    async () => {
         switch (fnAnnouncement.init.buttons.btnSaveContact.dataset.type) {
             case "add-new-contact":
                 console.log(true);
@@ -300,6 +307,110 @@ fnAnnouncement.init.buttons.btnSaveContact.addEventListener(
             }).showToast();
 
             fnAnnouncement.init.modals.contactPersons.hide();
+            fnAnnouncement.onLoad();
+        } else {
+            Toastify({
+                text: results.data.message,
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#dc3545",
+            }).showToast();
+        }
+    }
+);
+
+fnAnnouncement.init.buttons.btnSortContact.addEventListener(
+    "click",
+    async () => {
+        blockUI();
+        await fetch(`${baseUrl}/master/announcements/sorted-data`)
+            .then((response) => {
+                if (!response.ok) {
+                    unBlockUI();
+                    throw new Error(
+                        Toastify({
+                            text: "Something wrong while get data",
+                            duration: 3000,
+                            close: true,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: "#dc3545",
+                        }).showToast()
+                    );
+                }
+                return response.json();
+            })
+            .then((response) => {
+                unBlockUI();
+                if (response.data != null) {
+                    document.querySelector("#example1").innerHTML =
+                        response.data;
+                    fnAnnouncement.init.modals.contactPersonsSort.show();
+                } else {
+                    Toastify({
+                        text: "Something wrong while get data",
+                        duration: 3000,
+                        close: true,
+                        gravity: "top",
+                        position: "right",
+                        backgroundColor: "#dc3545",
+                    }).showToast();
+                }
+            });
+    }
+);
+
+// $(".table-sortable tbody").on("click", function () {
+//     console.log(
+//         $(this).sortable({
+//             handle: "tr",
+//         })
+//     );
+// });
+
+// document.querySelector("#tb-sort tbody").addEventListener("click", () => {});
+new Sortable(document.querySelector("#example1"), {
+    animation: 150,
+    ghostClass: "blue-background-class",
+});
+
+fnAnnouncement.init.buttons.btnSaveSortContact.addEventListener(
+    "click",
+    async () => {
+        let sortIndex = document.querySelectorAll("#index-sort");
+
+        let arrIndex = [];
+        sortIndex.forEach((item) => {
+            arrIndex.push(item.dataset.id);
+        });
+
+        blockUI();
+
+        const results = await fnAnnouncement.onSave(
+            `${baseUrl}/master/announcements/sort-contact`,
+            JSON.stringify({
+                arrIndex: arrIndex,
+                _token: fnAnnouncement.init.buttons.btnSaveSortContact.dataset
+                    .csrf,
+            }),
+            "post"
+        );
+
+        unBlockUI();
+
+        if (results.data.status) {
+            Toastify({
+                text: results.data.message,
+                duration: 3000,
+                close: true,
+                gravity: "top",
+                position: "right",
+                backgroundColor: "#198754",
+            }).showToast();
+
+            fnAnnouncement.init.modals.contactPersonsSort.hide();
             fnAnnouncement.onLoad();
         } else {
             Toastify({

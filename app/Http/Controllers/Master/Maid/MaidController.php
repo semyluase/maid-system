@@ -175,9 +175,9 @@ class MaidController extends Controller
             'codeMaid'    =>  'required',
             'photoMaid' =>  'image|mimes:png,jpg,jpeg'
         ], [
-            'codeMaid.required'   =>  'Code Maid is Required',
-            'photoMaid.image'   =>  'Maid Photo must an image',
-            'photoMaid.mimes'   =>  'Maid Photo must an jpg,png,jpeg',
+            'codeMaid.required'   =>  'Code Worker is Required',
+            'photoMaid.image'   =>  'Maid Worker must an image',
+            'photoMaid.mimes'   =>  'Maid Worker must an jpg,png,jpeg',
         ]);
 
         if ($validator->fails()) {
@@ -194,9 +194,16 @@ class MaidController extends Controller
         if ($request->file('photoMaid')) {
             $photoMaid = $request->file('photoMaid');
 
+
             $fileNameFull = $request->codeMaid . '.' . $photoMaid->getClientOriginalExtension();
             $fileBase = str_replace('data:image/' . $photoMaid->getClientOriginalExtension() . ';base64,', '', $photoMaid);
             $fileBase = str_replace(' ', '+', $photoMaid);
+
+            if ($dataMaid->picture_name == null && $dataMaid->picture_name == '') {
+                if (File::exists(public_path('assets/image/maids/photos/') . $dataMaid->picture_name)) {
+                    File::delete(public_path('assets/image/maids/photos/') . $dataMaid->picture_name);
+                }
+            }
 
             $photoMaid->move(public_path('assets/image/maids/photos/'), $fileNameFull);
 
@@ -297,6 +304,8 @@ class MaidController extends Controller
                     ];
                 }
             }
+
+            // dd($request->skillMaidWillingness);
 
             if ($request->skillMaidWillingness) {
                 foreach ($request->skillMaidWillingness as $key => $value) {

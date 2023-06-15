@@ -105,7 +105,7 @@ class DashboardController extends Controller
             $announcement = Announcement::latest()
                 ->first();
 
-            $contactPersons = ContactPerson::all();
+            $contactPersons = ContactPerson::contactSorted()->orderBy('sort')->orderBy('id')->get();
 
             $role = Role::where('slug', 'agency')
                 ->first();
@@ -138,7 +138,7 @@ class DashboardController extends Controller
         $announcement = Announcement::latest()
             ->first();
 
-        $contactPersons = ContactPerson::all();
+        $contactPersons = ContactPerson::contactSorted()->orderBy('sort')->orderBy('id')->get();
 
         $maidBookmark = collect(Maid::where('is_active', true)
             ->where('is_trash', false)
@@ -184,7 +184,7 @@ class DashboardController extends Controller
         $announcement = Announcement::latest()
             ->first();
 
-        $contactPersons = ContactPerson::all();
+        $contactPersons = ContactPerson::contactSorted()->orderBy('sort')->orderBy('id')->get();
 
         $path = public_path('assets/image/header/header.png');
         $type = pathinfo($path, PATHINFO_EXTENSION);

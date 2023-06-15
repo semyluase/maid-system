@@ -118,8 +118,8 @@ use App\Models\Question;
                             <input class="form-check-input" type="radio"
                                 name="skillMaidWillingness[{{ $speciality->id }}]"
                                 id="skillMaidWillingnessYes[{{ $speciality->id }}]" value="1"
-                                {{ $speciality->id == 43 ? 'disabled' : '' }}
-                                {{ $speciality->willingness == 1 && $speciality->id != 43 ? 'checked' : '' }}>
+                                {{ $speciality->id == 43 ? 'disable' : '' }}
+                                {{ $speciality->willingness == 1 ? 'checked' : '' }}>
                             <label class="form-check-label"
                                 for="skillMaidWillingnessYes[{{ $speciality->id }}]">Yes</label>
                         </div>
@@ -127,8 +127,8 @@ use App\Models\Question;
                             <input class="form-check-input" type="radio"
                                 name="skillMaidWillingness[{{ $speciality->id }}]"
                                 id="skillMaidWillingnessNo[{{ $speciality->id }}]" value="0"
-                                {{ $speciality->id == 43 ? 'disabled' : '' }}
-                                {{ $speciality->willingness == 0 && $speciality->id != 43 ? 'checked' : '' }}>
+                                {{ $speciality->id == 43 ? 'disable' : '' }}
+                                {{ $speciality->willingness == 0 ? 'checked' : '' }}>
                             <label class="form-check-label"
                                 for="skillMaidWillingnessNo[{{ $speciality->id }}]">No</label>
                         </div>

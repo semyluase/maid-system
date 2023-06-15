@@ -21,6 +21,6 @@ class Document extends Model
             ON a.id = b.maid_id
             WHERE a.code_maid <> ''
             AND LENGTH(a.code_maid) > 3
-            AND b.location_file IS NULL) tb");
+            AND (b.location_file IS NULL)) tb");
     }
 }
