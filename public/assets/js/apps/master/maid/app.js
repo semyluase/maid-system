@@ -86,4 +86,12 @@ const fnMaid = {
 
         document.querySelector("#sidebar").classList.remove("active");
     },
+
+    onExcel: async(codeMaid, country) => {
+        window.open(
+            `${baseUrl}/master/maids/export-excel?maid=${codeMaid}&country=${country}`
+        );
+
+        document.querySelector("#sidebar").classList.remove("active");
+    },
 };

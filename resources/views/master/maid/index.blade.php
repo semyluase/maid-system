@@ -397,6 +397,12 @@ use App\Models\Country;
                                                     <i
                                                         class="bi bi-file-arrow-down d-flex align-items-center justify-content-center text-primary"></i>
                                                 </button>
+                                                <button type="button" class="btn btn-link p-2 m-1 text-decoration-none"
+                                                    title="Download Excel"
+                                                    onclick="fnMaid.onExcel('{{ $maid->code_maid }}', '{{ $country }}')">
+                                                    <i
+                                                        class="bi bi-file-earmark-excel d-flex align-items-center justify-content-center text-primary"></i>
+                                                </button>
                                                 @if (auth()->user()->role->slug == 'super-admin')
                                                     <button type="button"
                                                         class="btn btn-link p-2 m-1 text-decoration-none" title="Delete"

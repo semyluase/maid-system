@@ -348,6 +348,33 @@ function convertEducationLevel($education)
     return $educationLevel;
 }
 
+function excelColumn($start, $end)
+{
+    $columns = array();
+    for ($i = $start; $i != $end; $i++) {
+        $columns[]  =   $i;
+    }
+
+    return $columns;
+}
+
+function columnLetter($c)
+{
+
+    $c = intval($c);
+    if ($c <= 0) return '';
+
+    $letter = '';
+
+    while ($c != 0) {
+        $p = ($c - 1) % 26;
+        $c = intval(($c - $p) / 26);
+        $letter = chr(65 + $p) . $letter;
+    }
+
+    return $letter;
+}
+
 function generatePDF($html, $filename = '', $download = true, $paper = 'A4', $orientation = 'portrait')
 {
     $option = new Options();

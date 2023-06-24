@@ -66,7 +66,7 @@ class Maid extends Model
 
     public function scopeFilter($query, array $filter, $country)
     {
-        $query->when($filter['search'] ?? false, fn ($query, $search) => ($query->where('full_name', 'like', "%$search%")->orWhere('code_maid', 'like', "%$search%")->orWhere('date_of_birth', 'like', "%" . Carbon::now()->subYears(intval($search))->isoFormat('YYYY') . "%")));
+        $query->when($filter['search'] ?? false, fn ($query, $search) => ($query->where('full_name', 'like', "%$search%")->orWhere('code_maid', 'like', "%$search%")));
 
         $query->when($filter['code'] ?? false, fn ($query, $search) => ($query->where("code_maid", "LIKE", "%$search%")));
 

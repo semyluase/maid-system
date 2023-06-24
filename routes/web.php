@@ -60,6 +60,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/master/maids/get-maid-skill', [MaidController::class, 'getEmployeeSkill']);
     Route::get('/master/maids/get-country', [MaidController::class, 'getCountry']);
     Route::get('/master/maids/download-data', [MaidController::class, 'downloadData']);
+    Route::get('/master/maids/export-excel', [MaidController::class, 'exportExcel']);
     Route::get('/master/maids/send-batch-mail', [MaidController::class, 'sendMail']);
     Route::post('/master/maids/send-batch-mail/sending', [MaidController::class, 'sendingMail']);
     Route::post('/master/maids/add-work-experience', [MaidController::class, 'storeWorkExperience']);

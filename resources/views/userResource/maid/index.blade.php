@@ -68,33 +68,33 @@ use Illuminate\Support\Str;
                     <div class="row">
                         @foreach ($maids as $maid)
                             <?php
-
+                            
                             $country = '';
-
+                            
                             if ($maid->is_hongkong) {
                                 $country = 'HK';
                             }
-
+                            
                             if ($maid->is_singapore) {
                                 $country = 'SG';
                             }
-
+                            
                             if ($maid->is_taiwan) {
                                 $country = 'TW';
                             }
-
+                            
                             if ($maid->is_malaysia) {
                                 $country = 'MY';
                             }
-
+                            
                             if ($maid->is_brunei) {
                                 $country = 'BN';
                             }
-
+                            
                             if ($maid->is_all_format) {
                                 $country = 'FM';
                             }
-
+                            
                             ?>
                             <div class="col-lg-3 col-md-3 col-sm-12">
                                 <div class="card" style="height: 47em;">
@@ -268,6 +268,12 @@ use Illuminate\Support\Str;
                                                     </button>
                                                 @endif
                                             @endif
+                                            <button type="button" class="btn btn-link p-2 m-1 text-decoration-none"
+                                                title="Download Excel"
+                                                onclick="window.open('{{ url('') }}/master/maids/export-excel?maid={{ $maid->code_maid }}&country={{ $country }}')">
+                                                <i
+                                                    class="bi bi-file-earmark-excel d-flex align-items-center justify-content-center text-primary"></i>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -294,7 +300,7 @@ use Illuminate\Support\Str;
                 3 => 'Widowed',
                 4 => 'Divorced',
             ];
-
+            
             $education = [
                 1 => 'Kindergarten',
                 2 => 'Primary School',

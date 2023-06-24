@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Master\Maid;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ExcelFormalController;
+use App\Http\Controllers\ExcelOtherController;
+use App\Http\Controllers\ExcelSingaporeController;
 use App\Http\Resources\User\MaidResource;
 use App\Models\Country;
 use App\Models\Document;
@@ -23,6 +26,9 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use PDF;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Spatie\Image\Image;
 
 class MaidController extends Controller
@@ -1830,6 +1836,21 @@ class MaidController extends Controller
             PDF::createDownloadPDF($html, $maidData->code_maid . ' - ' . $maidData->full_name . '.pdf', false);
 
             return true;
+        }
+    }
+
+    public function exportExcel(Request $request)
+    {
+        if ($request->country != "FM" && $request->country != "SG") {
+            (new ExcelOtherController)->exportExcel($request);
+        }
+
+        if ($request->country == "SG") {
+            (new ExcelSingaporeController)->exportExcel($request);
+        }
+
+        if ($request->country == "FM") {
+            (new ExcelFormalController)->exportExcel($request);
         }
     }
 }
