@@ -34,7 +34,7 @@
     "sweetalert2": "^11.0.0",
     "toastify-js": "^1.11.0",
     "toastr": "^2.1.4",
-    "webpack": "^5.40.0"
+    "webpack": "^5.76.0"
   },
   "devDependencies": {
     "bootstrap": "5.1.3",
