@@ -42,7 +42,7 @@ class UserMenu extends Model
             foreach ($dataMenu as $row) {
                 $active = Request::is($row->active_value) ? 'active' : '';
 
-                $url = $row->url === 'javascript:;' ? $row->url : url('') . $row->url;
+                $url = $row->url === 'javascript:;' ? $row->url : ($row->label == 'Company Profile' ? $row->url : url('') . $row->url);
 
                 $logout = $row->label === 'Logout' ? 'onclick="loggedOut(\'' . csrf_token() . '\')"' : '';
 

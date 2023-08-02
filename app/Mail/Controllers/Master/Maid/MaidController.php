@@ -57,7 +57,6 @@ class MaidController extends Controller
                 'marital'  =>  request('marital'),
                 'category'  =>  request('category'),
                 'branch'  =>  request('branch'),
-                'available' =>  request('available') == true ? true : null,
             ], request('countries'))
             ->country(request('country'))
             ->country(request('countries'))

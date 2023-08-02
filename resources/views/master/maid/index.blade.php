@@ -73,6 +73,9 @@ use App\Models\Country;
                                             @if (request('name'))
                                                 <input type="hidden" name="name" value="{{ request('name') }}">
                                             @endif
+                                            @if (request('available'))
+                                                <input type="hidden" name="available" value="{{ request('available') }}">
+                                            @endif
                                             @if (request('start_age'))
                                                 <input type="hidden" name="start_age" value="{{ request('start_age') }}">
                                             @endif
@@ -148,6 +151,12 @@ use App\Models\Country;
                     </div>
                     <div class="row my-3">
                         <div class="col-6 d-flex gap-2">
+                            <a href="{{ url('') }}/master/maids"
+                                class="badge bg-primary text-bg-primary text-decoration-none">All
+                                Workers</a>
+                            <a href="{{ url('') }}/master/maids?available=true"
+                                class="badge bg-primary text-bg-primary text-decoration-none">Available
+                                Workers</a>
                             <a href="{{ url('') }}/booked/maids"
                                 class="badge bg-primary text-bg-primary text-decoration-none">Booking
                                 Workers</a>
@@ -161,7 +170,9 @@ use App\Models\Country;
                                 class="badge bg-primary text-bg-primary text-decoration-none">Available
                                 Workers Mail</a>
                         </div>
-                        <div class="col-6 d-flex justify-content-end">
+                    </div>
+                    <div class="row my-3">
+                        <div class="col-12 text-right justify-content-end">
                             {{ $maids->links() }}
                         </div>
                     </div>

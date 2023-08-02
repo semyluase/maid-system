@@ -30,6 +30,6 @@ class ApprovalMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Approval Worker Status')->view('email.approval');
+        return $this->subject('Approval Worker Status ' . $this->mailData['codeMaid'] . '-' . $this->mailData['maidName'])->view('email.approval');
     }
 }

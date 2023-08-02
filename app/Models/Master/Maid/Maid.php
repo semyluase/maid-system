@@ -66,7 +66,10 @@ class Maid extends Model
 
     public function scopeFilter($query, array $filter, $country)
     {
-        $query->when($filter['search'] ?? false, fn ($query, $search) => ($query->where('full_name', 'like', "%$search%")->orWhere('code_maid', 'like', "%$search%")));
+        $query->when($filter['search'] ?? false, fn ($query, $search) => ($query->where('full_name', 'like', "%$search%")->orWhere('code_maid', 'like', "%$search%")
+
+            // ->orWhere('date_of_birth', 'like', "%" . Carbon::now()->subYears(intval($search))->isoFormat('YYYY') . "%")
+        ));
 
         $query->when($filter['code'] ?? false, fn ($query, $search) => ($query->where("code_maid", "LIKE", "%$search%")));
 
@@ -163,6 +166,8 @@ class Maid extends Model
                 }
             });
         }
+
+        $query->when($filter['available'] ?? false, fn ($query) => ($query->where("is_bookmark", false)->where('is_uploaded', false)->where('is_approved', false)->where('is_taken', false)));
 
         return $query;
     }

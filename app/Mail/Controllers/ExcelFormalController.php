@@ -104,7 +104,7 @@ class ExcelFormalController extends Controller
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet(0);
-        $spreadsheet->getActiveSheet()->setTitle("$dataMaid->code_maid");
+        $spreadsheet->getActiveSheet()->setTitle("$dataMaid->full_name - $dataMaid->code_maid");
         $spreadsheet->getDefaultStyle()->getFont()->setName('Calibri Light');
         $spreadsheet->getDefaultStyle()->getFont()->setSize(10);
 

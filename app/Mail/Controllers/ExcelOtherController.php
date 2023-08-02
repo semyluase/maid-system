@@ -104,7 +104,7 @@ class ExcelOtherController extends Controller
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet(0);
-        $spreadsheet->getActiveSheet()->setTitle("$dataMaid->code_maid");
+        $spreadsheet->getActiveSheet()->setTitle("$dataMaid->full_name - $dataMaid->code_maid");
         $spreadsheet->getDefaultStyle()->getFont()->setName('Calibri Light');
         $spreadsheet->getDefaultStyle()->getFont()->setSize(10);
 
@@ -350,7 +350,7 @@ class ExcelOtherController extends Controller
             $drawing->setDescription('Photo');
             $drawing->setPath(public_path('assets/image/maids/photos/' . $dataMaid->picture_name));
             $drawing->setCoordinates('A33');
-            $drawing->setHeight(460);
+            $drawing->setHeight(300);
 
             $drawing->setWorksheet($spreadsheet->getActiveSheet());
 
