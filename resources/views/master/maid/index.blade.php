@@ -67,6 +67,9 @@ use App\Models\Country;
                                             @if (request('country'))
                                                 <input type="hidden" name="country" value="{{ request('country') }}">
                                             @endif
+                                            @if (request('available'))
+                                                <input type="hidden" name="available" value="{{ request('available') }}">
+                                            @endif
                                             @if (request('code'))
                                                 <input type="hidden" name="code" value="{{ request('code') }}">
                                             @endif
@@ -144,8 +147,50 @@ use App\Models\Country;
                                 ];
                             @endphp
                             @foreach ($countries as $country)
-                                <a href="{{ url('') }}/master/maids?country={{ $country['code'] }}"
-                                    class="badge bg-success text-bg-success text-decoration-none">{{ $country['name'] }}</a>
+                                <form action="{{ url('') }}/master/maids" method="get">
+                                    <input type="hidden" name="country" value={{ $country['code'] }}>
+                                    @if (request('search'))
+                                        <input type="hidden" name="search" value="{{ request('search') }}">
+                                    @endif
+                                    @if (request('country'))
+                                        <input type="hidden" name="country" value="{{ request('country') }}">
+                                    @endif
+                                    @if (request('available'))
+                                        <input type="hidden" name="available" value="{{ request('available') }}">
+                                    @endif
+                                    @if (request('code'))
+                                        <input type="hidden" name="code" value="{{ request('code') }}">
+                                    @endif
+                                    @if (request('name'))
+                                        <input type="hidden" name="name" value="{{ request('name') }}">
+                                    @endif
+                                    @if (request('available'))
+                                        <input type="hidden" name="available" value="{{ request('available') }}">
+                                    @endif
+                                    @if (request('start_age'))
+                                        <input type="hidden" name="start_age" value="{{ request('start_age') }}">
+                                    @endif
+                                    @if (request('end_age'))
+                                        <input type="hidden" name="end_age" value="{{ request('end_age') }}">
+                                    @endif
+                                    @if (request('countries'))
+                                        <input type="hidden" name="countries" value="{{ request('countries') }}">
+                                    @endif
+                                    @if (request('education'))
+                                        <input type="hidden" name="education" value="{{ request('education') }}">
+                                    @endif
+                                    @if (request('marital'))
+                                        <input type="hidden" name="marital" value="{{ request('marital') }}">
+                                    @endif
+                                    @if (request('category'))
+                                        <input type="hidden" name="category" value="{{ request('category') }}">
+                                    @endif
+                                    @if (request('branch'))
+                                        <input type="hidden" name="branch" value="{{ request('branch') }}">
+                                    @endif
+                                    <button type="submit"
+                                        class="badge bg-success border-0 text-bg-success text-decoration-none">{{ $country['name'] }}</button>
+                                </form>
                             @endforeach
                         </div>
                     </div>
@@ -154,9 +199,50 @@ use App\Models\Country;
                             <a href="{{ url('') }}/master/maids"
                                 class="badge bg-primary text-bg-primary text-decoration-none">All
                                 Workers</a>
-                            <a href="{{ url('') }}/master/maids?available=true"
-                                class="badge bg-primary text-bg-primary text-decoration-none">Available
-                                Workers</a>
+                            <form action="{{ url('') }}/master/maids" method="get">
+                                <input type="hidden" name="available" value="true">
+                                @if (request('search'))
+                                    <input type="hidden" name="search" value="{{ request('search') }}">
+                                @endif
+                                @if (request('country'))
+                                    <input type="hidden" name="country" value="{{ request('country') }}">
+                                @endif
+                                @if (request('available'))
+                                    <input type="hidden" name="available" value="{{ request('available') }}">
+                                @endif
+                                @if (request('code'))
+                                    <input type="hidden" name="code" value="{{ request('code') }}">
+                                @endif
+                                @if (request('name'))
+                                    <input type="hidden" name="name" value="{{ request('name') }}">
+                                @endif
+                                @if (request('available'))
+                                    <input type="hidden" name="available" value="{{ request('available') }}">
+                                @endif
+                                @if (request('start_age'))
+                                    <input type="hidden" name="start_age" value="{{ request('start_age') }}">
+                                @endif
+                                @if (request('end_age'))
+                                    <input type="hidden" name="end_age" value="{{ request('end_age') }}">
+                                @endif
+                                @if (request('countries'))
+                                    <input type="hidden" name="countries" value="{{ request('countries') }}">
+                                @endif
+                                @if (request('education'))
+                                    <input type="hidden" name="education" value="{{ request('education') }}">
+                                @endif
+                                @if (request('marital'))
+                                    <input type="hidden" name="marital" value="{{ request('marital') }}">
+                                @endif
+                                @if (request('category'))
+                                    <input type="hidden" name="category" value="{{ request('category') }}">
+                                @endif
+                                @if (request('branch'))
+                                    <input type="hidden" name="branch" value="{{ request('branch') }}">
+                                @endif
+                                <button type="submit" class="badge bg-primary border-0">Available
+                                    Workers</button>
+                            </form>
                             <a href="{{ url('') }}/booked/maids"
                                 class="badge bg-primary text-bg-primary text-decoration-none">Booking
                                 Workers</a>
@@ -171,11 +257,11 @@ use App\Models\Country;
                                 Workers Mail</a>
                         </div>
                     </div>
-                    <div class="row my-3">
-                        <div class="col-12 text-right justify-content-end">
-                            {{ $maids->links() }}
-                        </div>
-                    </div>
+                </div>
+            </div>
+            <div class="row my-3">
+                <div class="col-12 text-right justify-content-end">
+                    {{ $maids->links() }}
                 </div>
             </div>
             <div class="row mb-3">

@@ -8,31 +8,31 @@
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('assets/mazer/dist/assets/css/bootstrap.css') }}?v={{ rand() }}">
+    <link rel="stylesheet" href="{{ asset('assets/mazer/dist/assets/css/bootstrap.css') }}?{{ rand() }}">
     <link rel="stylesheet"
-        href="{{ asset('assets/mazer/dist/assets/vendors/perfect-scrollbar/perfect-scrollbar.css') }}?v={{ rand() }}">
+        href="{{ asset('assets/mazer/dist/assets/vendors/perfect-scrollbar/perfect-scrollbar.css') }}?{{ rand() }}">
     <link rel="stylesheet"
-        href="{{ asset('assets/mazer/dist/assets/vendors/bootstrap-icons/bootstrap-icons.css') }}?v={{ rand() }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendor/fontawesome/css/all.min.css') }}?v={{ rand() }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendor/freezeUI/freeze-ui.min.css') }}?v={{ rand() }}">
-    <link rel="stylesheet" href="{{ asset('assets/vendor/icheck/icheck-bootstrap.min.css') }}?v={{ rand() }}">
+        href="{{ asset('assets/mazer/dist/assets/vendors/bootstrap-icons/bootstrap-icons.css') }}?{{ rand() }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/fontawesome/css/all.min.css') }}?{{ rand() }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/freezeUI/freeze-ui.min.css') }}?{{ rand() }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/icheck/icheck-bootstrap.min.css') }}?{{ rand() }}">
     <link rel="stylesheet"
-        href="{{ asset('assets/mazer/dist/assets/vendors/rater-js/style.css') }}?v={{ rand() }}">
+        href="{{ asset('assets/mazer/dist/assets/vendors/rater-js/style.css') }}?{{ rand() }}">
     <link rel="stylesheet"
-        href="{{ asset('assets/mazer/dist/assets/vendors/sweetalert2/sweetalert2.min.css') }}?v={{ rand() }}">
+        href="{{ asset('assets/mazer/dist/assets/vendors/sweetalert2/sweetalert2.min.css') }}?{{ rand() }}">
     <link rel="stylesheet"
-        href="{{ asset('assets/mazer/dist/assets/vendors/toastify/toastify.css') }}?v={{ rand() }}">
+        href="{{ asset('assets/mazer/dist/assets/vendors/toastify/toastify.css') }}?{{ rand() }}">
     <link rel="stylesheet" href="{{ asset('assets/mazer/dist/assets/vendors/iconly/bold.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/flagIcons/css/flag-icons.css') }}" />
     <link rel="stylesheet"
-        href="{{ asset('assets/mazer/dist/assets/vendors/jquery-datatables/jquery.dataTables.bootstrap5.min.css') }}?v={{ rand() }}">
+        href="{{ asset('assets/mazer/dist/assets/vendors/jquery-datatables/jquery.dataTables.bootstrap5.min.css') }}?{{ rand() }}">
     <link rel="stylesheet"
-        href="{{ asset('assets/vendor/datepicker/css/datepicker-bs5.min.css') }}?v={{ rand() }}">
+        href="{{ asset('assets/vendor/datepicker/css/datepicker-bs5.min.css') }}?{{ rand() }}">
     <link rel="stylesheet"
-        href="{{ asset('assets/mazer/dist/assets/vendors/choices.js/choices.min.css') }}?v={{ rand() }}">
+        href="{{ asset('assets/mazer/dist/assets/vendors/choices.js/choices.min.css') }}?{{ rand() }}">
     <link rel="stylesheet"
-        href="{{ asset('assets/vendor/jstree/themes/default/style.min.css') }}?v={{ rand() }}">
-    <link rel="stylesheet" href="{{ asset('assets/mazer/dist/assets/css/app.css') }}?v={{ rand() }}">
+        href="{{ asset('assets/vendor/jstree/themes/default/style.min.css') }}?{{ rand() }}">
+    <link rel="stylesheet" href="{{ asset('assets/mazer/dist/assets/css/app.css') }}?{{ rand() }}">
     {{-- <link rel="shortcut icon" href="{{ asset('assets/mazer/dist/assets/images/favicon.svg') }}" type="image/x-icon"> --}}
     <link rel="shortcut icon" href="{{ asset('assets/image/header/logo.ico') }}" type="image/x-icon">
     @livewireStyles()
@@ -65,30 +65,30 @@
             </footer>
         </div>
     </div>
-    <script src="{{ asset('assets/mazer/dist/assets/vendors/jquery/jquery.min.js') }}?v={{ rand() }}"></script>
+    <script src="{{ asset('assets/mazer/dist/assets/vendors/jquery/jquery.min.js') }}?{{ rand() }}"></script>
     <script
-        src="{{ asset('assets/mazer/dist/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}?v={{ rand() }}">
+        src="{{ asset('assets/mazer/dist/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}?{{ rand() }}">
     </script>
-    <script src="{{ asset('assets/vendor/fontawesome/js/all.min.js') }}?v={{ rand() }}"></script>
-    <script src="{{ asset('assets/vendor/freezeUI/freeze-ui.es5.min.js') }}?v={{ rand() }}"></script>
-    <script src="{{ asset('assets/mazer/dist/assets/vendors/sweetalert2/sweetalert2.min.js') }}?v={{ rand() }}">
+    <script src="{{ asset('assets/vendor/fontawesome/js/all.min.js') }}?{{ rand() }}"></script>
+    <script src="{{ asset('assets/vendor/freezeUI/freeze-ui.es5.min.js') }}?{{ rand() }}"></script>
+    <script src="{{ asset('assets/mazer/dist/assets/vendors/sweetalert2/sweetalert2.min.js') }}?{{ rand() }}">
     </script>
-    <script src="{{ asset('assets/mazer/dist/assets/vendors/toastify/toastify.js') }}?v={{ rand() }}"></script>
-    <script src="{{ asset('assets/mazer/dist/assets/vendors/rater-js/rater-js.js') }}?v={{ rand() }}"></script>
+    <script src="{{ asset('assets/mazer/dist/assets/vendors/toastify/toastify.js') }}?{{ rand() }}"></script>
+    <script src="{{ asset('assets/mazer/dist/assets/vendors/rater-js/rater-js.js') }}?{{ rand() }}"></script>
     <script
-        src="{{ asset('assets/mazer/dist/assets/vendors/jquery-datatables/jquery.dataTables.min.js') }}?v={{ rand() }}">
+        src="{{ asset('assets/mazer/dist/assets/vendors/jquery-datatables/jquery.dataTables.min.js') }}?{{ rand() }}">
     </script>
-    <script src="{{ asset('assets/vendor/momentjs/min/moment-with-locales.min.js') }}?v={{ rand() }}"></script>
-    <script src="{{ asset('assets/vendor/datepicker/js/datepicker-full.min.js') }}?v={{ rand() }}"></script>
-    <script src="{{ asset('assets/vendor/sortableEs6/Sortable.min.js') }}?v={{ rand() }}"></script>
+    <script src="{{ asset('assets/vendor/momentjs/min/moment-with-locales.min.js') }}?{{ rand() }}"></script>
+    <script src="{{ asset('assets/vendor/datepicker/js/datepicker-full.min.js') }}?{{ rand() }}"></script>
+    <script src="{{ asset('assets/vendor/sortableEs6/Sortable.min.js') }}?{{ rand() }}"></script>
     <script
-        src="{{ asset('assets/mazer/dist/assets/vendors/jquery-datatables/custom.jquery.dataTables.bootstrap5.min.js') }}?v={{ rand() }}">
+        src="{{ asset('assets/mazer/dist/assets/vendors/jquery-datatables/custom.jquery.dataTables.bootstrap5.min.js') }}?{{ rand() }}">
     </script>
-    <script src="{{ asset('assets/mazer/dist/assets/vendors/choices.js/choices.min.js') }}?v={{ rand() }}">
+    <script src="{{ asset('assets/mazer/dist/assets/vendors/choices.js/choices.min.js') }}?{{ rand() }}">
     </script>
-    <script src="{{ asset('assets/vendor/jstree/jstree.min.js') }}?v={{ rand() }}"></script>
-    <script src="{{ asset('assets/mazer/dist/assets/js/bootstrap.bundle.min.js') }}?v={{ rand() }}"></script>
-    <script src="{{ asset('assets/mazer/dist/assets/js/mazer.js') }}?v={{ rand() }}"></script>
+    <script src="{{ asset('assets/vendor/jstree/jstree.min.js') }}?{{ rand() }}"></script>
+    <script src="{{ asset('assets/mazer/dist/assets/js/bootstrap.bundle.min.js') }}?{{ rand() }}"></script>
+    <script src="{{ asset('assets/mazer/dist/assets/js/mazer.js') }}?{{ rand() }}"></script>
     <script>
         const swalWithBootstrapButtons = Swal.mixin({
             customClass: {
@@ -164,7 +164,7 @@
     $js = isset($js) ? $js : [];
     if ($js) {
         for ($i = 0; $i < count($js); $i++) {
-            echo '<script src="' . asset($js[$i]) . '?v=' . rand() . '"></script>';
+            echo '<script src="' . asset($js[$i]) . '?' . rand() . '"></script>';
         }
     }
     ?>
