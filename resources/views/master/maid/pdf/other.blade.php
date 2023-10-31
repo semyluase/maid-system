@@ -96,7 +96,7 @@ use Illuminate\Support\Str;
                                 <td>{{ Str::upper($maid->full_name) }}</td>
                             </tr>
                             <tr>
-                                <td><span class="text-mandarin">國家</span> / Country</td>
+                                <td><span class="text-mandarin">目的地国家</span> / Country</td>
                                 <td style="margin-left 1rem !important; margin-right : 1rem !important;">:</td>
                                 <td>{{ Str::upper($maid->country) }}</td>
                             </tr>
@@ -242,6 +242,105 @@ use Illuminate\Support\Str;
                         </p>
                     </div>
                 @endforeach
+            @elseif (collect($workExperience)->count() > 0)
+                @foreach ($workExperience as $we)
+                    @if ($we->location != 'Indonesia')
+                        <div style="min-height: 48px; border: 1px solid #1b1b1b; margin-bottom: 5px;">
+                            <p class="text-mandarin" style="margin-bottom: 1px;">
+                                {{ $we->country }} ({{ $we->year_start . ' - ' . $we->year_end }})
+                            </p>
+                            <p class="text-mandarin">
+                                @php
+                                    $detailWork = null;
+                                    foreach ($we->detailWork as $key => $value) {
+                                        if ($value->question->is_input) {
+                                            $detailWork .= $value->question->question . ' ' . $value->note;
+
+                                            switch ($value->question->additional_note) {
+                                                case 'baby':
+                                                    $detailWork .= ' month old baby';
+                                                    break;
+
+                                                case 'child':
+                                                    $detailWork .= ' year old child';
+                                                    break;
+
+                                                case 'ahkong':
+                                                    $detailWork .= ' year old ahkong';
+                                                    break;
+
+                                                case 'ahma':
+                                                    $detailWork .= ' year old ahma';
+                                                    break;
+
+                                                default:
+                                                    $detailWork .= ' years';
+                                                    break;
+                                            }
+                                        }
+
+                                        if ($value->question->is_check) {
+                                            $detailWork .= $value->question->question;
+                                        }
+
+                                        if ($detailWork != null && $loop->last == true) {
+                                            $detailWork .= '.';
+                                        }
+
+                                        if ($detailWork != null && $loop->last == false) {
+                                            $detailWork .= ',';
+                                        }
+                                    }
+                                @endphp
+
+                                {{ $detailWork }}
+
+                                @php
+                                    $detailWork = null;
+                                    foreach ($we->detailWork as $key => $value) {
+                                        if ($value->question->is_input) {
+                                            $detailWork .= $value->question->question_hk . ' ' . $value->note;
+
+                                            switch ($value->question->additional_note) {
+                                                case 'baby':
+                                                    $detailWork .= ' 月';
+                                                    break;
+
+                                                case 'child':
+                                                    $detailWork .= ' 年';
+                                                    break;
+
+                                                case 'ahkong':
+                                                    $detailWork .= ' 年';
+                                                    break;
+
+                                                case 'ahma':
+                                                    $detailWork .= ' 年';
+                                                    break;
+
+                                                default:
+                                                    $detailWork .= ' 年';
+                                                    break;
+                                            }
+                                        }
+
+                                        if ($value->question->is_check) {
+                                            $detailWork .= $value->question->question_hk;
+                                        }
+
+                                        if ($detailWork != null && $loop->last == true) {
+                                            $detailWork .= '.';
+                                        }
+
+                                        if ($detailWork != null && $loop->last == false) {
+                                            $detailWork .= ',';
+                                        }
+                                    }
+                                @endphp
+                            </p>
+                        </div>
+                    @endif
+                @endforeach
             @else
                 <div style="min-height: 48px; border: 1px solid #1b1b1b; margin-bottom: 5px;">
                 </div>
@@ -251,7 +350,8 @@ use Illuminate\Support\Str;
             </div>
             @if (collect($domestics)->count() > 0)
                 @foreach ($domestics as $domestic)
-                    <div class="text-mandarin" style="min-height: 48px; border: 1px solid #1b1b1b; margin-bottom: 5px;">
+                    <div class="text-mandarin"
+                        style="min-height: 48px; border: 1px solid #1b1b1b; margin-bottom: 5px;">
                         <p class="text-mandarin" style="margin-bottom: 1px;">
                             {{ $domestic->country }} ({{ $domestic->year_start . ' - ' . $domestic->year_end }})
                         </p>
@@ -260,12 +360,112 @@ use Illuminate\Support\Str;
                         </p>
                     </div>
                 @endforeach
+            @elseif (collect($workExperience)->count() > 0)
+                @foreach ($workExperience as $we)
+                    @if ($we->location == 'Indonesia')
+                        <div style="min-height: 48px; border: 1px solid #1b1b1b; margin-bottom: 5px;">
+                            <p class="text-mandarin" style="margin-bottom: 1px;">
+                                {{ $we->country }} ({{ $we->year_start . ' - ' . $we->year_end }})
+                            </p>
+                            <p class="text-mandarin">
+                                @php
+                                    $detailWork = null;
+                                    foreach ($we->detailWork as $key => $value) {
+                                        if ($value->question->is_input) {
+                                            $detailWork .= $value->question->question . ' ' . $value->note;
+
+                                            switch ($dw->question->additional_note) {
+                                                case 'baby':
+                                                    $detailWork .= ' month old baby';
+                                                    break;
+
+                                                case 'child':
+                                                    $detailWork .= ' year old child';
+                                                    break;
+
+                                                case 'ahkong':
+                                                    $detailWork .= ' year old ahkong';
+                                                    break;
+
+                                                case 'ahma':
+                                                    $detailWork .= ' year old ahma';
+                                                    break;
+
+                                                default:
+                                                    $detailWork .= ' years';
+                                                    break;
+                                            }
+                                        }
+
+                                        if ($dw->question->is_check) {
+                                            $detailWork .= $dw->question->question;
+                                        }
+
+                                        if ($detailWork != null && $loop->last == true) {
+                                            $detailWork .= '.';
+                                        }
+
+                                        if ($detailWork != null && $loop->last == false) {
+                                            $detailWork .= ',';
+                                        }
+                                    }
+                                @endphp
+
+                                {{ $detailWork }}
+
+                                @php
+                                    $detailWork = null;
+                                    foreach ($we->detailWork as $key => $value) {
+                                        if ($value->question->is_input) {
+                                            $detailWork .= $value->question->question_hk . ' ' . $value->note;
+
+                                            switch ($dw->question->additional_note) {
+                                                case 'baby':
+                                                    $detailWork .= ' 月';
+                                                    break;
+
+                                                case 'child':
+                                                    $detailWork .= ' 年';
+                                                    break;
+
+                                                case 'ahkong':
+                                                    $detailWork .= ' 年';
+                                                    break;
+
+                                                case 'ahma':
+                                                    $detailWork .= ' 年';
+                                                    break;
+
+                                                default:
+                                                    $detailWork .= ' 年';
+                                                    break;
+                                            }
+                                        }
+
+                                        if ($dw->question->is_check) {
+                                            $detailWork .= $dw->question->question_hk;
+                                        }
+
+                                        if ($detailWork != null && $loop->last == true) {
+                                            $detailWork .= '.';
+                                        }
+
+                                        if ($detailWork != null && $loop->last == false) {
+                                            $detailWork .= ',';
+                                        }
+                                    }
+                                @endphp
+                            </p>
+                        </div>
+                    @endif
+                @endforeach
             @else
                 <div style="min-height: 48px; border: 1px solid #1b1b1b; margin-bottom: 5px;">
                 </div>
             @endif
             <div class="text-center border border-1 border-dark text-mandarin" style="border: 1px solid #1b1b1b;">
-                <span class="text-mandarin">外語能力</span> / Languages</div>
+                <span class="text-mandarin">外語能力</span> / Languages
+            </div>
             <table class="border-0" style="width: 100%;">
                 @foreach ($languages as $language)
                     <tr>

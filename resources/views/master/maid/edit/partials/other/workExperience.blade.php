@@ -21,4 +21,7 @@
         </table>
     </div>
 </div>
+<script>
+    let country = "{{ request('country') }}";
+</script>
 @include('master.maid.edit.partials.other.modal.workExperience')

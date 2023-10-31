@@ -2,6 +2,7 @@
 
 namespace App\Models\Master\Maid;
 
+use App\Models\DetailWorkExperience;
 use App\Models\Master\Maid\Maid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,10 +12,16 @@ class WorkExperience extends Model
     use HasFactory;
 
     protected $guarded = ['id'];
+    protected $with = ['detailWork'];
 
     public function maid()
     {
         return $this->belongsTo(Maid::class, 'maid_id', 'id');
+    }
+
+    function detailWork()
+    {
+        return $this->hasMany(DetailWorkExperience::class, 'work_experience_id', 'id');
     }
 
     public function scopeCountry($query, $country)

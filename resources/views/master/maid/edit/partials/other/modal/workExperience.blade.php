@@ -25,17 +25,8 @@ $codeMaid = $maid ? $maid->code_maid : '';
                 </div>
                 <div class="row mb-3">
                     <div class="col">
-                        <label for="locationWork" class="form-label">Location</label>
-                        <input type="text" name="locationWork" id="locationWork" class="form-control">
-                    </div>
-                    <div class="col pt-3 mt-3">
-                        <div class="form-check icheck-greensea">
-                            <input class="form-check-input" type="checkbox" value="1" name="overseasWork"
-                                id="overseasWork">
-                            <label class="form-check-label" for="overseasWork">
-                                Overseas
-                            </label>
-                        </div>
+                        <label for="location" class="form-label">Location</label>
+                        <select name="location" id="location" class="form-select choices"></select>
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -44,6 +35,31 @@ $codeMaid = $maid ? $maid->code_maid : '';
                         <textarea name="descriptionWork" id="descriptionWork" cols="" rows="7" class="form-control"></textarea>
                     </div>
                 </div>
+                @if (collect($workExperienceChecks)->count() > 0)
+                    @foreach ($workExperienceChecks as $workExperience)
+                        @if ($workExperience->is_check)
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <div class="form-check icheck-greensea">
+                                        <input class="form-check-input" type="checkbox" value="1"
+                                            name="workExperienceCheck[]" id="{{ $workExperience->id }}">
+                                        <label class="form-check-label" for="{{ $workExperience->id }}">
+                                            {{ $workExperience->question }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        @else
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    {{ $workExperience->question }} <input type="text" name="workExperienceInput[]"
+                                        id="{{ $workExperience->id }}">
+                                    {{ $workExperience->additional_note == 'baby' ? ' month baby' : ($workExperience->additional_note == 'child' ? ' year child' : ($workExperience->additional_note == 'akong' ? ' year akong' : ($workExperience->additional_note == 'ahma' ? ' year ahma' : ' years'))) }}
+                                </div>
+                            </div>
+                        @endif
+                    @endforeach
+                @endif
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal"><i

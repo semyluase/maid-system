@@ -42,14 +42,16 @@ const fnWorkExperience = {
         },
     },
 
-    onCreateDropdown: async(url, choices, placeholder, selected) => {
+    onCreateDropdown: async (url, choices, placeholder, selected) => {
         choices.clearStore();
 
-        choices.setChoices([{
-            label: placeholder,
-            value: "",
-            disabled: true,
-        }, ]);
+        choices.setChoices([
+            {
+                label: placeholder,
+                value: "",
+                disabled: true,
+            },
+        ]);
 
         if (typeof url == "object") {
             choices.setChoices(url);
@@ -77,14 +79,14 @@ const fnWorkExperience = {
         choices.setChoiceByValue(selected);
     },
 
-    onSave: async(url, data, method) => {
+    onSave: async (url, data, method) => {
         return await fetch(url, {
-                method: method,
-                body: data,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            })
+            method: method,
+            body: data,
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
             .then((response) => {
                 if (!response.ok) {
                     unBlockUI();
@@ -105,7 +107,7 @@ const fnWorkExperience = {
             .then((response) => response);
     },
 
-    onLoadTable: async(type, params) => {
+    onLoadTable: async (type, params) => {
         switch (type) {
             case "work":
                 await fnWorkExperience.init.tables.tbWorkExperience.ajax
@@ -117,7 +119,7 @@ const fnWorkExperience = {
         }
     },
 
-    onEdit: async(id) => {
+    onEdit: async (id) => {
         await fetch(`${baseUrl}/master/maids/work-experiences/${id}/edit`)
             .then((response) => {
                 if (!response.ok) {
@@ -136,7 +138,7 @@ const fnWorkExperience = {
 
                 return response.json();
             })
-            .then(async(response) => {
+            .then(async (response) => {
                 await fnWorkExperience.init.modals.modalWork.show();
 
                 workIDInput.value = response.id;
@@ -187,7 +189,7 @@ const fnWorkExperience = {
             });
     },
 
-    onDelete: async(id, csrf) => {
+    onDelete: async (id, csrf) => {
         await swalWithBootstrapButtons
             .fire({
                 icon: "info",
@@ -199,7 +201,7 @@ const fnWorkExperience = {
                 cancelButtonColor: "#dc3545",
                 cancelButtonText: "No, Cancel",
             })
-            .then(async(result) => {
+            .then(async (result) => {
                 if (result.value) {
                     blockUI();
 
@@ -241,7 +243,7 @@ const fnWorkExperience = {
     },
 };
 
-fnWorkExperience.init.buttons.btnAddWork.addEventListener("click", async() => {
+fnWorkExperience.init.buttons.btnAddWork.addEventListener("click", async () => {
     await fnWorkExperience.init.modals.modalWork.show();
 
     workIDInput.value = "";
@@ -289,7 +291,7 @@ fnWorkExperience.init.buttons.btnAddWork.addEventListener("click", async() => {
 
 fnWorkExperience.init.buttons.btnSaveWork.addEventListener(
     "click",
-    async() => {
+    async () => {
         switch (fnWorkExperience.init.buttons.btnSaveWork.dataset.type) {
             case "add-data":
                 url = `${baseUrl}/master/maids/work-experiences`;
@@ -297,10 +299,12 @@ fnWorkExperience.init.buttons.btnSaveWork.addEventListener(
                 data = JSON.stringify({
                     maid: codeMaidInput.value,
                     location: workLocationInput.value,
-                    start: workStartMonthChoices.getValue(true) +
+                    start:
+                        workStartMonthChoices.getValue(true) +
                         " " +
                         workStartYearChoices.getValue(true),
-                    end: workEndMonthChoices.getValue(true) +
+                    end:
+                        workEndMonthChoices.getValue(true) +
                         " " +
                         workEndYearChoices.getValue(true),
                     description: workDescriptionInput.value,
@@ -322,10 +326,12 @@ fnWorkExperience.init.buttons.btnSaveWork.addEventListener(
                 data = JSON.stringify({
                     maid: codeMaidInput.value,
                     location: workLocationInput.value,
-                    start: workStartMonthChoices.getValue(true) +
+                    start:
+                        workStartMonthChoices.getValue(true) +
                         " " +
                         workStartYearChoices.getValue(true),
-                    end: workEndMonthChoices.getValue(true) +
+                    end:
+                        workEndMonthChoices.getValue(true) +
                         " " +
                         workEndYearChoices.getValue(true),
                     description: workDescriptionInput.value,

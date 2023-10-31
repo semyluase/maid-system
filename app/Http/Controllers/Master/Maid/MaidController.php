@@ -8,6 +8,7 @@ use App\Http\Controllers\ExcelOtherController;
 use App\Http\Controllers\ExcelSingaporeController;
 use App\Http\Resources\User\MaidResource;
 use App\Models\Country;
+use App\Models\DetailWorkExperience;
 use App\Models\Document;
 use App\Models\EmailSending;
 use App\Models\Master\Maid\Interview;
@@ -137,6 +138,12 @@ class MaidController extends Controller
             ->country($request->country)
             ->get();
 
+        $workExperienceCheck = Question::where('is_active', true)
+            ->where('is_work_experience', true)
+            ->where('is_child', false)
+            ->country($request->country)
+            ->get();
+
         if ($request->country === 'SG') {
             $view = 'master.maid.forms.singapore';
             $js = 'assets/js/apps/master/maid/forms/singapore.js';
@@ -160,6 +167,7 @@ class MaidController extends Controller
             'interviews'  =>  $interview,
             'cookings'  =>  $cooking,
             'workChosens'  =>  $workChosen,
+            'workExperienceChecks'  =>  $workExperienceCheck,
             'js'    =>  [
                 $js,
             ]
@@ -768,7 +776,7 @@ class MaidController extends Controller
                 'maid_id'   =>  $dataMaid->id,
                 'year_start'    =>  $request->start,
                 'year_end'    =>  $request->end,
-                'country'   =>  Str::upper($request->location),
+                'country'   =>  $request->location,
                 'description'   =>  Str::upper($request->description),
                 'employeer_singapore' =>  Str::upper($request->employer),
                 'employeer_singapore_feedback' =>  Str::upper($request->feedback),
@@ -781,15 +789,49 @@ class MaidController extends Controller
                 'maid_id'   =>  $dataMaid->id,
                 'year_start'    =>  $request->start,
                 'year_end'    =>  $request->end,
-                'country'   =>  Str::upper($request->location),
+                'country'   =>  $request->location,
                 'description'   =>  Str::upper($request->description),
                 'work_overseas' =>  $request->overseas,
                 convertCountry($request->country)   =>  true,
             ];
         }
 
+        $workExperienceSave = WorkExperience::create($data);
 
-        if (WorkExperience::create($data)) {
+        if ($workExperienceSave) {
+            $dataQuestion = Question::where('is_active', true)
+                ->where('is_work_experience', true)
+                ->where(convertCountry($request->country), true)
+                ->get();
+
+            if ($dataQuestion) {
+                foreach ($dataQuestion as $key => $value) {
+                    foreach ($request->workExperience as $workKey => $work) {
+                        if ($value->id == $workKey) {
+                            if ($value->is_check && $work != null) {
+                                $data = [
+                                    'work_experience_id'   =>  $workExperienceSave->id,
+                                    'question_id'   =>  $value->id,
+                                    'answer'   =>  true,
+                                    'note'   =>  null,
+                                ];
+
+                                DetailWorkExperience::create($data);
+                            }
+                            if ($value->is_input && $work != null) {
+                                $data = [
+                                    'work_experience_id'   =>  $workExperienceSave->id,
+                                    'question_id'   =>  $value->id,
+                                    'answer'   =>  true,
+                                    'note'   =>  $work,
+                                ];
+
+                                DetailWorkExperience::create($data);
+                            }
+                        }
+                    }
+                }
+            }
             return response()->json([
                 'data'  =>  [
                     'status'    =>  true,
@@ -956,6 +998,12 @@ class MaidController extends Controller
             ->orderBy('id')
             ->get();
 
+        $workExperienceCheck = Question::where('is_active', true)
+            ->where('is_work_experience', true)
+            ->where('is_child', false)
+            ->country($request->country)
+            ->get();
+
         if ($request->country === 'SG') {
             $view = 'master.maid.edit.singapore';
             $js = 'assets/js/apps/master/maid/edit/singapore.js';
@@ -977,6 +1025,7 @@ class MaidController extends Controller
             'medicals'  =>  $medical,
             'methods'  =>  $method,
             'interviews'  =>  $interview,
+            'workExperienceChecks'  =>  $workExperienceCheck,
             'js'    =>  [
                 $js,
             ]
@@ -1227,7 +1276,7 @@ class MaidController extends Controller
                 'maid_id'   =>  Maid::where('code_maid', $request->maid)->country($request->country)->first('id')->id,
                 'year_start'    =>  $request->start,
                 'year_end'    =>  $request->end,
-                'country'   =>  Str::upper($request->location),
+                'country'   =>  $request->location,
                 'description'   =>  Str::upper($request->description),
                 'employeer_singapore' =>  Str::upper($request->employer),
                 'employeer_singapore_feedback' =>  Str::upper($request->feedback),
@@ -1240,7 +1289,7 @@ class MaidController extends Controller
                 'maid_id'   =>  Maid::where('code_maid', $request->maid)->country($request->country)->first('id')->id,
                 'year_start'    =>  $request->start,
                 'year_end'    =>  $request->end,
-                'country'   =>  Str::upper($request->location),
+                'country'   =>  $request->location,
                 'description'   =>  Str::upper($request->description),
                 'work_overseas' =>  $request->overseas,
                 convertCountry($request->country)   =>  true,
@@ -1249,6 +1298,40 @@ class MaidController extends Controller
 
 
         if (WorkExperience::find($id)->update($data)) {
+            DetailWorkExperience::where('work_experience_id', $id)->delete();
+            $dataQuestion = Question::where('is_active', true)
+                ->where('is_work_experience', true)
+                ->where(convertCountry($request->country), true)
+                ->get();
+
+            if ($dataQuestion) {
+                foreach ($dataQuestion as $key => $value) {
+                    foreach ($request->workExperience as $workKey => $work) {
+                        if ($value->id == $workKey) {
+                            if ($value->is_check && $work != null) {
+                                $data = [
+                                    'work_experience_id'   =>  $id,
+                                    'question_id'   =>  $value->id,
+                                    'answer'   =>  true,
+                                    'note'   =>  null,
+                                ];
+
+                                DetailWorkExperience::create($data);
+                            }
+                            if ($value->is_input && $work != null) {
+                                $data = [
+                                    'work_experience_id'   =>  $id,
+                                    'question_id'   =>  $value->id,
+                                    'answer'   =>  true,
+                                    'note'   =>  $work,
+                                ];
+
+                                DetailWorkExperience::create($data);
+                            }
+                        }
+                    }
+                }
+            }
             return response()->json([
                 'data'  =>  [
                     'status'    =>  true,
@@ -1297,6 +1380,8 @@ class MaidController extends Controller
     public function destroyWorkExperience($id)
     {
         if (WorkExperience::where('id', $id)->delete()) {
+            DetailWorkExperience::where('work_experience_id', $id)->delete();
+
             return response()->json([
                 'data'  =>  [
                     'status'    =>  true,
@@ -1381,13 +1466,51 @@ class MaidController extends Controller
 
         if ($dataWork) {
             foreach ($dataWork as $key => $value) {
+                $detailWork = '';
+                if (collect($value->detailWork)->count() > 0) {
+                    $detailWork = '<ul>';
+                    foreach ($value->detailWork as $keyDW => $dw) {
+                        $detailWork .= '<li>';
+                        if ($dw->question->is_input) {
+                            $detailWork .= $dw->question->question . ' ' . $dw->note;
+                            switch ($dw->question->additional_note) {
+                                case 'baby':
+                                    $detailWork .= ' month old baby';
+                                    break;
+
+                                case 'child':
+                                    $detailWork .= ' year old child';
+                                    break;
+
+                                case 'ahkong':
+                                    $detailWork .= ' year old ahkong';
+                                    break;
+
+                                case 'ahma':
+                                    $detailWork .= ' year old ahma';
+                                    break;
+
+                                default:
+                                    $detailWork .= ' years';
+                                    break;
+                            }
+                        }
+
+                        if ($dw->question->is_check) {
+                            $detailWork .= $dw->question->question;
+                        }
+                        $detailWork .= '</li>';
+                    }
+                    $detailWork .= '</ul>';
+                }
+
                 if ($request->country == 'SG') {
                     $results[] = [
                         $value->year_start,
                         $value->year_end,
                         $value->country,
                         $value->employeer_singapore,
-                        $value->description,
+                        $detailWork ? $detailWork : $value->description,
                         $value->remarks,
                         '<div class="d-flex gap-2">
                             <a href="javascript:;" onClick="fnFormMaid.onEditWork(\'' . $value->id . '\')" class="btn btn-outline-warning"><i class="fa-solid fa-edit"></i></a>
@@ -1400,7 +1523,7 @@ class MaidController extends Controller
                         $value->year_start,
                         $value->year_end,
                         $value->country,
-                        $value->description,
+                        $detailWork ? $detailWork : $value->description,
                         '<div class="d-flex gap-2">
                             <a href="javascript:;" onClick="fnFormMaid.onEditWork(\'' . $value->id . '\')" class="btn btn-outline-warning"><i class="fa-solid fa-edit"></i></a>
                             <a href="javascript:;" onClick="fnFormMaid.onDeleteWork(\'' . $value->id . '\',\'' . csrf_token() . '\')" class="btn btn-outline-danger"><i class="fa-solid fa-trash"></i></a>
@@ -1571,6 +1694,12 @@ class MaidController extends Controller
             ->where('work_overseas', false)
             ->get();
 
+        $workExperience = WorkExperience::where('maid_id', $dataMaid->id)
+            ->country($request->country)
+            ->get();
+
+        // dd($workExperience);
+
         $path = public_path('assets/image/header/header.png');
         $type = pathinfo($path, PATHINFO_EXTENSION);
         $dataLogo = file_get_contents($path);
@@ -1614,6 +1743,7 @@ class MaidController extends Controller
             'medicalsRight'  =>  $medicalRight,
             'methods'   =>  $method,
             'interviews'    =>  $interview,
+            'workExperience'    =>  $workExperience,
             'pdf'   =>  $pdf,
         ]);
 
@@ -1621,7 +1751,7 @@ class MaidController extends Controller
             File::delete(public_path('assets/pdf/' . $dataMaid->code_maid . ' - ' . $dataMaid->full_name . '.pdf'));
         }
 
-        PDF::createPDF($html, $dataMaid->code_maid . ' - ' . $dataMaid->full_name . '.pdf', true);
+        PDF::createPDF($html, $dataMaid->code_maid . ' - ' . $dataMaid->full_name . '.pdf', false);
         exit;
 
         // return response()->download(public_path('assets/pdf/' . $dataMaid->code_maid . ' - ' . $dataMaid->full_name . '.pdf'));

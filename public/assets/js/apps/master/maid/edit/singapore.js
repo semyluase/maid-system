@@ -39,26 +39,33 @@ const fnFormMaid = {
         },
         dropdowns: {
             educationMaidChoices: new Choices(
-                document.querySelector("#educationMaid"), {
+                document.querySelector("#educationMaid"),
+                {
                     shouldSort: false,
                 }
             ),
             religionMaidChoices: new Choices(
-                document.querySelector("#religionMaid"), {
+                document.querySelector("#religionMaid"),
+                {
                     shouldSort: false,
                 }
             ),
             maritalMaidChoices: new Choices(
-                document.querySelector("#maritalMaid"), {
+                document.querySelector("#maritalMaid"),
+                {
                     shouldSort: false,
                 }
             ),
             startWorkChoices: new Choices(
-                document.querySelector("#startWork"), {
+                document.querySelector("#startWork"),
+                {
                     shouldSort: false,
                 }
             ),
             endWorkChoices: new Choices(document.querySelector("#endWork"), {
+                shouldSort: false,
+            }),
+            locationChoices: new Choices(document.querySelector("#location"), {
                 shouldSort: false,
             }),
         },
@@ -87,14 +94,16 @@ const fnFormMaid = {
         },
     },
 
-    onCreateDropdown: async(url, choices, placeholder, selected) => {
+    onCreateDropdown: async (url, choices, placeholder, selected) => {
         choices.clearStore();
 
-        choices.setChoices([{
-            label: placeholder,
-            value: "",
-            disabled: true,
-        }, ]);
+        choices.setChoices([
+            {
+                label: placeholder,
+                value: "",
+                disabled: true,
+            },
+        ]);
 
         if (typeof url == "object") {
             choices.setChoices(url);
@@ -122,10 +131,10 @@ const fnFormMaid = {
         choices.setChoiceByValue(selected);
     },
 
-    onInit: async() => {
+    onInit: async () => {
         await fetch(
-                `${baseUrl}/master/maids/get-data-maid/${codeMaidInput.value}`
-            )
+            `${baseUrl}/master/maids/get-data-maid/${codeMaidInput.value}`
+        )
             .then((response) => {
                 if (!response.ok) {
                     unBlockModal();
@@ -143,9 +152,10 @@ const fnFormMaid = {
 
                 return response.json();
             })
-            .then(async(response) => {
+            .then(async (response) => {
                 await fnFormMaid.onCreateDropdown(
-                    [{
+                    [
+                        {
                             label: "Single",
                             value: 1,
                         },
@@ -168,7 +178,8 @@ const fnFormMaid = {
                 );
 
                 await fnFormMaid.onCreateDropdown(
-                    [{
+                    [
+                        {
                             label: "Moeslim",
                             value: 1,
                         },
@@ -199,7 +210,8 @@ const fnFormMaid = {
                 );
 
                 await fnFormMaid.onCreateDropdown(
-                    [{
+                    [
+                        {
                             label: "Kindergarten",
                             value: 1,
                         },
@@ -233,41 +245,52 @@ const fnFormMaid = {
                     parseInt(response.education)
                 );
             });
-    },
 
-    onSave: async(url, data, method) => {
-        return await fetch(url, {
-                method: method,
-                body: data,
-                headers: {
-                    "Content-Type": "application/json",
+        await fnFormMaid.onCreateDropdown(
+            [
+                {
+                    label: "Indonesia",
+                    value: "Indonesia",
                 },
-            })
-            .then((response) => {
-                if (!response.ok) {
-                    unBlockModal();
-                    throw new Error(
-                        Toastify({
-                            text: "Something wrong while sending the data",
-                            duration: 3000,
-                            close: true,
-                            gravity: "top",
-                            position: "right",
-                            backgroundColor: "#dc3545",
-                        }).showToast()
-                    );
-                }
-
-                return response.json();
-            })
-            .then((response) => response);
+                {
+                    label: "Malaysia",
+                    value: "Malaysia",
+                },
+                {
+                    label: "Middle East",
+                    value: "Middle East",
+                },
+                {
+                    label: "Singapore",
+                    value: "Singapore",
+                },
+                {
+                    label: "Hongkong",
+                    value: "Hongkong",
+                },
+                {
+                    label: "Taiwan",
+                    value: "Taiwan",
+                },
+                {
+                    label: "Other Country",
+                    value: "Other Country",
+                },
+            ],
+            fnFormMaid.init.dropdowns.locationChoices,
+            "Location",
+            ""
+        );
     },
 
-    onSaveForm: async(url, data, method) => {
+    onSave: async (url, data, method) => {
         return await fetch(url, {
-                method: method,
-                body: data,
-            })
+            method: method,
+            body: data,
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
             .then((response) => {
                 if (!response.ok) {
                     unBlockModal();
@@ -287,7 +310,32 @@ const fnFormMaid = {
             })
             .then((response) => response);
     },
-    onEditWork: async(id) => {
+
+    onSaveForm: async (url, data, method) => {
+        return await fetch(url, {
+            method: method,
+            body: data,
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    unBlockModal();
+                    throw new Error(
+                        Toastify({
+                            text: "Something wrong while sending the data",
+                            duration: 3000,
+                            close: true,
+                            gravity: "top",
+                            position: "right",
+                            backgroundColor: "#dc3545",
+                        }).showToast()
+                    );
+                }
+
+                return response.json();
+            })
+            .then((response) => response);
+    },
+    onEditWork: async (id) => {
         await fetch(`${baseUrl}/master/maids/get-work-experience/${id}/edit`)
             .then((response) => {
                 if (!response.ok) {
@@ -319,6 +367,16 @@ const fnFormMaid = {
                 workSingaporeCheck.checked =
                     response.work_singapore == 1 ? true : false;
 
+                if (country == "MY") {
+                    if (descriptionWorkInput.classList.contains("d-none")) {
+                        oldExperience.classList.remove("d-none");
+                    }
+                } else {
+                    if (!descriptionWorkInput.classList.contains("d-none")) {
+                        descriptionWorkInput.classList.add("d-none");
+                    }
+                }
+
                 fnFormMaid.onCreateDropdown(
                     `${baseUrl}/dropdown/get-year`,
                     fnFormMaid.init.dropdowns.startWorkChoices,
@@ -333,13 +391,78 @@ const fnFormMaid = {
                     response.year_end
                 );
 
+                fnFormMaid.onCreateDropdown(
+                    [
+                        {
+                            label: "Indonesia",
+                            value: "Indonesia",
+                        },
+                        {
+                            label: "Malaysia",
+                            value: "Malaysia",
+                        },
+                        {
+                            label: "Middle East",
+                            value: "Middle East",
+                        },
+                        {
+                            label: "Singapore",
+                            value: "Singapore",
+                        },
+                        {
+                            label: "Hongkong",
+                            value: "Hongkong",
+                        },
+                        {
+                            label: "Taiwan",
+                            value: "Taiwan",
+                        },
+                        {
+                            label: "Other Country",
+                            value: "Other Country",
+                        },
+                    ],
+                    fnFormMaid.init.dropdowns.locationChoices,
+                    "Location",
+                    response.location
+                );
+
+                let inputWorkExperiences = document.getElementsByName(
+                    "workExperienceInput[]"
+                );
+                let checkWorkExperiences = document.getElementsByName(
+                    "workExperienceCheck[]"
+                );
+
+                if (response.detail_work.length() > 0) {
+                    response.detail_work.forEach((detail) => {
+                        if (inputWorkExperiences.length > 0) {
+                            inputWorkExperiences.forEach((item) => {
+                                if (item.id == detail.question_id) {
+                                    item.value = detail.note;
+                                }
+                            });
+                        }
+
+                        if (checkWorkExperiences.length > 0) {
+                            checkWorkExperiences.forEach((item) => {
+                                if (item.id == detail.question_id) {
+                                    if (detail.answer == 1) {
+                                        item.checked = true;
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+
                 fnFormMaid.init.buttons.btnSaveWork.setAttribute(
                     "data-type",
                     "edit-data"
                 );
             });
     },
-    onDeleteWork: async(id, csrf) => {
+    onDeleteWork: async (id, csrf) => {
         await swalWithBootstrapButtons
             .fire({
                 icon: "info",
@@ -351,7 +474,7 @@ const fnFormMaid = {
                 cancelButtonColor: "#dc3545",
                 cancelButtonText: "No, cancel it",
             })
-            .then(async(result) => {
+            .then(async (result) => {
                 if (result.value) {
                     await fnFormMaid
                         .onSave(
@@ -376,7 +499,7 @@ const fnFormMaid = {
 
                             return response.json();
                         })
-                        .then(async(response) => {
+                        .then(async (response) => {
                             if (response.data.status) {
                                 Toastify({
                                     text: results.data.message,
@@ -407,17 +530,17 @@ fnFormMaid.init.buttons.btnCalendarDob.addEventListener("click", () => {
     fnFormMaid.init.datePicker.dob.show();
 });
 
-photoMaidFile.addEventListener("change", async(event) => {
+photoMaidFile.addEventListener("change", async (event) => {
     if (event.target.files.length > 0) {
         var src = URL.createObjectURL(event.target.files[0]);
         photoMaidPreview.src = src;
     }
 });
 
-codeMaidInput.addEventListener("blur", async() => {
+codeMaidInput.addEventListener("blur", async () => {
     await fetch(
-            `${baseUrl}/master/maids/generate-counter?country=${countryRequestInput.value}&maid=${codeMaidInput.value}`
-        )
+        `${baseUrl}/master/maids/generate-counter?country=${countryRequestInput.value}&maid=${codeMaidInput.value}`
+    )
         .then((response) => {
             if (!response.ok) {
                 unBlockModal();
@@ -435,7 +558,7 @@ codeMaidInput.addEventListener("blur", async() => {
 
             return response.json();
         })
-        .then(async(response) => {
+        .then(async (response) => {
             if (response.data.status) {
                 codeMaidInput.value = response.data.codeMaid;
                 codeMaidInput.setAttribute("readonly", true);
@@ -467,6 +590,16 @@ fnFormMaid.init.buttons.btnAddWork.addEventListener("click", () => {
     employerFeedbackWorkInput.value = "";
     workSingaporeCheck.checked = false;
 
+    if (country == "MY") {
+        if (descriptionWorkInput.classList.contains("d-none")) {
+            oldExperience.classList.remove("d-none");
+        }
+    } else {
+        if (!descriptionWorkInput.classList.contains("d-none")) {
+            descriptionWorkInput.classList.add("d-none");
+        }
+    }
+
     fnFormMaid.onCreateDropdown(
         `${baseUrl}/dropdown/get-year`,
         fnFormMaid.init.dropdowns.startWorkChoices,
@@ -484,7 +617,30 @@ fnFormMaid.init.buttons.btnAddWork.addEventListener("click", () => {
     fnFormMaid.init.buttons.btnSaveWork.setAttribute("data-type", "add-data");
 });
 
-fnFormMaid.init.buttons.btnSaveWork.addEventListener("click", async() => {
+fnFormMaid.init.buttons.btnSaveWork.addEventListener("click", async () => {
+    let inputWorkExperiences = document.getElementsByName(
+        "workExperienceInput[]"
+    );
+    let checkWorkExperiences = document.getElementsByName(
+        "workExperienceCheck[]"
+    );
+
+    let arrayData = [];
+
+    if (inputWorkExperiences.length > 0) {
+        inputWorkExperiences.forEach((item) => {
+            arrayData[item.id] = item.value;
+        });
+    }
+
+    if (checkWorkExperiences.length > 0) {
+        checkWorkExperiences.forEach((item) => {
+            if (item.checked) {
+                arrayData[item.id] = item.value;
+            }
+        });
+    }
+
     switch (fnFormMaid.init.buttons.btnSaveWork.dataset.type) {
         case "add-data":
             url = `${baseUrl}/master/maids/add-work-experience`;
@@ -496,7 +652,9 @@ fnFormMaid.init.buttons.btnSaveWork.addEventListener("click", async() => {
                     true
                 ),
                 end: fnFormMaid.init.dropdowns.endWorkChoices.getValue(true),
-                location: locationWorkInput.value,
+                location:
+                    fnFormMaid.init.dropdowns.locationChoices.getValue(true),
+                workExperience: arrayData,
                 description: descriptionWorkInput.value,
                 employer: employerWorkInput.value,
                 feedback: employerFeedbackWorkInput.value,
@@ -518,7 +676,9 @@ fnFormMaid.init.buttons.btnSaveWork.addEventListener("click", async() => {
                     true
                 ),
                 end: fnFormMaid.init.dropdowns.endWorkChoices.getValue(true),
-                location: locationWorkInput.value,
+                location:
+                    fnFormMaid.init.dropdowns.locationChoices.getValue(true),
+                workExperience: arrayData,
                 description: descriptionWorkInput.value,
                 employer: employerWorkInput.value,
                 feedback: employerFeedbackWorkInput.value,
@@ -559,7 +719,7 @@ fnFormMaid.init.buttons.btnSaveWork.addEventListener("click", async() => {
     }
 });
 
-fnFormMaid.init.buttons.btnSaveMaid.addEventListener("click", async() => {
+fnFormMaid.init.buttons.btnSaveMaid.addEventListener("click", async () => {
     url = `${baseUrl}/master/maids`;
 
     blockUI();
