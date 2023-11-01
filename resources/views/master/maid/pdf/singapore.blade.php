@@ -332,7 +332,7 @@ use App\Models\Question;
                 <?php $no = 0; ?>
                 @foreach ($medicals as $medical)
                     <?php
-
+                    
                     $medicalChilds = Question::medicalMaid($maid->id)
                         ->where('is_active', true)
                         ->where('is_child', true)
@@ -340,7 +340,7 @@ use App\Models\Question;
                         ->country(request('country'))
                         ->orderBy('id')
                         ->get();
-
+                    
                     ?>
                     <div class="row mb-2">
                         <div class="col">
@@ -675,12 +675,54 @@ use App\Models\Question;
                     </tr>
                     @if (collect($maid->workExperience)->count() > 0)
                         @foreach ($maid->workExperience as $work)
+                            @php
+                                $detailWork = null;
+                                foreach ($work->detailWork as $key => $value) {
+                                    if ($value->question->is_input) {
+                                        $detailWork .= $value->question->question . ' ' . $value->note;
+
+                                        switch ($value->question->additional_note) {
+                                            case 'baby':
+                                                $detailWork .= ' month old baby';
+                                                break;
+
+                                            case 'child':
+                                                $detailWork .= ' year old child';
+                                                break;
+
+                                            case 'ahkong':
+                                                $detailWork .= ' year old ahkong';
+                                                break;
+
+                                            case 'ahma':
+                                                $detailWork .= ' year old ahma';
+                                                break;
+
+                                            default:
+                                                $detailWork .= ' years';
+                                                break;
+                                        }
+                                    }
+
+                                    if ($value->question->is_check) {
+                                        $detailWork .= $value->question->question;
+                                    }
+
+                                    if ($detailWork != null && $loop->last == true) {
+                                        $detailWork .= '.';
+                                    }
+
+                                    if ($detailWork != null && $loop->last == false) {
+                                        $detailWork .= ',';
+                                    }
+                                }
+                            @endphp
                             <tr>
                                 <td>{{ $work->year_start }}</td>
                                 <td>{{ $work->year_end }}</td>
                                 <td>{{ $work->country }}</td>
                                 <td>{{ $work->employeer_singapore }}</td>
-                                <td>{{ $work->description }}</td>
+                                <td>{{ $detailWork }}</td>
                                 <td>{{ $work->remarks }}</td>
                             </tr>
                         @endforeach

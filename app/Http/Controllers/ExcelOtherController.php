@@ -102,6 +102,10 @@ class ExcelOtherController extends Controller
             ->where('work_overseas', false)
             ->get();
 
+        $workExperience = WorkExperience::where('maid_id', $dataMaid->id)
+            ->country($request->country)
+            ->get();
+
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet(0);
         $spreadsheet->getActiveSheet()->setTitle("$dataMaid->code_maid");
@@ -389,8 +393,106 @@ class ExcelOtherController extends Controller
                 $baris = 14;
             } else {
                 $work = null;
-                foreach ($workOverseases as $key => $overseas) {
-                    $work .= $overseas->country . "(" . $overseas->year_start . " - " . $overseas->year_end . ")\n" . $overseas->description;
+                if (collect($workOverseases)->count() > 0) {
+                    foreach ($workOverseases as $key => $overseas) {
+                        $work .= $overseas->country . "(" . $overseas->year_start . " - " . $overseas->year_end . ")\n" . $overseas->description;
+                    }
+                }
+
+                if (collect($workExperience)->count() > 0) {
+                    foreach ($workExperience as $key => $we) {
+                        $detailWork = null;
+                        $work .= $we->country . "(" . $we->year_start . " - " . $we->year_end . ")";
+                        if (collect($we->detailWork)->count() > 0) {
+                            if ($we->country != 'Indonesia') {
+                                foreach ($we->detailWork as $kd => $dw) {
+                                    if ($dw->question->is_input) {
+                                        $detailWork .= $dw->question->question . ' ' . $dw->note;
+
+                                        switch ($dw->question->additional_note) {
+                                            case 'baby':
+                                                $detailWork .= ' month old baby';
+                                                break;
+
+                                            case 'child':
+                                                $detailWork .= ' year old child';
+                                                break;
+
+                                            case 'ahkong':
+                                                $detailWork .= ' year old ahkong';
+                                                break;
+
+                                            case 'ahma':
+                                                $detailWork .= ' year old ahma';
+                                                break;
+
+                                            default:
+                                                $detailWork .= ' years';
+                                                break;
+                                        }
+                                    }
+
+                                    if ($dw->question->is_check) {
+                                        $detailWork .= $dw->question->question;
+                                    }
+
+                                    if ($detailWork != null && $kd == (collect($we->detailWork)->count() - 1)) {
+                                        $detailWork .= '.';
+                                    }
+
+                                    if ($detailWork != null && $kd != (collect($we->detailWork)->count() - 1)) {
+                                        $detailWork .= ',';
+                                    }
+                                }
+                            }
+                        }
+                        $work .= "/n" . $detailWork;
+
+                        if (collect($we->detailWork)->count() > 0) {
+                            if ($we->country != 'Indonesia') {
+                                foreach ($we->detailWork as $kd => $dw) {
+                                    if ($dw->question->is_input) {
+                                        $detailWork .= $dw->question->question_hk . ' ' . $dw->note;
+
+                                        switch ($dw->question->additional_note) {
+                                            case 'baby':
+                                                $detailWork .= ' 月';
+                                                break;
+
+                                            case 'child':
+                                                $detailWork .= ' 年';
+                                                break;
+
+                                            case 'ahkong':
+                                                $detailWork .= ' 年';
+                                                break;
+
+                                            case 'ahma':
+                                                $detailWork .= ' 年';
+                                                break;
+
+                                            default:
+                                                $detailWork .= ' 年';
+                                                break;
+                                        }
+                                    }
+
+                                    if ($dw->question->is_check) {
+                                        $detailWork .= $dw->question->question_hk;
+                                    }
+
+                                    if ($detailWork != null && $kd == (collect($we->detailWork)->count() - 1)) {
+                                        $detailWork .= '.';
+                                    }
+
+                                    if ($detailWork != null && $kd != (collect($we->detailWork)->count() - 1)) {
+                                        $detailWork .= ',';
+                                    }
+                                }
+                            }
+                        }
+                        $work .= "/n" . $detailWork;
+                    }
                 }
                 $sheet->setCellValue("Q$baris", $work);
                 $spreadsheet->getActiveSheet()->getStyle("Q$baris")->getAlignment()->setWrapText(true);
@@ -434,8 +536,107 @@ class ExcelOtherController extends Controller
             } else {
                 $work = null;
                 foreach ($workDomestics as $key => $domestic) {
-                    $work .= $domestic->country . "(" . $domestic->year_start . " - " . $domestic->year_end . ")\n" . $domestic->description;
+                    if ($domestic->description != null) {
+                        $work .= $domestic->country . "(" . $domestic->year_start . " - " . $domestic->year_end . ")\n" . $domestic->description;
+                    }
                 }
+
+                if (collect($workExperience)->count() > 0) {
+                    foreach ($workExperience as $key => $we) {
+                        $detailWork = null;
+                        $work .= $we->country . "(" . $we->year_start . " - " . $we->year_end . ")";
+                        if (collect($we->detailWork)->count() > 0) {
+                            if ($we->country == 'Indonesia') {
+                                foreach ($we->detailWork as $kd => $dw) {
+                                    if ($dw->question->is_input) {
+                                        $detailWork .= $dw->question->question . ' ' . $dw->note;
+
+                                        switch ($dw->question->additional_note) {
+                                            case 'baby':
+                                                $detailWork .= ' month old baby';
+                                                break;
+
+                                            case 'child':
+                                                $detailWork .= ' year old child';
+                                                break;
+
+                                            case 'ahkong':
+                                                $detailWork .= ' year old ahkong';
+                                                break;
+
+                                            case 'ahma':
+                                                $detailWork .= ' year old ahma';
+                                                break;
+
+                                            default:
+                                                $detailWork .= ' years';
+                                                break;
+                                        }
+                                    }
+
+                                    if ($dw->question->is_check) {
+                                        $detailWork .= $dw->question->question;
+                                    }
+
+                                    if ($detailWork != null && $kd == (collect($we->detailWork)->count() - 1)) {
+                                        $detailWork .= '.';
+                                    }
+
+                                    if ($detailWork != null && $kd != (collect($we->detailWork)->count() - 1)) {
+                                        $detailWork .= ',';
+                                    }
+                                }
+                            }
+                        }
+                        $work .= "/n" . $detailWork;
+
+                        if (collect($we->detailWork)->count() > 0) {
+                            if ($we->country == 'Indonesia') {
+                                foreach ($we->detailWork as $kd => $dw) {
+                                    if ($dw->question->is_input) {
+                                        $detailWork .= $dw->question->question_hk . ' ' . $dw->note;
+
+                                        switch ($dw->question->additional_note) {
+                                            case 'baby':
+                                                $detailWork .= ' 月';
+                                                break;
+
+                                            case 'child':
+                                                $detailWork .= ' 年';
+                                                break;
+
+                                            case 'ahkong':
+                                                $detailWork .= ' 年';
+                                                break;
+
+                                            case 'ahma':
+                                                $detailWork .= ' 年';
+                                                break;
+
+                                            default:
+                                                $detailWork .= ' 年';
+                                                break;
+                                        }
+                                    }
+
+                                    if ($dw->question->is_check) {
+                                        $detailWork .= $dw->question->question_hk;
+                                    }
+
+                                    if ($detailWork != null && $kd == (collect($we->detailWork)->count() - 1)) {
+                                        $detailWork .= '.';
+                                    }
+
+                                    if ($detailWork != null && $kd != (collect($we->detailWork)->count() - 1)) {
+                                        $detailWork .= ',';
+                                    }
+                                }
+                            }
+                        }
+                        $work .= "/n" . $detailWork;
+                    }
+                }
+
                 $sheet->setCellValue("Q$baris", $work);
                 $spreadsheet->getActiveSheet()->getStyle("Q$baris")->getAlignment()->setWrapText(true);
                 $baris = $baris + (4 * collect($workDomestics)->count());

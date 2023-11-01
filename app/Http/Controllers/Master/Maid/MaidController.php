@@ -214,7 +214,7 @@ class MaidController extends Controller
             $fileBase = str_replace('data:image/' . $photoMaid->getClientOriginalExtension() . ';base64,', '', $photoMaid);
             $fileBase = str_replace(' ', '+', $photoMaid);
 
-            if ($dataMaid->picture_name == null && $dataMaid->picture_name == '') {
+            if ($dataMaid->picture_name != null && $dataMaid->picture_name != '') {
                 if (File::exists(public_path('assets/image/maids/photos/') . $dataMaid->picture_name)) {
                     File::delete(public_path('assets/image/maids/photos/') . $dataMaid->picture_name);
                 }
@@ -812,7 +812,7 @@ class MaidController extends Controller
                                 $data = [
                                     'work_experience_id'   =>  $workExperienceSave->id,
                                     'question_id'   =>  $value->id,
-                                    'answer'   =>  true,
+                                    'answer'   =>  $work == 1 ? true : false,
                                     'note'   =>  null,
                                 ];
 
@@ -822,7 +822,7 @@ class MaidController extends Controller
                                 $data = [
                                     'work_experience_id'   =>  $workExperienceSave->id,
                                     'question_id'   =>  $value->id,
-                                    'answer'   =>  true,
+                                    'answer'   =>  false,
                                     'note'   =>  $work,
                                 ];
 
@@ -1072,7 +1072,7 @@ class MaidController extends Controller
             $fileBase = str_replace('data:image/' . $photoMaid->getClientOriginalExtension() . ';base64,', '', $photoMaid);
             $fileBase = str_replace(' ', '+', $photoMaid);
 
-            $photoMaid->move($_SERVER['DOCUMENT_ROOT'] . '/assets/image/maids/photos/', $fileNameFull);
+            $photoMaid->move(public_path('/assets/image/maids/photos/'), $fileNameFull);
         }
 
         $data = [
@@ -1914,6 +1914,10 @@ class MaidController extends Controller
                 ->where('work_overseas', false)
                 ->get();
 
+            $workExperience = WorkExperience::where('maid_id', $maidData->id)
+                ->country($country)
+                ->get();
+
             $path = public_path('assets/image/header/header.png');
             $type = pathinfo($path, PATHINFO_EXTENSION);
             $dataLogo = file_get_contents($path);
@@ -1957,6 +1961,7 @@ class MaidController extends Controller
                 'medicalsRight'  =>  $medicalRight,
                 'methods'   =>  $method,
                 'interviews'    =>  $interview,
+                'workExperience'    =>  $workExperience,
                 'pdf'   =>  $pdf,
             ]);
 

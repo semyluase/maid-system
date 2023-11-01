@@ -141,6 +141,10 @@ class GenerateDocument extends Command
                         ->where('work_overseas', false)
                         ->get();
 
+                    $workExperience = WorkExperience::where('maid_id', $dataMaid->id)
+                        ->country($country)
+                        ->get();
+
                     $path = public_path('assets/image/header/header.png');
                     $type = pathinfo($path, PATHINFO_EXTENSION);
                     $dataLogo = file_get_contents($path);
@@ -184,6 +188,7 @@ class GenerateDocument extends Command
                         'medicalsRight'  =>  $medicalRight,
                         'methods'   =>  $method,
                         'interviews'    =>  $interview,
+                        'workExperience'    =>  $workExperience,
                         'pdf'   =>  $pdf,
                     ]);
 

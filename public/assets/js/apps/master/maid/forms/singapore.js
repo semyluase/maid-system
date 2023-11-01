@@ -336,7 +336,6 @@ const fnFormMaid = {
                 fnFormMaid.init.modals.workExperienceModal.show();
 
                 idWorkMaidInput.value = response.id;
-                locationWorkInput.value = response.country;
                 descriptionWorkInput.value = response.description;
                 remarksWorkInput.value = response.remarks;
                 employerWorkInput.value = response.employeer_singapore;
@@ -392,7 +391,7 @@ const fnFormMaid = {
                     ],
                     fnFormMaid.init.dropdowns.locationChoices,
                     "Location",
-                    response.location
+                    response.country
                 );
 
                 let inputWorkExperiences = document.getElementsByName(
@@ -552,7 +551,6 @@ fnFormMaid.init.buttons.btnAddWork.addEventListener("click", () => {
     fnFormMaid.init.modals.workExperienceModal.show();
 
     idWorkMaidInput.value = "";
-    locationWorkInput.value = "";
     descriptionWorkInput.value = "";
     employerWorkInput.value = "";
     employerFeedbackWorkInput.value = "";

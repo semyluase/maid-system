@@ -656,6 +656,7 @@ fnFormMaid.init.buttons.btnSaveWork.addEventListener("click", async () => {
                 location:
                     fnFormMaid.init.dropdowns.locationChoices.getValue(true),
                 workExperience: arrayData,
+                description: descriptionWorkInput.value,
                 _token: fnFormMaid.init.buttons.btnSaveWork.dataset.csrf,
             });
 
@@ -675,6 +676,7 @@ fnFormMaid.init.buttons.btnSaveWork.addEventListener("click", async () => {
                 location:
                     fnFormMaid.init.dropdowns.locationChoices.getValue(true),
                 workExperience: arrayData,
+                description: descriptionWorkInput.value,
                 _token: fnFormMaid.init.buttons.btnSaveWork.dataset.csrf,
             });
 

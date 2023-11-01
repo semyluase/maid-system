@@ -632,6 +632,48 @@ class ExcelSingaporeController extends Controller
 
         if (collect($dataMaid->workExperience)->count() > 0) {
             foreach ($dataMaid->workExperience as $key => $value) {
+                $detailWork = null;
+                if (collect($value->detailWork)->count() > 0) {
+                    foreach ($value->detailWork as $kd => $dw) {
+                        if ($dw->question->is_input) {
+                            $detailWork .= $dw->question->question . ' ' . $dw->note;
+
+                            switch ($dw->question->additional_note) {
+                                case 'baby':
+                                    $detailWork .= ' month old baby';
+                                    break;
+
+                                case 'child':
+                                    $detailWork .= ' year old child';
+                                    break;
+
+                                case 'ahkong':
+                                    $detailWork .= ' year old ahkong';
+                                    break;
+
+                                case 'ahma':
+                                    $detailWork .= ' year old ahma';
+                                    break;
+
+                                default:
+                                    $detailWork .= ' years';
+                                    break;
+                            }
+                        }
+
+                        if ($dw->question->is_check) {
+                            $detailWork .= $dw->question->question;
+                        }
+
+                        if ($detailWork != null && $kd == (collect($value->detailWork)->count() - 1)) {
+                            $detailWork .= '.';
+                        }
+
+                        if ($detailWork != null && $kd != (collect($value->detailWork)->count() - 1)) {
+                            $detailWork .= ',';
+                        }
+                    }
+                }
                 $sheet->setCellValue("A$baris", $value->year_start);
                 $sheet->mergeCells("A$baris:B$baris");
                 $sheet->setCellValue("C$baris", $value->year_end);
